@@ -139,6 +139,7 @@ table.res tr.click{cursor:pointer} table.res tr.click:hover td{background:#fbfaf
 .lenpick{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .tips{margin:6px 0 0;padding-left:20px}.tips li{margin:4px 0}
 details summary{cursor:pointer}
+.pp{display:inline-block;font-size:12px;font-weight:400;color:var(--brand);background:#e8f1f3;border-radius:6px;padding:2px 8px;margin-left:4px;font-family:"Atkinson Hyperlegible"}
 footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
 @media (max-width:760px){.hero{grid-template-columns:1fr}.match{grid-template-columns:1fr}header.top nav{width:100%}header.top nav button{margin:4px 4px 0 0}}
 </style>
@@ -1098,6 +1099,171 @@ const BANDS = [
 ];
 const PAST_PAPERS_URL = "https://www.cityandguilds.com/qualifications-and-apprenticeships/engineering/mechanical/8730-t-level-technical-qualification-in-engineering-and-manufacturing-core";
 
+// Index of real City & Guilds 8730 past-paper questions (topic summaries only — students use the official papers)
+const PAST_SERIES = {
+"P1-N23":"Paper 1 (8730-031) · Nov 2023", "P1-S24":"Paper 1 (8730-031) · Summer 2024",
+"P2-N23":"Paper 2 (8730-032) · Dec 2023", "P2-S23":"Paper 2 (8730-032) · June 2023"};
+const PAST = [
+// Paper 1, November 2023
+["P1-N23","1a",1,2,"Define geothermal energy"],["P1-N23","1b",1,2,"An advantage of geothermal electricity generation"],
+["P1-N23","2",2,6,"Define a physical property and a mechanical property"],["P1-N23","3",2,8,"How an RCD reduces harm from electric shock"],
+["P1-N23","4a",2,7,"Difference between torque and moment"],["P1-N23","4b",3,7,"Maximum torque a solid shaft can transmit (torsion equation)"],
+["P1-N23","5",4,6,"Describe quench hardening"],["P1-N23","6",3,4,"Solve an exponential equation using logarithms"],
+["P1-N23","7",4,8,"B–H (magnetisation) curves for iron and steel"],["P1-N23","8",3,5,"Energy to heat a metal block to its melting point"],
+["P1-N23","9a",4,4,"Plot a sine function (y = A sin bx)"],["P1-N23","9b",3,4,"Differentiate to find velocity at a given point"],
+["P1-N23","10",7,7,"Beam reactions with point loads and a UDL"],["P1-N23","11a",4,8,"Total resistance of a series–parallel network"],
+["P1-N23","11b",2,8,"Current from total resistance and p.d."],["P1-N23","12",2,6,"Young's modulus from a stress–strain graph"],
+["P1-N23","13",6,4,"Integrate acceleration to find change in velocity"],["P1-N23","14",4,6,"How forging affects a component's properties"],
+["P1-N23","15a",2,5,"A risk of chemical etching with acids"],["P1-N23","15b",2,5,"Reactivity of copper (reactivity series)"],
+["P1-N23","16",6,6,"Why aluminium alloy tubes suit a hang-glider frame"],["P1-N23","17",9,5,"Evaluate the scientific method for new-product R&D (extended)"],
+["P1-N23","18*",12,10,"Control systems and mechanisms for an animatronic display (extended)"],["P1-N23","19*",12,6,"Material selection for an injection mould tool (extended)"],
+// Paper 1, Summer 2024
+["P1-S24","1",2,5,"Newton's first and third laws"],["P1-S24","2a–b",2,4,"Indices and algebraic simplification"],["P1-S24","2c",1,4,"Dividing a length in a ratio"],
+["P1-S24","3a",1,5,"The three particles in an atom"],["P1-S24","3b",3,5,"Define element, molecule and compound"],
+["P1-S24","4",2,6,"An application of a thermochromic (smart) material"],["P1-S24","5a",2,5,"How galvanic (sacrificial) protection prevents corrosion"],
+["P1-S24","5b",3,6,"Other corrosion-prevention methods for steel pipes"],["P1-S24","6",2,4,"Area of a component cut from sheet"],
+["P1-S24","7",1,8,"Total capacitance of a series–parallel arrangement"],["P1-S24","8a",2,4,"Percentage increase in length"],
+["P1-S24","8b",2,4,"New length after percentage expansion"],["P1-S24","9a",4,4,"Shaded area of a template with holes"],
+["P1-S24","9b",2,4,"Volume of a cylindrical bar"],["P1-S24","10a",2,9,"A limitation of PLCs compared with dedicated ICs"],
+["P1-S24","10b",4,9,"Two advantages of PLCs compared with dedicated ICs"],["P1-S24","11a",2,5,"Gas law at constant pressure (Charles's law)"],
+["P1-S24","11b",2,5,"Gas law at constant temperature (Boyle's law)"],["P1-S24","12",2,8,"Phasor diagram for an inductive circuit"],
+["P1-S24","13",4,5,"Heat released cooling steam to water (latent + specific heat)"],["P1-S24","14",3,5,"Density from mass and volume"],
+["P1-S24","15",4,5,"Momentum before and after a collision"],["P1-S24","16",4,5,"Convert polar to Cartesian coordinates and plot"],
+["P1-S24","17a",1,5,"Why precise measurements can still be inaccurate"],["P1-S24","17b",4,5,"Choose measuring equipment for a tight tolerance"],
+["P1-S24","18",6,6,"Testing methods for a plastic helmet shell"],["P1-S24","19",9,6,"Heat-treatment combination for a hammer head (extended)"],
+["P1-S24","20*",12,8,"Protection schemes for electrical transmission lines (extended)"],["P1-S24","21*",12,6,"Material selection for a mountain-bike frame (extended)"],
+// Paper 2, December 2023
+["P2-N23","1",3,12,"Stages of the risk assessment process"],["P2-N23","2",2,3,"Identify symbols on an engineering drawing"],
+["P2-N23","3",2,10,"Summing point in a control-system block diagram"],["P2-N23","4",3,16,"The 8 wastes of lean manufacturing"],
+["P2-N23","5",4,14,"Types of CPD and how they improve performance"],["P2-N23","6",4,1,"Why products are made in batches rather than mass produced"],
+["P2-N23","7a",2,3,"Why exploded-view drawings are used"],["P2-N23","7b",4,3,"Purposes of a flowchart"],
+["P2-N23","8",4,12,"Environmental implications of sending waste to landfill"],["P2-N23","9",4,16,"Benefits of total productive maintenance (TPM)"],
+["P2-N23","10a",4,12,"Health and safety when replacing a conveyor belt"],["P2-N23","10b",2,1,"Why equipment is inspected and tested after maintenance"],
+["P2-N23","11",3,13,"Made-to-stock vs made-to-order"],["P2-N23","12a",4,13,"Why offer 30-day payment terms"],
+["P2-N23","12b",2,13,"Loans as a source of start-up finance"],["P2-N23","12c",4,14,"Why HR expertise matters when recruiting"],
+["P2-N23","12d",4,14,"Training needs for new maintenance engineers"],["P2-N23","13",6,10,"Why closed-loop control suits a heating/cooling system"],
+["P2-N23","14",6,1,"How ergonomics affects the design of a hard hat"],["P2-N23","15",9,2,"Cloud computing and UK social/economic development (extended)"],
+["P2-N23","16*",12,11,"Standards for manufacturing children's playground equipment (extended)"],["P2-N23","17*",12,2,"Benefits and limits of IoT in design, manufacture and maintenance (extended)"],
+// Paper 2, June 2023
+["P2-S23","1a",2,1,"What reactive maintenance means"],["P2-S23","1b",2,1,"Implications of shutting a machine down for maintenance"],
+["P2-S23","2",2,3,"Drawing abbreviations (e.g. CSK, DIA)"],["P2-S23","3",2,10,"Function of a passive sensor"],
+["P2-S23","4",2,12,"Implications to an engineer of ignoring health and safety"],["P2-S23","5a",2,3,"Why orthographic drawings are used"],
+["P2-S23","5b",4,3,"Characteristics of a circuit diagram"],["P2-S23","6",4,14,"Expected professional behaviour of engineers"],
+["P2-S23","7",4,1,"Linear design process steps before initial ideas"],["P2-S23","8a",2,11,"Why quality control is carried out"],
+["P2-S23","8b",4,11,"Purposes of SOPs"],["P2-S23","9",2,12,"Impact of the Clean Air Act on engineering"],
+["P2-S23","10a",4,12,"PPE for high-voltage repair work at height"],["P2-S23","10b",4,12,"Other health and safety considerations for that repair"],
+["P2-S23","11",4,11,"100% inspection vs SPC for small batches"],["P2-S23","12",3,15,"Why a delivery truck depreciates"],
+["P2-S23","13a",4,13,"Considerations when selling products overseas"],["P2-S23","13b",4,13,"Why include a force majeure clause"],
+["P2-S23","14",6,9,"Why pneumatics suits a food production line"],["P2-S23","15",6,16,"Visual management to fix a bottleneck between stages"],
+["P2-S23","16",9,2,"Electric lighting and UK social/economic development (extended)"],["P2-S23","17*",12,14,"Working effectively with a client in design and manufacture (extended)"],
+["P2-S23","18*",12,12,"HASAWA, Electricity at Work Regs and COSHH for an electrical manufacturer (extended)"]
+];
+
+// New original questions modelled on topics the real papers test ("pp" = the past-paper question they practise)
+const EXAM_MORE = {
+1:[
+{q:"Explain two steps of a linear design process that happen before initial design ideas are produced.",m:4,pp:"P2 Jun 2023 Q7",ms:["Identify the need/problem and write a design brief…","…so the designer knows exactly what problem is being solved and for whom","Research (users, existing products, materials) and write a design specification…","…giving measurable criteria that the ideas will later be judged against"]},
+{q:"A pump has just been repaired after a breakdown. Explain why it must be inspected and tested before it is returned to service.",m:2,pp:"P2 Dec 2023 Q10b",ms:["To confirm the fault is fixed and the pump works to specification (e.g. flow, pressure, no leaks)","To make sure it is safe — guards refitted, electrical connections correct — before operators use it"]},
+{q:"Explain how ergonomics should influence the design of a handheld power drill.",m:6,pp:"P2 Dec 2023 Q14",ms:["Handle size and shape fit the range of users' hand sizes (anthropometric data)…","…so it can be gripped securely and comfortably for long periods","Weight and balance kept low/centred…","…reducing fatigue and strain injuries to the wrist and arm","Controls (trigger, switches) positioned for easy reach…","…and vibration/noise reduced, protecting the user's long-term health"]}
+],
+2:[
+{q:"Analyse how the development of the electric motor has contributed to social and economic development in the UK.",m:9,ext:true,pp:"P2 Jun 2023 Q16 / Dec 2023 Q15",ms:["Economic: replaced steam/line-shaft power, allowing flexible factory layouts and mass production","Economic: higher productivity, new industries (appliances, electric rail, EVs) and jobs","Social: domestic appliances (washing machines, vacuum cleaners) freed up time, especially for women","Social: electric public transport (trams, Underground, rail) enabled commuting and city growth","Environmental/social: cleaner air in cities compared with steam; now key to net zero (EVs, heat pumps)","Analysis links each development to its consequence, with a supported judgement"]}
+],
+3:[
+{q:"State the meaning of these abbreviations on an engineering drawing: (a) CSK (b) DIA (c) PCD.",m:3,pp:"P2 Jun 2023 Q2",ms:["(a) Countersunk","(b) Diameter","(c) Pitch circle diameter"]},
+{q:"Explain why exploded-view drawings are used in engineering.",m:2,pp:"P2 Dec 2023 Q7a",ms:["They show each part separated along the line of assembly…","…so it is clear how parts fit together and in what order — useful for assembly, maintenance and parts lists"]}
+],
+4:[
+{q:"Solve 5ˣ = 80 using logarithms. Give your answer to 3 significant figures.",m:3,pp:"P1 Nov 2023 Q6",calc:{ans:2.72,tol:0.005,unit:""},ms:["Take logs of both sides: x log 5 = log 80","x = log 80 ÷ log 5 = 1.9031 ÷ 0.6990","x = 2.72"]},
+{q:"The displacement of a slide is s = 3t³ − 4t + 2 (m). Use differentiation to find its velocity when t = 2 s (m/s).",m:3,pp:"P1 Nov 2023 Q9b",calc:{ans:32,tol:0.01,unit:"m/s"},ms:["v = ds/dt","v = 9t² − 4","At t = 2: v = 36 − 4 = 32 m/s"]},
+{q:"The acceleration of a part is a = 6 + 4t (m/s²). Use integration to find the change in velocity between t = 1 s and t = 3 s (m/s).",m:4,pp:"P1 Nov 2023 Q13",calc:{ans:28,tol:0.01,unit:"m/s"},ms:["Δv = ∫ a dt from 1 to 3","∫(6 + 4t) dt = 6t + 2t²","[6(3) + 2(9)] − [6(1) + 2(1)] = 36 − 8","Δv = 28 m/s"]},
+{q:"A 180 cm bar is cut into three pieces in the ratio 2 : 3 : 4. Calculate the length of the longest piece (cm).",m:1,pp:"P1 Summer 2024 Q2c",calc:{ans:80,tol:0.01,unit:"cm"},ms:["180 ÷ 9 parts = 20 cm per part, so longest = 4 × 20 = 80 cm"]}
+],
+5:[
+{q:"A gas occupies 1.5 m³ at 200 kPa. It is compressed to 0.5 m³ at constant temperature. Calculate the new pressure (kPa).",m:2,pp:"P1 Summer 2024 Q11b",calc:{ans:600,tol:0.5,unit:"kPa"},ms:["Boyle's law: p₁V₁ = p₂V₂","p₂ = 200 × 1.5 ÷ 0.5 = 600 kPa"]},
+{q:"A gas of volume 2.0 m³ at 27 °C is heated at constant pressure to 177 °C. Calculate its new volume (m³).",m:2,pp:"P1 Summer 2024 Q11a",calc:{ans:3,tol:0.01,unit:"m³"},ms:["Convert to kelvin: 300 K and 450 K; Charles's law V₁/T₁ = V₂/T₂","V₂ = 2.0 × 450 ÷ 300 = 3.0 m³"]},
+{q:"A 1500 kg vehicle moving at 10 m/s collides with a stationary 500 kg trailer and they move off together. Calculate (a) the momentum before the collision and (b) the velocity after (m/s).",m:4,pp:"P1 Summer 2024 Q15",calc:{ans:7.5,tol:0.01,unit:"m/s"},ms:["(a) p = mv = 1500 × 10","= 15 000 kg m/s","(b) Momentum conserved: 15 000 = (1500 + 500) × v","v = 7.5 m/s"]},
+{q:"Calculate the energy needed to melt 2 kg of ice already at 0 °C. Specific latent heat of fusion of ice = 334 kJ/kg (kJ).",m:2,pp:"P1 Nov 2023 Q8 / Summer 2024 Q13",calc:{ans:668,tol:0.5,unit:"kJ"},ms:["Q = mL (no temperature change during melting)","Q = 2 × 334 = 668 kJ"]},
+{q:"A machine-tool position is given in polar form as (10, 30°). Calculate the Cartesian coordinates (x, y). Enter x below.",m:2,pp:"P1 Summer 2024 Q16a",calc:{ans:8.66,tol:0.01,unit:"(x)"},ms:["x = r cos θ = 10 cos 30° = 8.66","y = r sin θ = 10 sin 30° = 5.00"]},
+{q:"Define (a) an element, (b) a compound and (c) a molecule.",m:3,pp:"P1 Summer 2024 Q3b",ms:["(a) Element: a substance made of only one type of atom","(b) Compound: two or more different elements chemically bonded together","(c) Molecule: two or more atoms chemically bonded (same or different elements)"]},
+{q:"Describe how sacrificial (galvanic) protection prevents a buried steel pipe from corroding.",m:2,pp:"P1 Summer 2024 Q5a",ms:["A more reactive metal (e.g. zinc or magnesium anode) is connected to the steel","The more reactive metal corrodes instead of the steel, so the steel is protected until the anode is used up"]},
+{q:"A container of oil has a mass of 4.8 kg and a volume of 0.006 m³. Calculate the density of the oil (kg/m³).",m:2,pp:"P1 Summer 2024 Q14",calc:{ans:800,tol:0.5,unit:"kg/m³"},ms:["Density = mass ÷ volume","4.8 ÷ 0.006 = 800 kg/m³"]},
+{q:"Evaluate how a company could use the scientific method when developing a new battery-cooling system for electric vehicles.",m:9,ext:true,pp:"P1 Nov 2023 Q17",ms:["Define the problem and form a testable hypothesis (e.g. liquid cooling keeps cells below 40 °C)","Plan fair tests: control variables (ambient temperature, load), change one at a time","Collect reliable data with calibrated sensors; repeat tests","Analyse results and compare with the hypothesis; refine the design (iteration)","Benefits: evidence-based decisions, reduces risk and cost of failure in service","Limitations: time and cost of testing, lab conditions may not match real use; justified judgement"]}
+],
+6:[
+{q:"Explain how forging affects the properties of a steel connecting rod compared with machining it from solid bar.",m:4,pp:"P1 Nov 2023 Q14",ms:["Forging makes the grain flow follow the shape of the part…","…which increases strength, toughness and fatigue resistance","Forging refines the grain structure and closes internal voids…","…so the part is more reliable under repeated high loads; machining cuts across the grain"]},
+{q:"State one application of a thermochromic material and explain why it is used.",m:2,pp:"P1 Summer 2024 Q4",ms:["Application: e.g. kettle/battery temperature indicator, baby spoon, mug, forehead thermometer strip","It changes colour at a set temperature, giving a clear visual warning or indication without electronics"]},
+{q:"A high-carbon steel hammer head must be hard on its striking face but must not shatter. Recommend a combination of heat treatments and justify your choice.",m:9,ext:true,pp:"P1 Summer 2024 Q19",ms:["Quench hardening: heat above upper critical temperature, quench in water/oil → martensite, very hard face resists wear and deformation","But hardened steel alone is brittle — risk of chips flying off on impact","Temper afterwards (reheat ~250–350 °C) to relieve stress and increase toughness while keeping most hardness","Annealing is used before shaping/machining to soften, not as the final treatment","Possible selective hardening of the face only, leaving a tougher body","Justified recommendation: harden then temper, linked to impact loading and user safety"]}
+],
+7:[
+{q:"A 4 m simply supported beam carries a 10 kN point load 1 m from the left support and a UDL of 2 kN/m along its full length. Calculate the left reaction R₁ (kN).",m:5,pp:"P1 Nov 2023 Q10",calc:{ans:11.5,tol:0.05,unit:"kN"},ms:["UDL total = 2 × 4 = 8 kN acting at the centre (2 m)","Take moments about R₁: R₂ × 4 = (10 × 1) + (8 × 2) = 26","R₂ = 6.5 kN","Total load = 18 kN, so R₁ = 18 − 6.5","R₁ = 11.5 kN"]},
+{q:"State the difference between torque and moment.",m:2,pp:"P1 Nov 2023 Q4a",ms:["A moment is the turning effect of a force about a point (force × perpendicular distance)","Torque is a moment that causes or tends to cause rotation about an axis, e.g. twisting a shaft"]},
+{q:"Using T = τJ/r, calculate the torque a shaft can transmit if τ = 50 MPa, J = 4.0 × 10⁻⁷ m⁴ and r = 0.02 m (N·m).",m:3,pp:"P1 Nov 2023 Q4b",calc:{ans:1000,tol:1,unit:"N·m"},ms:["Substitute in SI units: τ = 50 × 10⁶ Pa","T = 50 × 10⁶ × 4.0 × 10⁻⁷ ÷ 0.02","T = 1000 N·m"]}
+],
+8:[
+{q:"Describe how a residual current device (RCD) reduces the risk of serious harm from electric shock.",m:2,pp:"P1 Nov 2023 Q3",ms:["It continuously compares current in the live and neutral conductors","If they differ (current leaking to earth, e.g. through a person) it trips and disconnects the supply very quickly (around 30 mA, within milliseconds)"]},
+{q:"Two capacitors of 10 µF and 20 µF are in series. This pair is connected in parallel with a 5 µF capacitor. Calculate the total capacitance (µF).",m:2,pp:"P1 Summer 2024 Q7",calc:{ans:11.67,tol:0.05,unit:"µF"},ms:["Series: 1/C = 1/10 + 1/20 → C = 6.67 µF","Parallel: total = 6.67 + 5 = 11.67 µF"]},
+{q:"In a purely inductive AC circuit, state the phase relationship between current and voltage and describe the phasor diagram.",m:2,pp:"P1 Summer 2024 Q12",ms:["Current lags voltage by 90°","Phasor diagram: voltage phasor as reference (horizontal), current phasor drawn 90° behind (clockwise/below)"]},
+{q:"Discuss suitable protection methods for an electrical supply feeding high-powered equipment in a new factory, and how they work.",m:12,ext:true,pp:"P1 Summer 2024 Q20",ms:["Fuses: melt on overcurrent — simple and cheap but must be replaced","MCBs/circuit breakers: trip on overload (thermal) and short circuit (magnetic); resettable","RCDs: detect earth leakage and protect people from shock","Earthing and bonding: provide a low-resistance fault path so protective devices operate","Surge protection / lightning protection; overcurrent and differential relays on high-voltage lines","Discussion of discrimination/selectivity, cost, maintenance and safety, with a justified recommendation"]}
+],
+9:[
+{q:"Explain two advantages of using a PLC rather than hard-wired relay logic or a dedicated integrated circuit.",m:4,pp:"P1 Summer 2024 Q10b",ms:["Easily reprogrammed when the process changes…","…without rewiring, saving time and cost","Built-in diagnostics, timers, counters and communications…","…making fault-finding faster and allowing connection to HMIs/SCADA"]},
+{q:"Describe one limitation of using a PLC compared with a dedicated integrated circuit.",m:2,pp:"P1 Summer 2024 Q10a",ms:["Higher cost and larger size for a simple, high-volume product","Scan time makes it slower than a dedicated circuit for very fast signals"]}
+],
+10:[
+{q:"Describe the function of a summing point in a control-system block diagram.",m:2,pp:"P2 Dec 2023 Q3",ms:["It combines signals by adding or subtracting them","In closed-loop control it subtracts the feedback signal from the setpoint to produce the error signal"]},
+{q:"Describe the difference between a passive sensor and an active sensor.",m:2,pp:"P2 Jun 2023 Q3",ms:["A passive sensor needs no external power supply to produce its signal / responds to energy from the environment (e.g. thermocouple, PIR)","An active sensor needs an external power supply / emits its own signal (e.g. ultrasonic, photoelectric)"]},
+{q:"Discuss the requirements to consider when choosing control systems and mechanisms for a moving shop-window display that must run 24 hours a day for 6 weeks. Recommend suitable options.",m:12,ext:true,pp:"P1 Nov 2023 Q18",ms:["Reliability and duty cycle: continuous running for 6 weeks — choose components rated for continuous duty, low maintenance","Controller: PLC or microcontroller with timers/sequences; easy to reprogram; fail-safe","Actuators: stepper/servo motors for precise movement, pneumatics for quick simple motions (needs compressor and noise control)","Mechanisms: cams, linkages, gears to produce the required motion","Safety: guarding, low voltage, public area, emergency stop","Cost for a one-off, power use and quiet operation; justified recommendation"]}
+],
+11:[
+{q:"Explain why a company might use 100% inspection rather than SPC for a small batch of a new product.",m:4,pp:"P2 Jun 2023 Q11",ms:["SPC needs enough data over time to set reliable control limits…","…which a small batch does not provide","Inspecting every item finds every defect…","…which is practical for low quantities and important for a new product/customer where faults could damage reputation"]}
+],
+12:[
+{q:"An engineer must repair a high-voltage cable at the top of a 30 m tower. Identify two items of PPE and explain why each is needed.",m:4,pp:"P2 Jun 2023 Q10a",ms:["Full-body harness with lanyard/fall arrest…","…to stop a fatal fall from height","Insulated gloves / arc-flash-rated clothing and face shield…","…to protect against electric shock and arc burns (plus hard hat for falling objects)"]},
+{q:"Explain one way the Clean Air Act affects engineering and manufacturing companies.",m:2,pp:"P2 Jun 2023 Q9",ms:["It controls emissions of smoke, dust and fumes from chimneys and processes","So companies must use cleaner fuels, filters/extraction or approved equipment, or face penalties"]}
+],
+13:[
+{q:"Explain why a company might choose a 'made to stock' approach rather than 'made to order' for a new games console.",m:3,pp:"P2 Dec 2023 Q11",ms:["High, predictable demand means products can be made before orders arrive","Stock is ready immediately at launch, so customers do not wait and sales are not lost","Producing in large runs lowers cost per unit (economies of scale)"]},
+{q:"Explain why a supplier might include a force majeure clause in a contract.",m:2,pp:"P2 Jun 2023 Q13b",ms:["It protects the supplier from penalties if events beyond their control (flood, fire, pandemic) stop them delivering","So the contract can be delayed or ended fairly without the supplier being in breach"]},
+{q:"Explain why a new engineering company might offer customers 30-day payment terms.",m:3,pp:"P2 Dec 2023 Q12a",ms:["It is common practice, so it makes the company competitive and attractive to new clients","It builds trust and long-term relationships","But the company must manage its cash flow because money arrives later"]}
+],
+14:[
+{q:"Explain two ways engineers should behave to maintain a positive reputation for their organisation.",m:4,pp:"P2 Jun 2023 Q6",ms:["Act with honesty and integrity, e.g. never falsifying test results…","…so customers can trust the company's products and certificates","Communicate professionally and respectfully with clients and colleagues…","…and work within their competence, following safety rules, so work is reliable and safe"]}
+],
+15:[
+{q:"A company buys a delivery van that is used every day. Explain why its value depreciates over time.",m:3,pp:"P2 Jun 2023 Q12",ms:["Wear and tear from high mileage reduces its condition","Newer models with better technology/efficiency make it less desirable (obsolescence)","Its expected remaining useful life falls each year, so its resale value drops"]}
+],
+16:[
+{q:"Workers at an assembly stage are often still busy when parts arrive from machining, causing delays. Explain how visual management could help.",m:6,pp:"P2 Jun 2023 Q15",ms:["Kanban cards/squares show when assembly is ready for more parts…","…so machining only sends parts when they can be used (pull system)","Andon lights or boards signal problems immediately…","…so supervisors can move help to the bottleneck quickly","Production boards show targets vs actual output in real time…","…improving flow and morale because everyone can see progress"]}
+],
+17:[]
+};
+
+// more 12-mark questions in the style of Section B
+const EXTENDED_MORE = [
+{set:2, units:"11, 12", m:12, pp:"P2 Dec 2023 Q16", q:"A company manufactures outdoor gym equipment for public parks. The work involves cutting, welding and powder coating. Evaluate the standards and regulations the company must consider.", ms:[
+"Product safety standards (e.g. BS EN standards for outdoor fitness equipment / playground equipment) covering design loads, entrapment and edges",
+"Quality management (ISO 9001) for consistent production and traceability",
+"Welding standards and welder qualification (e.g. BS EN ISO 9606 / 3834) for structural integrity",
+"Health and safety at work: HASAWA, PUWER (cutting/welding equipment), COSHH (fumes, coating powders), LEV",
+"Environmental standards (ISO 14001, waste and emissions from coating)",
+"Evaluation of consequences of non-compliance (injury to public, legal action, reputation) and a justified conclusion"]},
+{set:2, units:"12, 8", m:12, pp:"P2 Jun 2023 Q18", q:"A company builds and tests electrical control panels. Discuss the importance of the Health and Safety at Work Act, the Electricity at Work Regulations and COSHH to its activities.", ms:[
+"HASAWA: general duties of employer (safe systems, training, supervision) and employees (care, cooperation)",
+"Electricity at Work Regulations: systems constructed and maintained to prevent danger; safe isolation; competence; no live working unless justified",
+"COSHH: soldering fume, cleaning solvents, resins — assessment, exposure control (LEV), PPE, health surveillance",
+"Links to risk assessment, training records and safe isolation/LOTO during testing",
+"Consequences of non-compliance: shock/burns, enforcement notices, prosecution, reputational damage",
+"Discussion that weighs the importance of each in this context, with a conclusion"]},
+{set:2, units:"14, 17", m:12, pp:"P2 Jun 2023 Q17", q:"An engineering company designs and builds conveyor systems for a large food manufacturer. Evaluate how it can work effectively with the client during the design and manufacturing stages.", ms:[
+"Clear brief and specification agreed with the client; requirements captured and signed off",
+"Regular meetings, progress reports and a named point of contact; agreed communication channels",
+"Design reviews, 3D models/prototypes and client approval at milestones",
+"Change control process so client changes are assessed for cost and time",
+"Factory acceptance testing with the client, training and documentation at handover",
+"Evaluation of benefits (fewer errors, trust, repeat business) vs costs/time, with a justified conclusion"]}
+];
+
 
 </script>
 <script>
@@ -1199,6 +1365,7 @@ function route(){
   else if (h === 'mock') renderMockSetup();
   else if (h === 'glossary') renderGlossary();
   else if (h === 'exam') renderExamHub();
+  else if (h === 'past-papers') renderPastPapers();
   else if (h.startsWith('exam-')) renderExamPaper(h.slice(5));
   else if (h === 'my-results') renderMyResults();
   else if (h === 'profile') renderRegister(true);
@@ -1593,13 +1760,25 @@ function showStudent(id){
 }
 
 // ================= exam-style practice =================
+EXTENDED.forEach(x => { x.m = x.m || 12; });
+Object.keys(EXAM_MORE).forEach(n => {
+  EXAM_MORE[n].forEach(q => { if (q.ext) EXTENDED.push({...q, units:String(n), set: [4,5,6,7,8].includes(+n) ? 1 : 2}); else EXAM[n].push(q); });
+});
+EXTENDED_MORE.forEach(x => EXTENDED.push(x));
+const BANDS9 = [["Band 3 (7–9)","Detailed, well-structured answer with clear analysis/evaluation linked to the context and a supported judgement."],["Band 2 (4–6)","Some relevant points with some explanation; limited analysis and link to the context."],["Band 1 (1–3)","A few basic, mostly descriptive points with little link to the context."]];
+const ppLabel = pp => pp ? ` <span class="pp">Practises past-paper topic: ${esc(pp)}</span>` : '';
+function pastFor(n){ return PAST.filter(p => p[3] === n); }
+function pastListHTML(rows){
+  if (!rows.length) return '<p style="color:var(--muted)">No questions on this unit in the four papers indexed so far.</p>';
+  return `<div class="tablewrap"><table class="res"><tr><th>Paper</th><th>Q</th><th>Marks</th><th>Topic</th><th>Unit</th></tr>${rows.map(p=>`<tr><td>${esc(PAST_SERIES[p[0]])}</td><td>${esc(p[1])}</td><td>${p[2]}</td><td style="text-align:left;white-space:normal">${esc(p[4])}</td><td><a href="#unit-${p[3]}-exam" onclick="event.preventDefault();go('unit-${p[3]}-exam')">${p[3]}</a></td></tr>`).join('')}</table></div>`;
+}
 const EXAM_TIPS = `<ul class="tips">
   <li><b>Look at the marks.</b> 2 marks usually means two points; for "explain", make a point and then say <i>why</i> or <i>so what</i>.</li>
   <li><b>Calculations:</b> write the formula, show every step, give units and round as the question asks (e.g. 3 significant figures). You get method marks even if the final answer is wrong.</li>
   <li><b>12-mark answers:</b> plan first, write in full paragraphs (not bullet points), link every point to the scenario, weigh up options and finish with a justified conclusion.</li>
   <li>Stuck? Move on and come back. Read the question twice and underline the context.</li></ul>`;
 function examQuestionHTML(q, i){
-  return `<div class="qq exq" data-i="${i}"><h4>${i+1}. ${esc(q.q)} <span class="tag">${q.m} mark${q.m>1?'s':''}</span>${q.unit?` <span class="src" style="display:inline">Unit ${q.unit}</span>`:''}</h4>
+  return `<div class="qq exq" data-i="${i}"><h4>${i+1}. ${esc(q.q)} <span class="tag">${q.m} mark${q.m>1?'s':''}</span>${q.unit?` <span class="src" style="display:inline">Unit ${q.unit}</span>`:''}${ppLabel(q.pp)}</h4>
     <textarea rows="${q.m>=4?5:3}" placeholder="Write your answer here…" aria-label="Your answer"></textarea>
     ${q.calc?`<div class="row" style="margin-top:6px">Final answer: <input class="calcin" inputmode="decimal" style="font:inherit;width:120px;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px"> ${esc(q.calc.unit)} <button class="btn alt" data-chk>Check number</button><span class="fb" data-cf></span></div>`:''}
     <div class="row"><button class="btn alt" data-rev>Show mark scheme</button><span class="fb" data-sc></span></div>
@@ -1607,7 +1786,8 @@ function examQuestionHTML(q, i){
     <ul class="model">${q.ms.map(p=>`<li><label><input type="checkbox"> <span>${esc(p)}</span></label></li>`).join('')}</ul></div></div>`;
 }
 function extendedHTML(x, i){
-  return `<div class="qq exq ext" data-i="${i}"><h4>${i+1}. ${esc(x.q)} <span class="tag">12 marks</span> <span class="src" style="display:inline">Units ${esc(x.units)}</span></h4>
+  const B = x.m === 9 ? BANDS9 : BANDS;
+  return `<div class="qq exq ext" data-i="${i}"><h4>${i+1}. ${esc(x.q)} <span class="tag">${x.m} marks</span> <span class="src" style="display:inline">Unit${String(x.units).includes(',')?'s':''} ${esc(x.units)}</span>${ppLabel(x.pp)}</h4>
     <p class="hint">Extended response — plan first, then write in paragraphs with a justified conclusion.</p>
     <textarea rows="10" placeholder="Plan here, then write your answer in full paragraphs…" aria-label="Your answer"></textarea>
     <div class="row"><span class="fb" data-wc style="color:var(--muted);font-weight:400">0 words</span><button class="btn alt" data-rev>Show marking guide</button><span class="fb" data-sc></span></div>
@@ -1615,8 +1795,8 @@ function extendedHTML(x, i){
       <p style="margin:12px 0 4px"><b>Indicative content</b> — a strong answer covers points like these, explained and linked to the scenario:</p>
       <ul>${x.ms.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
       <p style="margin:12px 0 4px"><b>Mark bands</b></p>
-      <div class="tablewrap"><table class="res">${BANDS.map(b=>`<tr><td style="white-space:normal;text-align:left"><b>${b[0]}</b></td><td style="white-space:normal;text-align:left">${b[1]}</td></tr>`).join('')}</table></div>
-      <label class="row">Choose the band that matches your answer, then your mark: <select data-mk style="font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)"><option value="">—</option>${Array.from({length:13},(_,k)=>`<option>${k}</option>`).join('')}</select> / 12</label>
+      <div class="tablewrap"><table class="res">${B.map(b=>`<tr><td style="white-space:normal;text-align:left"><b>${b[0]}</b></td><td style="white-space:normal;text-align:left">${b[1]}</td></tr>`).join('')}</table></div>
+      <label class="row">Choose the band that matches your answer, then your mark: <select data-mk style="font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)"><option value="">—</option>${Array.from({length:x.m+1},(_,k)=>`<option>${k}</option>`).join('')}</select> / ${x.m}</label>
     </div></div>`;
 }
 // wires a list of questions; calls onChange(total got, all revealed?)
@@ -1635,7 +1815,7 @@ function wireExam(root, items, onChange){
       const sc = el.querySelector('[data-sc]'); sc.className='fb ok'; sc.textContent = `${got[i]}/${q.m}`; onChange(got);
     });
     const mk = el.querySelector('[data-mk]');
-    if (mk) mk.onchange = () => { got[i] = mk.value === '' ? null : +mk.value; const sc = el.querySelector('[data-sc]'); sc.className='fb ok'; sc.textContent = mk.value===''?'':`${mk.value}/12`; onChange(got); };
+    if (mk) mk.onchange = () => { got[i] = mk.value === '' ? null : +mk.value; const sc = el.querySelector('[data-sc]'); sc.className='fb ok'; sc.textContent = mk.value===''?'':`${mk.value}/${q.m}`; onChange(got); };
     const chk = el.querySelector('[data-chk]');
     if (chk) chk.onclick = () => {
       const inp = el.querySelector('.calcin'), cf = el.querySelector('[data-cf]');
@@ -1664,10 +1844,11 @@ function wireFooter(root, id, items, scope, unit){
 }
 function renderUnitExam(u, pane){
   const items = (EXAM[u.n]||[]).map(q=>({...q}));
-  const ext = EXTENDED.filter(x => x.units.split(',').map(s=>+s.trim())[0] === u.n).map(x=>({...x, m:12, ext:true}));
+  const ext = EXTENDED.filter(x => String(x.units).split(',').map(s=>+s.trim())[0] === u.n).map(x=>({...x, ext:true}));
   const all = items.concat(ext);
   pane.innerHTML = `<div class="panel" style="margin-bottom:14px"><b>Exam-style questions</b> — written in the style of the T Level core exam papers (recall, explain, calculate${ext.length?', extended response':''}). Write your answer, then open the mark scheme and tick the points you got.
-    <details style="margin-top:8px"><summary><b>Exam tips</b></summary>${EXAM_TIPS}</details></div>
+    <details style="margin-top:8px"><summary><b>Exam tips</b></summary>${EXAM_TIPS}</details>
+    <details style="margin-top:8px"><summary><b>Real past-paper questions on this unit (${pastFor(u.n).length})</b></summary><p class="hint" style="margin:8px 0">Practise these from the official City &amp; Guilds papers (ask your tutor or download them from the <a href="${PAST_PAPERS_URL}" target="_blank" rel="noopener">City &amp; Guilds 8730 page</a>).</p>${pastListHTML(pastFor(u.n))}</details></div>
     <div id="exl">${all.map((q,i)=> q.ext ? extendedHTML(q,i) : examQuestionHTML(q,i)).join('')}</div>${examFooter('ue')}`;
   wireExam(pane, all, wireFooter(pane, 'ue', all, `Unit ${u.n}`, u.n));
 }
@@ -1676,33 +1857,56 @@ function renderExamHub(){
   app.innerHTML = banners() + `<h1 style="margin-bottom:4px">Exam practice</h1>
   <p style="color:var(--muted);margin-top:0">Practise answering questions the way the real T Level core exams ask them: written answers marked against a mark scheme. These are original practice questions written in the exam style — not copies of real papers.</p>
   <div class="grid" style="margin-bottom:18px">
-    <button class="ucard special" data-p="A"><span class="num">PAPER A</span><h3>Practice paper A — maths &amp; science focus</h3><div class="meta"><span>Units ${p1.join(', ')} · ${p1.reduce((s,n)=>s+EXAM[n].length,0)} questions + 3 extended answers</span></div></button>
-    <button class="ucard special" data-p="B"><span class="num">PAPER B</span><h3>Practice paper B — engineering in context</h3><div class="meta"><span>Units ${p2.join(', ')} · 24 questions + 3 extended answers (new mix each time)</span></div></button>
-    <button class="ucard special" data-p="X"><span class="num">12 MARKS</span><h3>Extended response practice</h3><div class="meta"><span>All ${EXTENDED.length} twelve-mark questions with marking guides</span></div></button>
+    <button class="ucard special" data-p="A"><span class="num">PAPER A</span><h3>Practice paper A — maths &amp; science focus</h3><div class="meta"><span>Units ${p1.join(', ')} · Section A ≈67 marks + Section B (9 + 12 + 12) · new mix each time</span></div></button>
+    <button class="ucard special" data-p="B"><span class="num">PAPER B</span><h3>Practice paper B — engineering in context</h3><div class="meta"><span>Other units · Section A ≈67 marks + Section B (9 + 12 + 12) · new mix each time</span></div></button>
+    <button class="ucard special" data-p="X"><span class="num">9 &amp; 12 MARKS</span><h3>Extended response practice</h3><div class="meta"><span>All ${EXTENDED.length} extended questions with marking guides</span></div></button>
+    <button class="ucard special" data-pf="1"><span class="num">PAST PAPERS</span><h3>Past paper finder</h3><div class="meta"><span>Every question from 4 real papers (2023–24), sorted by unit</span></div></button>
   </div>
   <div class="panel" style="margin-bottom:18px"><h2 style="margin-top:0">How to answer exam questions</h2>${EXAM_TIPS}</div>
   <div class="panel" style="margin-bottom:18px"><h2 style="margin-top:0">Exam-style questions by unit</h2><div class="row" style="margin-top:0">${UNITS.map(u=>`<button class="btn alt" data-ue="${u.n}">Unit ${u.n}${S.exam&&S.exam[u.n]!=null?' · '+S.exam[u.n]+'%':''}</button>`).join('')}</div></div>
   <div class="panel"><h2 style="margin-top:0">Real past papers</h2><p style="margin:0">City &amp; Guilds publishes official past papers, mark schemes and sample papers for the core exams (qualification 8730). Ask your tutor, or find them on the <a href="${PAST_PAPERS_URL}" target="_blank" rel="noopener">City &amp; Guilds 8730 page</a> under assessment materials.</p></div>`;
   app.querySelectorAll('[data-p]').forEach(b => b.onclick = () => go('exam-'+b.dataset.p));
+  app.querySelectorAll('[data-pf]').forEach(b => b.onclick = () => go('past-papers'));
   app.querySelectorAll('[data-ue]').forEach(b => b.onclick = () => go('unit-'+b.dataset.ue+'-exam'));
 }
 function renderExamPaper(id){
   let title, items;
   const tag = n => q => ({...q, unit:n});
-  if (id === 'A') { title = 'Practice paper A — maths & science focus'; items = [4,5,6,7,8].flatMap(n => EXAM[n].map(tag(n))).concat(EXTENDED.filter(x=>x.set===1).map(x=>({...x,m:12,ext:true}))); }
-  else if (id === 'B') { title = 'Practice paper B — engineering in context'; items = [1,2,3,9,10,11,12,13,14,15,16,17].flatMap(n => { const pick = new Set(shuffle(EXAM[n].map((_,k)=>k)).slice(0,2)); return EXAM[n].filter((_,k)=>pick.has(k)).map(tag(n)); }).concat(EXTENDED.filter(x=>x.set===2).map(x=>({...x,m:12,ext:true}))); }
-  else if (id === 'X') { title = 'Extended response practice (12 marks each)'; items = EXTENDED.map(x=>({...x,m:12,ext:true})); }
+  const build = (units, set) => {
+    let pool = shuffle(units.flatMap(n => EXAM[n].map(tag(n)))), secA = [], tot = 0;
+    for (const q of pool) if (tot + q.m <= 67) { secA.push(q); tot += q.m; if (tot === 67) break; }
+    secA.sort((a,b) => a.unit - b.unit || a.m - b.m);
+    const ext = EXTENDED.filter(x => x.set === set).map(x => ({...x, ext:true}));
+    const nine = shuffle(ext.filter(x => x.m === 9))[0];
+    const twelves = shuffle(ext.filter(x => x.m === 12)).slice(0, nine ? 2 : 3);
+    return secA.concat(nine ? [nine] : [], twelves);
+  };
+  if (id === 'A') { title = 'Practice paper A — maths & science focus'; items = build([4,5,6,7,8], 1); }
+  else if (id === 'B') { title = 'Practice paper B — engineering in context'; items = build([1,2,3,9,10,11,12,13,14,15,16,17], 2); }
+  else if (id === 'X') { title = 'Extended response practice (9 and 12 marks)'; items = EXTENDED.map(x=>({...x,ext:true})); }
   else return renderExamHub();
   const total = items.reduce((s,q)=>s+q.m,0);
   app.innerHTML = banners() + `<button class="back" id="bk">← Exam practice</button><h1 style="margin:4px 0">${esc(title)}</h1>
     <div class="sticky"><span class="fb">${items.length} questions · ${total} marks</span><span class="timer" id="tm" hidden></span><span style="flex:1"></span>
     <select id="tsel" style="font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)"><option value="0">No timer</option><option value="60">60 min</option><option value="90">90 min</option><option value="150">2 h 30 min (real exam length)</option></select><button class="btn alt" id="tgo">Start timer</button></div>
     <div class="panel" style="margin-bottom:12px"><details><summary><b>Exam tips</b></summary>${EXAM_TIPS}</details></div>
-    <div id="exl">${items.map((q,i)=> q.ext ? extendedHTML(q,i) : examQuestionHTML(q,i)).join('')}</div>${examFooter('pp')}`;
+    <div id="exl">${items.map((q,i)=> (id!=='X' && i===0 ? '<h2>Section A — short and medium answers</h2>' : '') + (id!=='X' && q.ext && !(items[i-1]||{}).ext ? '<h2>Section B — extended responses</h2>' : '') + (q.ext ? extendedHTML(q,i) : examQuestionHTML(q,i))).join('')}</div>${examFooter('pp')}`;
   $('#bk').onclick = () => go('exam');
   $('#tgo').onclick = () => { const mins = +$('#tsel').value; clearInterval(timerId); const tm = $('#tm'); if (!mins) { tm.hidden = true; return; }
     let s = mins*60; tm.hidden = false; const tick = () => { tm.textContent = `⏱ ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; if (s--<=0) { clearInterval(timerId); tm.textContent = "⏱ Time's up — finish your sentence and mark your answers"; } }; tick(); timerId = setInterval(tick, 1000); };
   wireExam(app, items, wireFooter(app, 'pp', items, title.split(' — ')[0], null));
+}
+
+function renderPastPapers(){
+  app.innerHTML = banners() + `<button class="back" id="bk">← Exam practice</button><h1 style="margin:4px 0">Past paper finder</h1>
+  <p style="color:var(--muted);margin-top:0">Every question from four real T Level core exam papers, sorted by unit, so you know which past-paper questions to practise. The questions themselves are in the official papers — get them from your tutor or the <a href="${PAST_PAPERS_URL}" target="_blank" rel="noopener">City &amp; Guilds 8730 page</a>. For each topic, the app's <b>Exam questions</b> tab has similar practice questions with mark schemes.</p>
+  <div class="toolbar"><select id="pfu"><option value="">All units</option>${UNITS.map(u=>`<option value="${u.n}">Unit ${u.n} – ${esc(u.title)}</option>`).join('')}</select>
+  <select id="pfp"><option value="">All papers</option>${Object.entries(PAST_SERIES).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('')}</select><span class="fb" id="pfc"></span></div><div id="pfl"></div>`;
+  $('#bk').onclick = () => go('exam');
+  const draw = () => { const u = $('#pfu').value, p = $('#pfp').value;
+    const rows = PAST.filter(r => (!u || r[3] === +u) && (!p || r[0] === p)).sort((a,b)=> a[3]-b[3]);
+    $('#pfc').textContent = `${rows.length} questions · ${rows.reduce((s,r)=>s+r[2],0)} marks`; $('#pfl').innerHTML = pastListHTML(rows); };
+  $('#pfu').onchange = draw; $('#pfp').onchange = draw; draw();
 }
 
 // ================= glossary =================
