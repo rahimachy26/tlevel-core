@@ -137,6 +137,8 @@ table.res tr.click{cursor:pointer} table.res tr.click:hover td{background:#fbfaf
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
 .toolbar select,.toolbar input{font:inherit;padding:7px 10px;border:1.5px solid var(--line);border-radius:8px}
 .lenpick{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.tips{margin:6px 0 0;padding-left:20px}.tips li{margin:4px 0}
+details summary{cursor:pointer}
 footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
 @media (max-width:760px){.hero{grid-template-columns:1fr}.match{grid-template-columns:1fr}header.top nav{width:100%}header.top nav button{margin:4px 4px 0 0}}
 </style>
@@ -148,6 +150,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
   <nav>
     <button data-go="home">Units</button>
     <button data-go="mock">Full mock exam</button>
+    <button data-go="exam">Exam practice</button>
     <button data-go="glossary">Glossary</button>
     <button data-go="my-results">My results</button>
     <button data-go="teacher" id="nav-teacher" hidden>Teacher</button>
@@ -936,6 +939,165 @@ const EXTRA = {
 };
 UNITS.forEach(u => { if (EXTRA[u.n]) u.quiz = u.quiz.concat(EXTRA[u.n]); });
 
+// Original exam-style questions written in the format of the City & Guilds 8730 core exams
+// (recall, short explanation, calculation, applied, 12-mark extended response). Not real past-paper questions.
+const EXAM = {
+1:[
+{q:"State two advantages of using additive manufacturing to produce prototypes.",m:2,ms:["Complex shapes can be made without tooling, jigs or moulds","Fast turnaround, so design changes can be tested quickly","Low cost for one-off or very small quantities","Little material is wasted compared with machining from solid"]},
+{q:"A company uses reactive (breakdown) maintenance on its CNC machines. Explain two disadvantages of this strategy.",m:4,ms:["Breakdowns are unplanned, causing lost production time…","…which can lead to missed delivery dates and unhappy customers","A sudden failure can damage other parts of the machine…","…so repairs become more expensive / take longer, especially if spares are not in stock","(Also accept) sudden failure can create a safety risk to operators"]},
+{q:"A company makes 400 hydraulic fittings each month in six different sizes. Explain why batch production is suitable.",m:3,ms:["A set quantity of one size can be made, then the machines changed over to the next size","The same equipment is used for several products, so it is flexible","Cost per unit is lower than one-off production without the high investment of a dedicated mass-production line"]},
+{q:"Explain the difference between quality assurance and quality control, giving one example of each.",m:4,ms:["Quality assurance is preventive — it controls the process so defects are not made","Example of QA: training, written SOPs, audits, calibrating equipment","Quality control is detection — inspecting or testing the product to find defects","Example of QC: measuring parts with a micrometer, pressure testing, visual inspection"]}
+],
+2:[
+{q:"Name two technologies associated with Industry 4.0.",m:2,ms:["Internet of Things (IoT) sensors","Artificial intelligence / machine learning","Big data analytics / cloud computing","Digital twins","Cyber-physical systems / collaborative robots"]},
+{q:"Explain how the introduction of the moving assembly line changed manufacturing.",m:3,ms:["The work was brought to the worker, with each person doing one repeated task","This greatly reduced the time to build each product (e.g. a car)","Lower cost per unit made products affordable to many more people — the start of mass production"]},
+{q:"A manufacturer plans to fit IoT sensors to its production machines. Explain two benefits.",m:4,ms:["Live data on temperature/vibration allows predictive maintenance…","…so failures are caught early and unplanned downtime is reduced","Production data can be analysed remotely/in real time…","…helping managers spot bottlenecks and improve efficiency (OEE)"]},
+{q:"A factory switches to on-site solar panels and wind turbines. Describe one environmental and one social impact.",m:4,ms:["Environmental: lower carbon emissions because less fossil-fuel electricity is used","Environmental detail: e.g. helps meet net zero targets / reduces air pollution","Social: new skilled jobs installing and maintaining renewables / improved company reputation in the community","Social detail: e.g. possible local objections to turbine noise or visual impact"]}
+],
+3:[
+{q:"State the line type used on an engineering drawing for (a) hidden detail and (b) centre lines.",m:2,ms:["(a) Thin dashed line","(b) Thin chain line (long dash, short dash)"]},
+{q:"A shaft is dimensioned Ø25 +0.00/−0.02 mm and its hole Ø25 +0.03/+0.00 mm. Calculate the maximum clearance between the shaft and the hole (mm).",m:3,calc:{ans:0.05,tol:0.001,unit:"mm"},ms:["Correct limits identified: hole 25.00–25.03, shaft 24.98–25.00","Maximum clearance = largest hole − smallest shaft = 25.03 − 24.98","= 0.05 mm (minimum clearance 0.00 mm, so it is a clearance fit)"]},
+{q:"Explain why engineers use standard conventions such as BS 8888 on drawings.",m:3,ms:["Everyone reads the drawing the same way, so there is no misunderstanding","Drawings can be shared between companies, suppliers and countries","Reduces manufacturing errors, scrap and cost / ensures parts are interchangeable"]},
+{q:"Explain the difference between first angle and third angle orthographic projection.",m:3,ms:["Both show 2D views (front, plan, end) of a 3D object","In first angle the plan is drawn below the front view and the views are on the opposite side to where they are seen from","In third angle the plan is drawn above the front view and each view is placed on the side it is seen from; the symbol on the title block shows which is used"]}
+],
+4:[
+{q:"Convert the binary number 10110101 to (a) decimal and (b) hexadecimal.",m:2,calc:{ans:181,tol:0,unit:"(decimal)"},ms:["(a) 128 + 32 + 16 + 4 + 1 = 181","(b) 1011 = B, 0101 = 5 → B5"]},
+{q:"Transpose the formula s = ut + ½at² to make a the subject.",m:2,ms:["s − ut = ½at²","a = 2(s − ut) / t²"]},
+{q:"A bracket has a sloping member 250 mm long at 35° to the horizontal. Calculate the horizontal length of the bracket. Give your answer to 3 significant figures (mm).",m:3,calc:{ans:205,tol:0.5,unit:"mm"},ms:["Uses cosine: adjacent = hypotenuse × cos θ","250 × cos 35° = 204.79","= 205 mm (3 s.f.)"]},
+{q:"Five shaft diameters are measured: 19.98, 20.02, 20.01, 19.99, 20.00 mm. Calculate the mean (mm) and state the range.",m:3,calc:{ans:20,tol:0.001,unit:"mm (mean)"},ms:["Sum = 100.00 mm","Mean = 100.00 ÷ 5 = 20.00 mm","Range = 20.02 − 19.98 = 0.04 mm"]}
+],
+5:[
+{q:"State the SI unit for (a) pressure and (b) energy.",m:2,ms:["(a) Pascal (Pa) / N/m²","(b) Joule (J)"]},
+{q:"Calculate the energy needed to heat a 5 kg aluminium block from 20 °C to 220 °C. Specific heat capacity of aluminium = 900 J/kg K. Give your answer in kJ.",m:3,calc:{ans:900,tol:0.5,unit:"kJ"},ms:["ΔT = 220 − 20 = 200 K","Q = mcΔT = 5 × 900 × 200 = 900 000 J","= 900 kJ"]},
+{q:"Explain the difference between accuracy and precision, using an example from measuring a component.",m:3,ms:["Accuracy is how close a measurement is to the true value","Precision is how close repeated measurements are to each other","Example: a micrometer with a zero error gives readings that are close together (precise) but all wrong by the same amount (not accurate)"]},
+{q:"In a hydraulic press, a force of 200 N acts on a piston of area 0.002 m². The output piston has an area of 0.05 m². Calculate the output force (N).",m:3,calc:{ans:5000,tol:1,unit:"N"},ms:["Pressure = F/A = 200 ÷ 0.002 = 100 000 Pa","Pressure is the same throughout the fluid (Pascal's principle)","Output force = 100 000 × 0.05 = 5000 N"]}
+],
+6:[
+{q:"Define the terms (a) ductility and (b) hardness.",m:2,ms:["(a) Ductility: ability to be stretched / drawn out (e.g. into wire) without breaking","(b) Hardness: resistance to indentation, scratching or wear"]},
+{q:"Explain why a hardened steel cutting tool is tempered after quenching.",m:3,ms:["Quenching makes the steel very hard but also very brittle","Tempering reheats it to a lower temperature (e.g. 200–300 °C) and cools it","This reduces brittleness / increases toughness so the tool does not chip or shatter, while keeping most of its hardness"]},
+{q:"Explain how fatigue failure occurs in a component such as a drive shaft.",m:3,ms:["The component is loaded and unloaded repeatedly (cyclic stress), even below its tensile strength","A small crack starts at a stress concentration (e.g. keyway, sharp corner, scratch)","The crack grows a little with each cycle until the remaining section is too small and it fractures suddenly"]},
+{q:"A tensile specimen has a cross-sectional area of 10 mm². A load of 4 kN extends a 50 mm gauge length by 0.1 mm. Calculate Young's modulus in GPa.",m:4,calc:{ans:200,tol:0.5,unit:"GPa"},ms:["Stress = 4000 ÷ 10 = 400 N/mm² (400 MPa)","Strain = 0.1 ÷ 50 = 0.002","E = stress ÷ strain = 400 ÷ 0.002 = 200 000 N/mm²","= 200 GPa"]}
+],
+7:[
+{q:"State the difference between mechanical advantage and velocity ratio.",m:2,ms:["Mechanical advantage = load ÷ effort (force multiplication, affected by friction)","Velocity ratio = distance moved by effort ÷ distance moved by load (depends only on geometry)"]},
+{q:"A beam is pivoted at its centre. A 400 N load acts 1.5 m to the left of the pivot. Calculate the force needed 2.4 m to the right of the pivot to balance the beam (N).",m:3,calc:{ans:250,tol:0.5,unit:"N"},ms:["Anticlockwise moment = 400 × 1.5 = 600 N·m","Clockwise moments = anticlockwise moments: F × 2.4 = 600","F = 250 N"]},
+{q:"A motor running at 1450 rpm drives a 15-tooth gear meshed with a 60-tooth gear. Calculate the output speed (rpm) and state the effect on torque.",m:3,calc:{ans:362.5,tol:0.1,unit:"rpm"},ms:["Gear ratio = 60 ÷ 15 = 4 : 1","Output speed = 1450 ÷ 4 = 362.5 rpm","Output torque increases about 4 times (ignoring losses)"]},
+{q:"A hoist lifts 500 kg through 12 m in 20 s. The motor's input power is 4 kW. Calculate the efficiency of the hoist (%). Use g = 9.81 m/s².",m:4,calc:{ans:73.6,tol:0.2,unit:"%"},ms:["Work done = mgh = 500 × 9.81 × 12 = 58 860 J","Useful power = 58 860 ÷ 20 = 2943 W","Efficiency = 2943 ÷ 4000 × 100","= 73.6%"]}
+],
+8:[
+{q:"At a junction, 3 A flows in. One branch carries 1.2 A out. Using Kirchhoff's current law, calculate the current in the other branch (A).",m:2,calc:{ans:1.8,tol:0.01,unit:"A"},ms:["Current in = current out: 3 = 1.2 + I","I = 1.8 A"]},
+{q:"A 12 V supply is connected to 4 Ω and 8 Ω resistors in series. Calculate the circuit current and the voltage across the 8 Ω resistor (V).",m:3,calc:{ans:8,tol:0.01,unit:"V"},ms:["Total resistance = 4 + 8 = 12 Ω","I = V/R = 12 ÷ 12 = 1 A","V across 8 Ω = 1 × 8 = 8 V"]},
+{q:"Explain the difference between analogue and digital signals, giving an example of each from an engineering system.",m:3,ms:["An analogue signal varies continuously over a range","A digital signal has only set levels, usually 0 or 1 (off/on)","Examples: analogue — thermistor or 4–20 mA pressure signal; digital — limit switch, push button, encoder pulse"]},
+{q:"A press must only operate when the guard is closed (A) AND both hand buttons are pressed (B). Explain why an AND gate is used and give its output for each input combination.",m:4,ms:["The press must only run when both conditions are true, which is AND logic","A=0, B=0 → 0; A=0, B=1 → 0","A=1, B=0 → 0","A=1, B=1 → 1, so the operator's hands and the guard are both safe before the press moves"]}
+],
+9:[
+{q:"Name the three main stages of a PLC scan cycle, in order.",m:3,ms:["Read (scan) the inputs","Execute the program","Update (write) the outputs"]},
+{q:"State two advantages of pneumatic systems compared with hydraulic systems.",m:2,ms:["Air is clean — leaks don't contaminate products (good for food/pharma)","Fast operation","Cheaper components / air is free and exhaust goes to atmosphere","Safer in explosive or fire-risk areas"]},
+{q:"Explain why emergency stop circuits should be hard-wired rather than relying only on the PLC program.",m:3,ms:["A PLC fault, crash or programming error could stop the E-stop from working","Hard-wired (safety relay / contactor) circuits remove power directly, independent of software","NC contacts mean a broken wire also stops the machine — fail-safe; it meets machinery safety standards"]},
+{q:"Describe how a ladder logic latching (seal-in) circuit starts and stops a conveyor motor.",m:4,ms:["START (normally open) and STOP contacts are in series with the motor output coil","When START is pressed the coil is energised","A contact from the motor output is wired in parallel with START, so the rung stays true when START is released (latch)","Pressing STOP breaks the rung, the coil drops out and the latch is released"]}
+],
+10:[
+{q:"Explain the difference between open-loop and closed-loop control, giving an example of each.",m:4,ms:["Open-loop: no feedback — the output is not measured","Example: a toaster or fixed-time washing cycle","Closed-loop: the output is measured by a sensor and compared with the setpoint; the error adjusts the output","Example: a thermostat-controlled oven, cruise control or CNC axis with encoder"]},
+{q:"State a suitable sensor for (a) detecting a steel part on a conveyor and (b) measuring the temperature of an oven at 600 °C.",m:2,ms:["(a) Inductive proximity sensor","(b) Thermocouple (e.g. type K)"]},
+{q:"Explain the role of integral action in a PID controller.",m:3,ms:["Proportional action alone often leaves a small steady-state error (offset)","Integral action adds up the error over time","It keeps increasing the output until the error is removed, so the process reaches the setpoint (too much can cause overshoot/oscillation)"]},
+{q:"Explain why industrial sensors often use a 4–20 mA signal rather than 0–20 mA.",m:2,ms:["The 'live zero' (4 mA) means a reading of 0 mA shows a fault such as a broken wire","Current signals are less affected by electrical noise and cable length"]}
+],
+11:[
+{q:"State two benefits to a company of achieving ISO 9001 certification.",m:2,ms:["Customers trust the company / can win contracts that require ISO 9001","Consistent processes reduce errors, scrap and cost","Encourages continuous improvement"]},
+{q:"Explain how a control chart helps prevent defective parts being made.",m:3,ms:["Sample measurements are plotted over time against upper and lower control limits","Trends or points near/outside the limits show the process is drifting","The operator can adjust or stop the process before parts go out of tolerance"]},
+{q:"A process makes parts to 50.00 ± 0.06 mm. Its standard deviation is 0.01 mm. Calculate the process capability index Cp.",m:3,calc:{ans:2,tol:0.01,unit:""},ms:["Tolerance band = USL − LSL = 50.06 − 49.94 = 0.12 mm","Cp = tolerance ÷ 6σ = 0.12 ÷ (6 × 0.01)","Cp = 2.0 — the process is very capable"]},
+{q:"Explain why standard operating procedures must be version-controlled and regularly reviewed.",m:3,ms:["So everyone works to the current, approved method — old copies could cause errors or accidents","Processes, equipment and regulations change, so SOPs must be updated","Reviews capture improvements and lessons learned; audits can check the right version is in use"]}
+],
+12:[
+{q:"Name two sets of regulations that apply when a crane is used to lift a gearbox in a workshop.",m:2,ms:["LOLER 1998","PUWER 1998","Management of Health and Safety at Work Regulations 1999 (risk assessment)","HASAWA 1974 (general duties)"]},
+{q:"Explain the difference between a hazard and a risk, using a workshop example.",m:3,ms:["A hazard is something with the potential to cause harm","Risk is the likelihood that the harm will happen combined with how severe it would be","Example: an unguarded rotating chuck is a hazard; the risk is high if operators work close to it without a guard"]},
+{q:"Apply the hierarchy of control to reduce operators' exposure to welding fumes.",m:4,ms:["Eliminate/substitute: use a joining method or consumable that produces less fume (e.g. mechanical fixing, low-fume wire)","Engineering control: local exhaust ventilation (LEV) / on-torch extraction","Administrative: limit exposure time, training, COSHH assessment, health surveillance","PPE as last resort: powered air-purifying respirator / welding helmet with air supply"]},
+{q:"Explain the purpose of lock-out/tag-out (LOTO) before maintenance work.",m:3,ms:["Isolates all energy sources (electrical, pneumatic, hydraulic, stored energy)","A personal padlock means the machine cannot be restarted while someone is working on it","The tag identifies who is working and why; isolation is tested before work starts"]}
+],
+13:[
+{q:"Define the terms fixed cost and variable cost.",m:2,ms:["Fixed cost: does not change with the level of output (e.g. rent, insurance)","Variable cost: changes in proportion to output (e.g. raw materials per part)"]},
+{q:"Fixed costs are £36 000. Each product sells for £45 and has a variable cost of £27. Calculate the break-even point (units).",m:3,calc:{ans:2000,tol:0,unit:"units"},ms:["Contribution per unit = 45 − 27 = £18","Break-even = fixed costs ÷ contribution = 36 000 ÷ 18","= 2000 units"]},
+{q:"Explain why cash-flow forecasting is important for a small engineering company.",m:3,ms:["It predicts when money comes in and goes out each month","It shows periods when the business may not have enough cash to pay wages, suppliers or bills","The firm can plan ahead, e.g. arrange an overdraft or chase late payments — a profitable firm can still fail if it runs out of cash"]},
+{q:"A machine costs £60 000 and will be worth £12 000 after 6 years. Calculate the annual straight-line depreciation (£).",m:3,calc:{ans:8000,tol:0.5,unit:"£"},ms:["Total depreciation = 60 000 − 12 000 = £48 000","Spread equally over 6 years","= £8000 per year"]}
+],
+14:[
+{q:"State the three Engineering Council professional registration titles for engineers.",m:3,ms:["Engineering Technician (EngTech)","Incorporated Engineer (IEng)","Chartered Engineer (CEng)"]},
+{q:"Explain two ways continuous professional development (CPD) benefits both an engineering technician and their employer.",m:4,ms:["Keeps skills up to date with new technology and regulations…","…so the employer has a more competent, productive and safer workforce","Supports progression towards professional registration / promotion…","…and helps the employer retain staff and win work that needs qualified people"]},
+{q:"Explain how fatigue (tiredness) can lead to errors during maintenance work and how the risk can be managed.",m:4,ms:["Tiredness slows reaction times and reduces concentration","Steps can be missed (lapses) or wrong actions taken (slips), e.g. a bolt left untorqued","Manage by limiting shift lengths / planning rest breaks / rotating tasks","Use checklists and independent inspection of critical tasks"]},
+{q:"Explain why confidentiality is important when handling a customer's design drawings.",m:2,ms:["Drawings are the customer's intellectual property and may be commercially sensitive","Sharing them could break contracts or data rules and damage trust / the business's reputation"]}
+],
+15:[
+{q:"State two disadvantages of holding too much stock.",m:2,ms:["Cash is tied up that could be used elsewhere","Storage space and costs (insurance, handling)","Risk of damage, deterioration or items becoming obsolete"]},
+{q:"Daily usage is 120 units, supplier lead time is 6 days and buffer stock is 300 units. Calculate the re-order level.",m:2,calc:{ans:1020,tol:0,unit:"units"},ms:["Re-order level = (usage × lead time) + buffer = (120 × 6) + 300","= 1020 units"]},
+{q:"A car-component supplier is considering just-in-time (JIT) stock control. Explain one advantage and one risk.",m:4,ms:["Advantage: very low stock levels…","…so less cash tied up and less storage space needed","Risk: relies on suppliers delivering exactly on time…","…a late delivery or supply-chain disruption can stop production"]},
+{q:"Explain the purpose of an asset register in an engineering company.",m:3,ms:["Records every asset with an ID, location, value and purchase date","Tracks maintenance, calibration and depreciation history","Supports planning replacements, insurance, audits and preventing loss or theft"]}
+],
+16:[
+{q:"Name the five stages of 5S.",m:5,ms:["Sort","Set in order","Shine","Standardise","Sustain"]},
+{q:"A machine has availability 85%, performance 92% and quality 97%. Calculate its overall equipment effectiveness (OEE) to 1 decimal place (%).",m:3,calc:{ans:75.9,tol:0.1,unit:"%"},ms:["OEE = availability × performance × quality","= 0.85 × 0.92 × 0.97 = 0.7585","= 75.9%"]},
+{q:"Explain how poka-yoke can reduce defects, giving an example.",m:3,ms:["Poka-yoke means mistake-proofing the process","It makes it impossible to do the task wrong, or shows the error immediately","Example: a jig that only accepts the part the right way round / connector that fits one way / sensor that stops the line if a part is missing"]},
+{q:"Explain how a value stream map helps a team identify waste.",m:3,ms:["It shows every step in the process from order to delivery, with times","It separates value-adding time from non-value-adding time (waiting, transport, inventory)","The team can see where the biggest waste/bottlenecks are and target improvements"]}
+],
+17:[
+{q:"State two purposes of a Gantt chart in a project.",m:2,ms:["Shows tasks and their durations against a timeline","Shows dependencies / milestones / who is responsible","Used to track progress against the plan"]},
+{q:"A project network has three paths of 14, 17 and 16 days. State the minimum project duration and calculate the float on the 14-day path (days).",m:3,calc:{ans:3,tol:0,unit:"days (float)"},ms:["The critical path is the longest path","Minimum duration = 17 days","Float on the 14-day path = 17 − 14 = 3 days"]},
+{q:"Explain the different roles of the project sponsor and the project manager.",m:4,ms:["Sponsor: owns the business case and provides the funding/resources","Sponsor: makes key decisions and champions the project at senior level","Project manager: plans, organises and controls the project day to day","Project manager: manages the team, risks, budget and reports progress to the sponsor"]},
+{q:"Explain why a risk register is used and what information it records.",m:3,ms:["Identifies risks early so they can be planned for rather than reacted to","Records each risk's likelihood and impact (rating)","Records the owner and the mitigation/response, and is reviewed regularly"]}
+]
+};
+
+const EXTENDED = [
+{set:1, units:"6, 5", q:"A small manufacturer of mountain-bike frames is choosing between three materials for a new frame: aluminium alloy (6061-T6), carbon-fibre reinforced polymer (CFRP) and alloy steel (4130 chromoly). Evaluate the suitability of each material for the frame. In your answer, consider material properties, manufacturing and joining processes, likely failure modes and cost.", ms:[
+"Aluminium: low density, good strength-to-weight, corrosion resistant (oxide layer); welded (TIG) then needs heat treatment to restore T6 strength; no fatigue limit so frames are made thicker; moderate cost",
+"CFRP: highest stiffness-to-weight, can tailor fibre direction; moulded/laid-up so complex shapes possible; brittle under impact — damage can be hidden inside layers; expensive, labour-intensive and hard to recycle",
+"Steel 4130: highest density but very tough and ductile; has a fatigue (endurance) limit; easy to weld/braze and repair; needs paint/plating to prevent corrosion; low material cost",
+"Failure modes: fatigue at welds/joints, impact damage, corrosion — link each to the material",
+"Judgement linked to context: e.g. CFRP for premium race frames, aluminium for mid-range volume production, steel for durable/repairable or low-cost frames",
+"A justified conclusion/recommendation for this small manufacturer (e.g. aluminium balances cost, weight and ease of batch production)"]},
+{set:1, units:"7, 5, 8", q:"A factory conveyor is driven by a 7.5 kW motor through a worm gearbox and runs at full speed all day, even when there is nothing on the belt. The manager wants to reduce its energy use. Analyse the options available and evaluate which would give the greatest benefit.", ms:[
+"Worm gearboxes can have low efficiency (often 50–80%); replacing with a helical/bevel gearbox (95%+) reduces losses as heat",
+"A variable speed drive (inverter) lets speed match demand; power falls significantly at lower speed",
+"Sensors (photo-eye) and PLC logic to stop or slow the conveyor when empty eliminate wasted running time",
+"Reducing friction: correct belt tension, alignment, maintained bearings and lubrication",
+"Using a high-efficiency (IE3/IE4) motor sized correctly — an oversized motor runs inefficiently",
+"Evaluation: compare cost, payback and disruption; e.g. stop/start control and VSD give the largest saving because the conveyor is often empty; justified conclusion"]},
+{set:1, units:"6, 5", q:"Steel bolts holding a walkway on an offshore platform are failing after only two years in service. Analyse the likely causes of failure and evaluate methods that could be used to prevent it happening again.", ms:[
+"Corrosion: salt water and oxygen cause rapid oxidation of carbon steel; crevices and threads trap moisture",
+"Galvanic corrosion if bolts are in contact with a different metal (e.g. aluminium or stainless walkway)",
+"Fatigue: waves, wind and foot traffic create cyclic loads; corrosion pits act as stress raisers (corrosion fatigue)",
+"Prevention: hot-dip galvanising (sacrificial zinc), coatings, or change to a corrosion-resistant grade (e.g. duplex stainless) with insulating washers",
+"Design/maintenance: correct preload/torque, regular NDT or visual inspection, planned replacement",
+"Evaluation of cost vs life and safety on an offshore site, with a justified recommendation"]},
+{set:2, units:"9, 12, 10", q:"A college workshop plans to install an automated pneumatic press controlled by a PLC for learners to use. Evaluate the safety measures needed to protect users of the press.", ms:[
+"Risk assessment (MHSWR) and compliance with PUWER: suitable, maintained equipment and trained users",
+"Fixed or interlocked guards so the press cannot operate with the guard open; light curtains as an alternative",
+"Two-hand control so both hands are clear of the tool; hard-wired emergency stops and safety relays independent of the PLC",
+"Pneumatic safety: dump valve to exhaust stored air, pressure regulator, lockable isolation (LOTO) for maintenance",
+"Administrative: SOPs, supervision, signage, permits and training records; PPE (eye protection) as last resort",
+"Evaluation: prioritise engineering controls over training/PPE because learners are inexperienced; justified conclusion"]},
+{set:2, units:"11, 16, 15", q:"A small factory making machined parts has seen scrap rates rise to 6% and a quarter of deliveries are late. Evaluate how quality management and lean improvement tools could be used to improve its performance.", ms:[
+"Root cause analysis (5 Whys, fishbone, Pareto) to find the main causes of scrap rather than guessing",
+"SPC/control charts and capability checks to detect drift before defects are made; calibration of gauges",
+"Poka-yoke and updated SOPs/training to stop repeat errors",
+"Lean: value stream mapping to find waiting, transport and inventory waste causing late deliveries; 5S to organise work areas; SMED to cut changeover time",
+"TPM/OEE to reduce breakdowns; Kanban/pull scheduling to improve flow",
+"Evaluation: compare cost, time and staff involvement; Kaizen/PDCA for sustained improvement; justified conclusion on priorities"]},
+{set:2, units:"13, 17, 2", q:"A company is deciding whether to invest £250 000 in a robotic welding cell to replace manual welding. Evaluate the business case for the investment and how the project to install it should be managed.", ms:[
+"Benefits: higher consistent quality, faster cycle time, lower labour cost per part, better welder safety (fume, arc)",
+"Costs/risks: capital cost, downtime during installation, programming and maintenance skills, depreciation, possible staff resistance",
+"Financial analysis: payback period / return on investment / break-even using labour savings and extra output",
+"Project management: clear SMART objectives, sponsor and project manager roles, Gantt chart and critical path, risk register, budget control",
+"Stakeholders: consult and retrain welders, health and safety (guarding, risk assessment), customer approval of new weld procedure",
+"Evaluation: whether volumes justify the cost; justified recommendation (e.g. proceed if volume is high and payback is under ~3 years)"]}
+];
+const BANDS = [
+["Band 4 (10–12)","Detailed, well-structured answer in continuous prose. Analysis and evaluation are thorough and clearly linked to the context, with a well-justified conclusion."],
+["Band 3 (7–9)","Good range of relevant points with some depth. Analysis and evaluation are mostly linked to the context; the conclusion is supported."],
+["Band 2 (4–6)","Some relevant points, but explanation is limited or general. Little evaluation; weak or missing conclusion."],
+["Band 1 (1–3)","A few basic points, mostly descriptive or in a list, with little link to the context."]
+];
+const PAST_PAPERS_URL = "https://www.cityandguilds.com/qualifications-and-apprenticeships/engineering/mechanical/8730-t-level-technical-qualification-in-engineering-and-manufacturing-core";
+
 
 </script>
 <script>
@@ -985,6 +1147,7 @@ function recordAttempt(kind, unit, score, total, scope){
   const pct = Math.round(score/total*100);
   S.attempts = (S.attempts || []).concat([{k:kind, u:unit, s:score, t:total, scope:scope||null, at:new Date().toISOString()}]).slice(-300);
   if (kind === 'u') { S.best = S.best || {}; if (S.best[unit] == null || pct > S.best[unit]) S.best[unit] = pct; }
+  if (kind === 'x' && unit) { S.exam = S.exam || {}; if (S.exam[unit] == null || pct > S.exam[unit]) S.exam[unit] = pct; }
   persist();
 }
 function markDone(n, key){ S.acts = S.acts || {}; const a = S.acts[n] || []; if (!a.includes(key)) { S.acts[n] = a.concat([key]); persist(); } }
@@ -1031,10 +1194,12 @@ function route(){
   document.querySelector('header.top nav').style.visibility = needsRegister() ? 'hidden' : 'visible';
   if (needsRegister() && h !== 'teacher') return renderRegister(false);
   document.querySelectorAll('[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === h || (h.startsWith('unit') && b.dataset.go==='home')));
-  const m = h.match(/^unit-(\d+)(?:-(learn|activities|test))?$/);
+  const m = h.match(/^unit-(\d+)(?:-(learn|activities|test|exam))?$/);
   if (m) renderUnit(+m[1], m[2] || 'learn');
   else if (h === 'mock') renderMockSetup();
   else if (h === 'glossary') renderGlossary();
+  else if (h === 'exam') renderExamHub();
+  else if (h.startsWith('exam-')) renderExamPaper(h.slice(5));
   else if (h === 'my-results') renderMyResults();
   else if (h === 'profile') renderRegister(true);
   else if (h === 'teacher' && isTeacher) renderTeacher();
@@ -1098,6 +1263,7 @@ function renderHome(){
         <div class="meta"><span>${actsOf(u.n).length}/${actCount(u)} activities</span><span>Best test: ${b==null?'—':b+'%'}</span></div>
       </button>`; }).join('')}
     <button class="ucard special" data-go2="mock"><span class="num">MOCK</span><h3>Full mock exam</h3><div class="meta"><span>Mixed questions from all 17 units, timed</span></div></button>
+    <button class="ucard special" data-go2="exam"><span class="num">EXAM</span><h3>Exam practice</h3><div class="meta"><span>Exam-style written questions, 12-mark extended answers and practice papers</span></div></button>
     <button class="ucard special" data-go2="my-results"><span class="num">ME</span><h3>My results</h3><div class="meta"><span>Every test you've taken, with dates and scores</span></div></button>
     <button class="ucard special" data-go2="glossary"><span class="num">A–Z</span><h3>Glossary of key terms</h3><div class="meta"><span>${UNITS.reduce((s,u)=>s+u.terms.length,0)} terms, searchable</span></div></button>
   </div>`;
@@ -1116,6 +1282,7 @@ function renderUnit(n, tab){
     <button data-t="learn">Learn</button>
     <button data-t="activities">Activities (${actCount(u)})</button>
     <button data-t="test">Mock test</button>
+    <button data-t="exam">Exam questions</button>
   </div>
   <div id="pane"></div>
   <div class="row" style="justify-content:space-between;margin-top:26px">
@@ -1128,6 +1295,7 @@ function renderUnit(n, tab){
   const pane = $('#pane');
   if (tab === 'learn') renderLearn(u, pane);
   else if (tab === 'activities') renderActivities(u, pane);
+  else if (tab === 'exam') renderUnitExam(u, pane);
   else renderUnitTest(u, pane);
 }
 
@@ -1337,7 +1505,7 @@ function renderMockSetup(){
 }
 
 // ================= my results =================
-function attemptLabel(a){ return a.k === 'u' ? `Unit ${a.u} test` : `Mock exam${a.scope ? ' ('+a.scope+')' : ''}`; }
+function attemptLabel(a){ return a.k === 'u' ? `Unit ${a.u} test` : a.k === 'x' ? `Exam questions – ${a.scope||''} (self-marked)` : `Mock exam${a.scope ? ' ('+a.scope+')' : ''}`; }
 function pctClass(p){ return p==null ? '' : p>=70 ? 'c-hi' : p>=50 ? 'c-mid' : 'c-lo'; }
 function resultsDetail(R){
   const at = (R.attempts||[]).slice().reverse();
@@ -1351,9 +1519,9 @@ function resultsDetail(R){
       <div><b>${mocks.length}</b><span>mock exams taken</span></div>
       <div><b>${bestMock==null?'—':bestMock+'%'}</b><span>best mock score</span></div></div>
     <h2>Unit by unit</h2>
-    <div class="tablewrap"><table class="res"><tr><th>Unit</th><th>Best test score</th><th>Tests taken</th><th>Activities done</th></tr>
+    <div class="tablewrap"><table class="res"><tr><th>Unit</th><th>Best test score</th><th>Tests taken</th><th>Best exam questions</th><th>Activities done</th></tr>
     ${UNITS.map(u => { const b = R.best && R.best[u.n]; const n = (R.attempts||[]).filter(a=>a.k==='u'&&a.u===u.n).length; const ac = ((R.acts||{})[u.n]||[]).length;
-      return `<tr><td>${u.n}. ${esc(u.title)}</td><td class="${pctClass(b)}">${b==null?'—':b+'%'}</td><td>${n}</td><td>${ac}/${actCount(u)}</td></tr>`; }).join('')}
+      return `<tr><td>${u.n}. ${esc(u.title)}</td><td class="${pctClass(b)}">${b==null?'—':b+'%'}</td><td>${n}</td><td class="${pctClass(R.exam&&R.exam[u.n])}">${R.exam&&R.exam[u.n]!=null?R.exam[u.n]+'%':'—'}</td><td>${ac}/${actCount(u)}</td></tr>`; }).join('')}
     </table></div>
     <h2>Test history</h2>
     ${at.length ? `<div class="tablewrap"><table class="res"><tr><th>Date</th><th>Test</th><th>Score</th><th>%</th></tr>
@@ -1422,6 +1590,119 @@ function showStudent(id){
     try { await db.doc('results/' + id).delete(); d.innerHTML = ''; } catch(err) { e.target.textContent = 'Could not delete (' + err.code + ')'; }
   };
   d.scrollIntoView({behavior:'smooth'});
+}
+
+// ================= exam-style practice =================
+const EXAM_TIPS = `<ul class="tips">
+  <li><b>Look at the marks.</b> 2 marks usually means two points; for "explain", make a point and then say <i>why</i> or <i>so what</i>.</li>
+  <li><b>Calculations:</b> write the formula, show every step, give units and round as the question asks (e.g. 3 significant figures). You get method marks even if the final answer is wrong.</li>
+  <li><b>12-mark answers:</b> plan first, write in full paragraphs (not bullet points), link every point to the scenario, weigh up options and finish with a justified conclusion.</li>
+  <li>Stuck? Move on and come back. Read the question twice and underline the context.</li></ul>`;
+function examQuestionHTML(q, i){
+  return `<div class="qq exq" data-i="${i}"><h4>${i+1}. ${esc(q.q)} <span class="tag">${q.m} mark${q.m>1?'s':''}</span>${q.unit?` <span class="src" style="display:inline">Unit ${q.unit}</span>`:''}</h4>
+    <textarea rows="${q.m>=4?5:3}" placeholder="Write your answer here…" aria-label="Your answer"></textarea>
+    ${q.calc?`<div class="row" style="margin-top:6px">Final answer: <input class="calcin" inputmode="decimal" style="font:inherit;width:120px;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px"> ${esc(q.calc.unit)} <button class="btn alt" data-chk>Check number</button><span class="fb" data-cf></span></div>`:''}
+    <div class="row"><button class="btn alt" data-rev>Show mark scheme</button><span class="fb" data-sc></span></div>
+    <div data-ms hidden><p class="hint" style="margin:10px 0 0">Tick each point your answer includes — 1 mark each, up to ${q.m}.</p>
+    <ul class="model">${q.ms.map(p=>`<li><label><input type="checkbox"> <span>${esc(p)}</span></label></li>`).join('')}</ul></div></div>`;
+}
+function extendedHTML(x, i){
+  return `<div class="qq exq ext" data-i="${i}"><h4>${i+1}. ${esc(x.q)} <span class="tag">12 marks</span> <span class="src" style="display:inline">Units ${esc(x.units)}</span></h4>
+    <p class="hint">Extended response — plan first, then write in paragraphs with a justified conclusion.</p>
+    <textarea rows="10" placeholder="Plan here, then write your answer in full paragraphs…" aria-label="Your answer"></textarea>
+    <div class="row"><span class="fb" data-wc style="color:var(--muted);font-weight:400">0 words</span><button class="btn alt" data-rev>Show marking guide</button><span class="fb" data-sc></span></div>
+    <div data-ms hidden>
+      <p style="margin:12px 0 4px"><b>Indicative content</b> — a strong answer covers points like these, explained and linked to the scenario:</p>
+      <ul>${x.ms.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
+      <p style="margin:12px 0 4px"><b>Mark bands</b></p>
+      <div class="tablewrap"><table class="res">${BANDS.map(b=>`<tr><td style="white-space:normal;text-align:left"><b>${b[0]}</b></td><td style="white-space:normal;text-align:left">${b[1]}</td></tr>`).join('')}</table></div>
+      <label class="row">Choose the band that matches your answer, then your mark: <select data-mk style="font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)"><option value="">—</option>${Array.from({length:13},(_,k)=>`<option>${k}</option>`).join('')}</select> / 12</label>
+    </div></div>`;
+}
+// wires a list of questions; calls onChange(total got, all revealed?)
+function wireExam(root, items, onChange){
+  const got = items.map(()=>null);
+  root.querySelectorAll('.exq').forEach(el => {
+    const i = +el.dataset.i, q = items[i];
+    const ta = el.querySelector('textarea'), wc = el.querySelector('[data-wc]');
+    if (wc) ta.oninput = () => { const n = (ta.value.trim().match(/\S+/g)||[]).length; wc.textContent = n + ' words'; };
+    el.querySelector('[data-rev]').onclick = () => {
+      el.querySelector('[data-ms]').hidden = false;
+      if (!q.ext) { got[i] = 0; el.querySelector('[data-sc]').className='fb ok'; el.querySelector('[data-sc]').textContent = `0/${q.m}`; onChange(got); }
+    };
+    el.querySelectorAll('[data-ms] input[type=checkbox]').forEach(c => c.onchange = () => {
+      got[i] = Math.min(el.querySelectorAll('[data-ms] input:checked').length, q.m);
+      const sc = el.querySelector('[data-sc]'); sc.className='fb ok'; sc.textContent = `${got[i]}/${q.m}`; onChange(got);
+    });
+    const mk = el.querySelector('[data-mk]');
+    if (mk) mk.onchange = () => { got[i] = mk.value === '' ? null : +mk.value; const sc = el.querySelector('[data-sc]'); sc.className='fb ok'; sc.textContent = mk.value===''?'':`${mk.value}/12`; onChange(got); };
+    const chk = el.querySelector('[data-chk]');
+    if (chk) chk.onclick = () => {
+      const inp = el.querySelector('.calcin'), cf = el.querySelector('[data-cf]');
+      const v = parseFloat(inp.value.replace(/[,\s£%]/g,'').replace('−','-'));
+      if (isNaN(v)) { cf.className='fb bad'; cf.textContent='Enter a number'; return; }
+      const ok = Math.abs(v - q.calc.ans) <= (q.calc.tol||0) + 1e-9;
+      cf.className = 'fb ' + (ok?'ok':'bad'); cf.textContent = ok ? 'Correct final answer' : 'Not the expected answer — check your working';
+    };
+  });
+}
+function examFooter(id){ return `<div class="panel" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><b id="${id}-tot">Marked: 0 / 0</b><span style="flex:1"></span><button class="btn orange" id="${id}-save" disabled>Save my score</button><span class="fb" id="${id}-msg"></span></div>`; }
+function wireFooter(root, id, items, scope, unit){
+  const total = items.reduce((s,q)=>s+q.m,0);
+  let last = null;
+  const upd = got => {
+    last = got; const marked = got.filter(g=>g!=null).length, sum = got.reduce((s,g)=>s+(g||0),0);
+    root.querySelector('#'+id+'-tot').textContent = `Marked ${marked}/${items.length} questions — score so far: ${sum} / ${total}`;
+    root.querySelector('#'+id+'-save').disabled = marked === 0;
+  };
+  root.querySelector('#'+id+'-save').onclick = () => {
+    const sum = last.reduce((s,g)=>s+(g||0),0);
+    recordAttempt('x', unit||null, sum, total, scope);
+    const m = root.querySelector('#'+id+'-msg'); m.className='fb ok'; m.textContent = `Saved: ${sum}/${total} (${Math.round(sum/total*100)}%) — see My results.`;
+  };
+  return upd;
+}
+function renderUnitExam(u, pane){
+  const items = (EXAM[u.n]||[]).map(q=>({...q}));
+  const ext = EXTENDED.filter(x => x.units.split(',').map(s=>+s.trim())[0] === u.n).map(x=>({...x, m:12, ext:true}));
+  const all = items.concat(ext);
+  pane.innerHTML = `<div class="panel" style="margin-bottom:14px"><b>Exam-style questions</b> — written in the style of the T Level core exam papers (recall, explain, calculate${ext.length?', extended response':''}). Write your answer, then open the mark scheme and tick the points you got.
+    <details style="margin-top:8px"><summary><b>Exam tips</b></summary>${EXAM_TIPS}</details></div>
+    <div id="exl">${all.map((q,i)=> q.ext ? extendedHTML(q,i) : examQuestionHTML(q,i)).join('')}</div>${examFooter('ue')}`;
+  wireExam(pane, all, wireFooter(pane, 'ue', all, `Unit ${u.n}`, u.n));
+}
+function renderExamHub(){
+  const p1 = [4,5,6,7,8], p2 = [1,2,3,9,10,11,12,13,14,15,16,17];
+  app.innerHTML = banners() + `<h1 style="margin-bottom:4px">Exam practice</h1>
+  <p style="color:var(--muted);margin-top:0">Practise answering questions the way the real T Level core exams ask them: written answers marked against a mark scheme. These are original practice questions written in the exam style — not copies of real papers.</p>
+  <div class="grid" style="margin-bottom:18px">
+    <button class="ucard special" data-p="A"><span class="num">PAPER A</span><h3>Practice paper A — maths &amp; science focus</h3><div class="meta"><span>Units ${p1.join(', ')} · ${p1.reduce((s,n)=>s+EXAM[n].length,0)} questions + 3 extended answers</span></div></button>
+    <button class="ucard special" data-p="B"><span class="num">PAPER B</span><h3>Practice paper B — engineering in context</h3><div class="meta"><span>Units ${p2.join(', ')} · 24 questions + 3 extended answers (new mix each time)</span></div></button>
+    <button class="ucard special" data-p="X"><span class="num">12 MARKS</span><h3>Extended response practice</h3><div class="meta"><span>All ${EXTENDED.length} twelve-mark questions with marking guides</span></div></button>
+  </div>
+  <div class="panel" style="margin-bottom:18px"><h2 style="margin-top:0">How to answer exam questions</h2>${EXAM_TIPS}</div>
+  <div class="panel" style="margin-bottom:18px"><h2 style="margin-top:0">Exam-style questions by unit</h2><div class="row" style="margin-top:0">${UNITS.map(u=>`<button class="btn alt" data-ue="${u.n}">Unit ${u.n}${S.exam&&S.exam[u.n]!=null?' · '+S.exam[u.n]+'%':''}</button>`).join('')}</div></div>
+  <div class="panel"><h2 style="margin-top:0">Real past papers</h2><p style="margin:0">City &amp; Guilds publishes official past papers, mark schemes and sample papers for the core exams (qualification 8730). Ask your tutor, or find them on the <a href="${PAST_PAPERS_URL}" target="_blank" rel="noopener">City &amp; Guilds 8730 page</a> under assessment materials.</p></div>`;
+  app.querySelectorAll('[data-p]').forEach(b => b.onclick = () => go('exam-'+b.dataset.p));
+  app.querySelectorAll('[data-ue]').forEach(b => b.onclick = () => go('unit-'+b.dataset.ue+'-exam'));
+}
+function renderExamPaper(id){
+  let title, items;
+  const tag = n => q => ({...q, unit:n});
+  if (id === 'A') { title = 'Practice paper A — maths & science focus'; items = [4,5,6,7,8].flatMap(n => EXAM[n].map(tag(n))).concat(EXTENDED.filter(x=>x.set===1).map(x=>({...x,m:12,ext:true}))); }
+  else if (id === 'B') { title = 'Practice paper B — engineering in context'; items = [1,2,3,9,10,11,12,13,14,15,16,17].flatMap(n => { const pick = new Set(shuffle(EXAM[n].map((_,k)=>k)).slice(0,2)); return EXAM[n].filter((_,k)=>pick.has(k)).map(tag(n)); }).concat(EXTENDED.filter(x=>x.set===2).map(x=>({...x,m:12,ext:true}))); }
+  else if (id === 'X') { title = 'Extended response practice (12 marks each)'; items = EXTENDED.map(x=>({...x,m:12,ext:true})); }
+  else return renderExamHub();
+  const total = items.reduce((s,q)=>s+q.m,0);
+  app.innerHTML = banners() + `<button class="back" id="bk">← Exam practice</button><h1 style="margin:4px 0">${esc(title)}</h1>
+    <div class="sticky"><span class="fb">${items.length} questions · ${total} marks</span><span class="timer" id="tm" hidden></span><span style="flex:1"></span>
+    <select id="tsel" style="font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)"><option value="0">No timer</option><option value="60">60 min</option><option value="90">90 min</option><option value="150">2 h 30 min (real exam length)</option></select><button class="btn alt" id="tgo">Start timer</button></div>
+    <div class="panel" style="margin-bottom:12px"><details><summary><b>Exam tips</b></summary>${EXAM_TIPS}</details></div>
+    <div id="exl">${items.map((q,i)=> q.ext ? extendedHTML(q,i) : examQuestionHTML(q,i)).join('')}</div>${examFooter('pp')}`;
+  $('#bk').onclick = () => go('exam');
+  $('#tgo').onclick = () => { const mins = +$('#tsel').value; clearInterval(timerId); const tm = $('#tm'); if (!mins) { tm.hidden = true; return; }
+    let s = mins*60; tm.hidden = false; const tick = () => { tm.textContent = `⏱ ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; if (s--<=0) { clearInterval(timerId); tm.textContent = "⏱ Time's up — finish your sentence and mark your answers"; } }; tick(); timerId = setInterval(tick, 1000); };
+  wireExam(app, items, wireFooter(app, 'pp', items, title.split(' — ')[0], null));
 }
 
 // ================= glossary =================
