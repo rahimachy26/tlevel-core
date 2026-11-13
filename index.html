@@ -1028,6 +1028,7 @@ function route(){
   clearInterval(timerId); if (unsub) { unsub(); unsub = null; }
   let h = cur || 'home';
   $('#who').textContent = S && S.name ? `${S.name}${S.group ? ' · ' + S.group : ''}` : '';
+  document.querySelector('header.top nav').style.visibility = needsRegister() ? 'hidden' : 'visible';
   if (needsRegister() && h !== 'teacher') return renderRegister(false);
   document.querySelectorAll('[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === h || (h.startsWith('unit') && b.dataset.go==='home')));
   const m = h.match(/^unit-(\d+)(?:-(learn|activities|test))?$/);
@@ -1057,6 +1058,7 @@ async function renderRegister(editing){
       <label for="rg"><b>Group / class</b></label><input id="rg" list="gl" maxlength="60" placeholder="Choose or type your group" value="${esc(cur.group || '')}">
       <datalist id="gl">${GROUPS.map(g=>`<option value="${esc(g)}">`).join('')}</datalist>
       ${local && (local.attempts||[]).length ? `<label style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><input type="checkbox" id="imp" checked style="width:auto;margin:0"> Bring in ${local.attempts.length} earlier result(s) saved on this device</label>` : ''}
+      ${editing ? '' : '<p class="banner" style="margin:0 0 12px">👉 Type your name, then press <b>Start learning</b> to open the units, tests and activities.</p>'}
       <div class="row"><button class="btn orange" type="submit">${editing ? 'Save details' : 'Start learning'}</button>${editing?'<button class="btn alt" type="button" id="cancel">Cancel</button>':''}<span class="fb bad" id="rerr"></span></div>
     </form></div>`;
   if (editing) $('#cancel').onclick = () => go('my-results');
