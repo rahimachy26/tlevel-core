@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lets a student's saved results come back if they move to a new phone (Android 11 and below). -->
+<full-backup-content />

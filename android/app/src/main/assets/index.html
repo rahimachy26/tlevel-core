@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T Level Engineering Core — Study App</title>
+<style>
+:root{
+  --bg:#f5f3ee; --card:#ffffff; --ink:#1d2433; --muted:#5b6475; --line:#e2ded4;
+  --brand:#0f4c5c; --brand-2:#e36414; --ok:#2a7d4f; --ok-bg:#e3f3e9; --bad:#b3261e; --bad-bg:#fbe7e5;
+  --sel:#fff2c6; --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.55}
+h1,h2,h3,.disp{font-family:"Space Grotesk",system-ui,sans-serif;letter-spacing:-.01em;line-height:1.2}
+button{font:inherit;cursor:pointer}
+a{color:var(--brand)}
+header.top{background:var(--brand);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+header.top .logo{font-family:"Space Grotesk";font-weight:700;font-size:19px;cursor:pointer;display:flex;align-items:center;gap:10px}
+header.top .logo .badge{background:var(--brand-2);border-radius:8px;padding:2px 8px;font-size:14px}
+header.top .sp{flex:1}
+header.top nav button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 14px;margin-left:6px}
+header.top nav button:hover,header.top nav button.on{background:#fff;color:var(--brand)}
+main{max-width:1080px;margin:0 auto;padding:24px 18px 70px}
+.hero{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:22px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.hero h1{margin:0 0 6px;font-size:30px}
+.hero p{margin:0;color:var(--muted)}
+.stat{display:flex;gap:18px;flex-wrap:wrap}
+.stat div{flex:1;min-width:110px}
+.stat b{display:block;font-family:"Space Grotesk";font-size:30px;color:var(--brand)}
+.stat span{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ucard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px;transition:transform .12s,box-shadow .12s;color:var(--ink)}
+.ucard:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,76,92,.12)}
+.ucard .num{font-family:"Space Grotesk";font-weight:700;font-size:13px;color:#fff;background:var(--brand);border-radius:6px;padding:2px 8px;align-self:flex-start}
+.ucard h3{margin:0;font-size:17px}
+.bar{height:7px;background:#ece8de;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+.meta{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+.special{background:linear-gradient(135deg,#0f4c5c,#1b6f80);color:#fff;border:none}
+.special .num{background:var(--brand-2)}
+.special .meta{color:#d6eef2}
+.back{background:none;border:none;color:var(--brand);padding:0;margin-bottom:10px;font-weight:700}
+.uhead h1{margin:4px 0 4px;font-size:28px}
+.uhead p{margin:0 0 14px;color:var(--muted)}
+.tabs{display:flex;gap:6px;border-bottom:2px solid var(--line);margin-bottom:18px;flex-wrap:wrap}
+.tabs button{background:none;border:none;padding:10px 16px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button.on{color:var(--brand);border-color:var(--brand-2)}
+.sections{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;padding:0;list-style:none}
+.sections li{background:#e8f1f3;color:var(--brand);border-radius:999px;padding:4px 12px;font-size:14px}
+.points{margin:0;padding-left:0;list-style:none;counter-reset:p}
+.points li{counter-increment:p;position:relative;padding:10px 0 10px 44px;border-bottom:1px dashed var(--line)}
+.points li::before{content:counter(p);position:absolute;left:0;top:10px;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;font-family:"Space Grotesk";font-weight:700;display:grid;place-items:center;font-size:14px}
+.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.flip{perspective:900px;height:130px;background:none;border:none;padding:0}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:12px;display:grid;place-items:center;text-align:center;border:1px solid var(--line)}
+.flip .f{background:#fff;font-family:"Space Grotesk";font-weight:700;font-size:17px;color:var(--brand)}
+.flip .b{background:var(--brand);color:#fff;transform:rotateY(180deg);font-size:15px}
+.act{margin-bottom:22px}
+.act h3{margin:0 0 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.act .hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+.tag{font-size:12px;background:var(--brand-2);color:#fff;border-radius:6px;padding:2px 8px;font-family:"Atkinson Hyperlegible"}
+.done-tag{font-size:12px;background:var(--ok);color:#fff;border-radius:6px;padding:2px 8px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;text-align:left;color:var(--ink)}
+.chip.sel{background:var(--sel);border-color:#d9a400}
+.chip.ok{background:var(--ok-bg);border-color:var(--ok)}
+.chip.bad{background:var(--bad-bg);border-color:var(--bad)}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:46px;padding:10px;border:2px dashed var(--line);border-radius:12px;margin-bottom:12px;background:#fbfaf7}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.bucket{border:2px solid var(--line);border-radius:12px;padding:10px;min-height:120px;background:#fff;text-align:left;display:flex;flex-direction:column;gap:6px;color:var(--ink)}
+.bucket.ready{border-color:#d9a400;background:#fffbea}
+.bucket h4{margin:0 0 4px;font-family:"Space Grotesk";color:var(--brand)}
+.match{display:grid;grid-template-columns:1fr 1.6fr;gap:10px}
+.match .col{display:flex;flex-direction:column;gap:8px}
+.match .chip.gone{opacity:.45;pointer-events:none}
+.orderlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.orderlist li{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px}
+.orderlist li.ok{background:var(--ok-bg);border-color:var(--ok)}
+.orderlist li.bad{background:var(--bad-bg);border-color:var(--bad)}
+.orderlist li span{flex:1}
+.mini{border:1px solid var(--line);background:#fff;border-radius:8px;width:34px;height:34px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.btn{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-weight:700}
+.btn.alt{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.btn.orange{background:var(--brand-2)}
+.btn:disabled{opacity:.5;cursor:default}
+.fb{font-weight:700}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.calc{display:flex;flex-direction:column;gap:12px}
+.calc .q{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.calc input{font:inherit;width:140px;padding:7px 10px;border:1.5px solid var(--line);border-radius:8px}
+.calc input.ok{border-color:var(--ok);background:var(--ok-bg)} .calc input.bad{border-color:var(--bad);background:var(--bad-bg)}
+.work{margin-top:6px;color:var(--muted);font-size:15px;background:#f4f7f8;border-radius:8px;padding:6px 10px}
+textarea{width:100%;min-height:130px;font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:10px;resize:vertical}
+.model{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+.model label{display:flex;gap:10px;align-items:flex-start;background:#f4f7f8;border-radius:8px;padding:8px 10px;cursor:pointer}
+.quiz .qq{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:12px}
+.quiz .qq h4{margin:0 0 10px;font-family:"Atkinson Hyperlegible";font-size:17px}
+.quiz .qq .src{font-size:12px;color:var(--muted);font-weight:400;display:block;margin-bottom:4px}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;gap:10px;align-items:center;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;text-align:left;color:var(--ink)}
+.opt .l{font-family:"Space Grotesk";font-weight:700;width:24px;height:24px;border-radius:50%;background:#ece8de;display:grid;place-items:center;font-size:13px;flex:none}
+.opt.picked{border-color:var(--brand);background:#e8f1f3}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.explain{margin-top:8px;font-size:15px;color:var(--muted)}
+.score{display:flex;align-items:center;gap:18px;padding:18px;border-radius:var(--radius);background:var(--brand);color:#fff;margin-bottom:16px;flex-wrap:wrap}
+.score b{font-family:"Space Grotesk";font-size:42px}
+.timer{font-family:"Space Grotesk";font-weight:700;background:var(--brand-2);color:#fff;border-radius:10px;padding:6px 14px}
+.sticky{position:sticky;top:64px;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.breakdown{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-bottom:16px}
+.breakdown div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px}
+.search{width:100%;font:inherit;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:14px}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.gloss div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.gloss b{color:var(--brand)} .gloss small{color:var(--muted);display:block}
+.setup label{display:block;margin:8px 0}
+.setup select{font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)}
+.who{font-size:14px;opacity:.9}
+.banner{background:#fff4e5;border:1px solid #f0c38a;border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+.reg{max-width:520px;margin:30px auto}
+.reg input,.reg select{font:inherit;width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;margin:4px 0 12px}
+table.res{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:14px}
+table.res th,table.res td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+table.res th{background:#e8f1f3;color:var(--brand);font-family:"Space Grotesk"}
+table.res td:first-child,table.res th:first-child{text-align:left}
+table.res tr.click{cursor:pointer} table.res tr.click:hover td{background:#fbfaf7}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.c-hi{background:#e3f3e9!important}.c-mid{background:#fff6dc!important}.c-lo{background:#fbe7e5!important}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.toolbar select,.toolbar input{font:inherit;padding:7px 10px;border:1.5px solid var(--line);border-radius:8px}
+.lenpick{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.match{grid-template-columns:1fr}header.top nav{width:100%}header.top nav button{margin:4px 4px 0 0}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo" id="home-link"><span class="badge">T Level</span> Engineering Core</div>
+  <div class="sp"></div>
+  <nav>
+    <button data-go="home">Units</button>
+    <button data-go="mock">Full mock exam</button>
+    <button data-go="glossary">Glossary</button>
+    <button data-go="my-results">My results</button>
+    <button data-go="teacher" id="nav-teacher" hidden>Teacher</button>
+  </nav>
+  <span id="who" class="who"></span>
+</header>
+<main id="app"></main>
+<footer>Original study material written to follow the Engineering &amp; Manufacturing T Level Core (Units 1–17).</footer>
+<script>
+const UNITS = [];
+UNITS.push({
+n:1, title:"Working within the engineering and manufacturing sectors",
+sections:["1.1 Design principles and methodologies","1.2 Maintenance, repair and installation","1.3 Manufacturing, processing and control"],
+overview:"How engineers design products, how they are made at different scales, and how equipment is kept running safely and efficiently.",
+points:[
+"A linear design process moves through fixed stages in order; an iterative process loops back to test, evaluate and refine ideas repeatedly.",
+"User-centred design puts the needs of the end user at the centre; inclusive design aims to work for as many people as possible; sustainable design reduces environmental impact across the product's life.",
+"Main process families: wasting (removing material, e.g. milling, turning, drilling), shaping (e.g. casting, moulding), forming (e.g. bending, forging, pressing), joining (e.g. welding, bolting, adhesives) and additive manufacturing (3D printing).",
+"Scales of production: one-off (bespoke), batch (set quantity), mass (large volumes, often on a line) and continuous (runs 24/7, e.g. chemicals, steel).",
+"Planned preventive maintenance is done on a schedule; predictive (condition-based) maintenance uses monitoring data such as vibration or temperature; reactive (corrective) maintenance happens after a breakdown.",
+"Good maintenance reduces unplanned downtime, extends equipment life, keeps people safe and cuts waste and energy use.",
+"Automation and robotics give repeatability, speed and safety for dangerous or repetitive tasks, but need high capital investment and skilled maintenance staff.",
+"Quality assurance (QA) prevents defects by controlling the process; quality control (QC) finds defects by inspecting the product."
+],
+terms:[["Iterative design","A cyclic process of designing, testing and refining until the solution meets the brief"],["Wasting","Removing material to create a shape, e.g. turning or milling"],["Forming","Changing shape without removing material, e.g. bending or forging"],["Additive manufacturing","Building a part layer by layer from a CAD model"],["Batch production","Making a fixed quantity of identical items before switching to another product"],["Predictive maintenance","Servicing equipment based on monitored condition data"],["Reactive maintenance","Repairing equipment only after it has failed"],["Prototype","An early working model used to test a design"]],
+activities:[
+{type:"sort",title:"Sort the processes into their families",cats:["Wasting","Forming","Joining","Additive"],items:[["CNC milling",0],["Drilling",0],["Turning on a lathe",0],["Press-brake bending",1],["Drop forging",1],["Deep drawing",1],["MIG welding",2],["Riveting",2],["Soldering",2],["Fused deposition modelling (FDM)",3],["Selective laser sintering (SLS)",3]]},
+{type:"sort",title:"Which scale of production?",cats:["One-off","Batch","Mass","Continuous"],items:[["A replacement part for a vintage steam engine",0],["A bespoke bridge",0],["500 brackets for a local contractor",1],["Seasonal bakery products",1],["Family hatchback cars",2],["Smartphones",2],["Oil refining",3],["Float glass manufacture",3]]},
+{type:"scenario",title:"Choosing a maintenance strategy",prompt:"A food factory runs a packaging line 20 hours a day. Unplanned stoppages last month cost 40 hours of production. Recommend a maintenance strategy and justify your choice.",marks:6,model:["Move away from purely reactive maintenance, which is causing the costly unplanned downtime","Introduce planned preventive maintenance during the 4-hour non-production window","Add condition monitoring (vibration, temperature, motor current) to key items for predictive maintenance","Keep critical spares in stock to cut repair time","Log every failure to find repeat causes (root cause analysis)","Weigh cost of monitoring equipment and training against lost production cost"]}
+],
+quiz:[
+{q:"Which design approach repeatedly tests and refines a solution?",o:["Iterative design","Linear design","Reverse engineering","Value engineering"],e:"Iterative design loops through design, test and evaluate until the brief is met."},
+{q:"Turning a shaft on a lathe is an example of which process family?",o:["Wasting","Forming","Joining","Additive"],e:"Material is removed as swarf, so it is a wasting process."},
+{q:"Which scale of production is best for 24/7 production of chemicals?",o:["Continuous","Batch","One-off","Jobbing"],e:"Continuous production runs non-stop for very high-volume products."},
+{q:"Maintenance carried out using vibration and temperature data is called:",o:["Predictive (condition-based) maintenance","Reactive maintenance","Breakdown maintenance","Corrective maintenance"],e:"Predictive maintenance acts on measured condition data before failure."},
+{q:"Which statement describes quality assurance?",o:["It prevents defects by controlling the process","It inspects finished parts to find defects","It only happens at the end of the line","It replaces the need for SOPs"],e:"QA is preventive and process-focused; QC is inspection-focused."},
+{q:"Inclusive design aims to:",o:["Make products usable by as many people as possible","Use as few parts as possible","Copy nature's solutions","Reduce production cost only"],e:"Inclusive design considers people of different abilities, ages and sizes."},
+{q:"Which is a main disadvantage of introducing automation?",o:["High initial capital cost","Lower repeatability","Greater risk to operators on hazardous tasks","Slower cycle times"],e:"Automation improves repeatability and safety but costs a lot up front."},
+{q:"Why are prototypes often made by additive manufacturing?",o:["Complex shapes can be made quickly without tooling","It is the cheapest way to mass-produce","It gives the strongest possible parts","It needs no CAD model"],e:"AM needs no moulds or jigs, so one-off complex parts are fast to make."},
+{q:"Making 300 identical brackets, then retooling for a different part, is:",o:["Batch production","Mass production","Continuous production","One-off production"],e:"A set quantity followed by a changeover is batch production."},
+{q:"Which is NOT a benefit of planned preventive maintenance?",o:["It removes the need for any spare parts","It reduces unplanned downtime","It extends equipment life","It allows work to be scheduled outside production"],e:"Spare parts are still needed; PPM simply makes their use predictable."}
+]});
+
+UNITS.push({
+n:2, title:"Engineering and manufacturing past, present and future",
+sections:["2.1 Sectors of the engineering industry","2.2 Historical technological advances","2.3 Innovation and emerging trends"],
+overview:"The main engineering sectors, how the industrial revolutions shaped modern engineering, and the technologies changing it now.",
+points:[
+"Key UK sectors include aerospace, automotive, rail, marine, energy (including renewables and nuclear), electrical/electronic, chemical and process, mechanical, civil/structural, defence and biomedical.",
+"1st industrial revolution (c.1760 on): water and steam power, mechanisation of textiles, iron production.",
+"2nd industrial revolution (late 1800s): electricity, steel (Bessemer process), the moving assembly line and mass production (Ford, 1913).",
+"3rd industrial revolution (from c.1970s): electronics, computers, PLCs, CNC machines and automation.",
+"4th industrial revolution (Industry 4.0): cyber-physical systems, Internet of Things (IoT), big data, AI, cloud computing and digital twins.",
+"Standardisation and interchangeable parts (e.g. Whitworth's standard screw thread) made mass production and easy repair possible.",
+"Emerging trends: additive manufacturing, collaborative robots (cobots), electric and hydrogen vehicles, smart and nano materials, renewable energy, AI-driven predictive maintenance.",
+"New technology brings economic impacts (new jobs and skills, some job losses), social impacts and environmental impacts that engineers must weigh up."
+],
+terms:[["Industry 4.0","The fourth industrial revolution: connected, data-driven, smart manufacturing"],["Internet of Things (IoT)","Physical devices with sensors that share data over a network"],["Digital twin","A live virtual model of a real product or process, updated with real data"],["Cobot","A collaborative robot designed to work safely alongside people"],["Interchangeable parts","Parts made to standard sizes so any one can replace another"],["Mechanisation","Using machines to replace manual labour"],["Logistics","Planning and moving materials and goods through the supply chain"]],
+activities:[
+{type:"sort",title:"Place each development in its industrial revolution",cats:["1st","2nd","3rd","4th"],items:[["Steam engine powering mills",0],["Spinning machines in textile mills",0],["Moving assembly line",1],["Widespread electric power",1],["Bessemer steel process",1],["First PLC replaces relay panels",2],["CNC machine tools",2],["IoT sensors streaming machine data to the cloud",3],["AI predicting machine failure",3],["Digital twin of a factory",3]]},
+{type:"order",title:"Put these in chronological order (earliest first)",items:["Steam power in factories","Standardised screw threads","Moving assembly line for cars","Programmable logic controller","Industrial 3D printing becomes widespread","Digital twins and AI in smart factories"]},
+{type:"scenario",title:"Impact of a new technology",prompt:"A car parts supplier plans to install cobots on its assembly line. Explain two economic and two social impacts.",marks:4,model:["Economic: higher productivity and consistent quality lower the cost per part","Economic: large initial investment, plus new costs for programming and maintenance","Social: some repetitive manual jobs may be lost or changed","Social: new, higher-skilled roles (robot technicians, programmers) and a need for retraining","Social: fewer injuries from repetitive or heavy tasks"]}
+],
+quiz:[
+{q:"Which industrial revolution is most associated with steam power?",o:["First","Second","Third","Fourth"],e:"Steam and water power drove the first industrial revolution."},
+{q:"Henry Ford's moving assembly line (1913) is part of which revolution?",o:["Second","First","Third","Fourth"],e:"Electricity, steel and mass production define the second revolution."},
+{q:"A virtual model updated in real time with data from a real machine is a:",o:["Digital twin","CAD drawing","Prototype","Simulation-only model"],e:"A digital twin mirrors its physical twin using live data."},
+{q:"Why were interchangeable parts so important?",o:["Any part could replace another, enabling mass production and easy repair","They made every product unique","They removed the need for measurement","They were cheaper to design"],e:"Standard sizes allow assembly and repair without hand-fitting."},
+{q:"Which technology is most closely linked to the third industrial revolution?",o:["Programmable logic controllers","Water wheels","Cloud-connected IoT sensors","The Bessemer converter"],e:"Electronics, computers, PLCs and CNC define the third revolution."},
+{q:"A cobot differs from a traditional industrial robot because it:",o:["Is designed to work safely alongside people","Always works inside a safety cage","Cannot be reprogrammed","Is only used for welding"],e:"Cobots have force limiting and sensors so they can share space with workers."},
+{q:"Which sector designs and builds aircraft and spacecraft?",o:["Aerospace","Marine","Automotive","Rail"],e:"Aerospace covers aircraft, satellites and space vehicles."},
+{q:"Which is an environmental benefit of additive manufacturing?",o:["Less material waste than machining from solid","It uses no energy","All AM plastics are biodegradable","It needs no design work"],e:"AM only uses the material needed for the part."},
+{q:"What does IoT stand for?",o:["Internet of Things","Integration of Technology","Input/Output Terminal","Industrial Operating Technology"],e:"Internet of Things: connected devices sharing data."},
+{q:"Which is a likely social impact of widespread factory automation?",o:["Demand for higher-skilled technical jobs","No need for any training","Increased manual heavy lifting","Fewer engineers needed to maintain machines"],e:"Automation shifts work towards programming, maintenance and data roles."}
+]});
+
+UNITS.push({
+n:3, title:"Engineering representations",
+sections:["3.1 Drawings and the information they convey","3.2 Dimensions and tolerancing"],
+overview:"Reading and producing engineering drawings, circuit and system diagrams, and understanding dimensions, tolerances and fits to BS 8888.",
+points:[
+"BS 8888 is the UK standard for technical product documentation (engineering drawings).",
+"Orthographic projection shows separate 2D views (front, side, plan). In first angle the plan is drawn below the front view; in third angle it is drawn above. A projection symbol on the title block shows which is used.",
+"Pictorial drawings: isometric (receding lines at 30°), oblique (front face true shape, depth at 45°), perspective (vanishing points).",
+"Line types: continuous thick = visible outlines; thin dashed = hidden detail; thin chain = centre lines; thin chain with thick ends = cutting planes; continuous thin = dimension, projection and hatching lines.",
+"Sectional views show inside a part; cut surfaces are hatched with thin lines, usually at 45°.",
+"Common abbreviations: Ø diameter, R radius, PCD pitch circle diameter, CSK countersunk, CBORE counterbore, A/F across flats, CRS centres, HEX hexagon, UCUT undercut, MATL material, SQ square.",
+"A tolerance is the allowed variation in a dimension. E.g. 25 ±0.1 mm can measure 24.9–25.1 mm. Fits between holes and shafts are clearance, transition or interference.",
+"Other representations: electrical/electronic circuit diagrams (BS EN 60617 symbols), block diagrams, flowcharts, pneumatic/hydraulic circuit diagrams (ISO 1219), PCB layouts, exploded views and assembly drawings."
+],
+terms:[["Orthographic projection","A set of 2D views of an object, each looking straight at one face"],["Isometric","Pictorial drawing with receding lines at 30° to the horizontal"],["Tolerance","The permitted variation between the upper and lower limits of a dimension"],["Interference fit","The shaft is larger than the hole, so it must be pressed or shrunk in"],["Clearance fit","The shaft is always smaller than the hole, so it can move freely"],["PCD","Pitch circle diameter: circle on which the centres of a ring of holes lie"],["Hidden detail","Edges you cannot see in a view, shown with thin dashed lines"],["Title block","Box holding drawing number, scale, projection, material, units and author"]],
+activities:[
+{type:"sort",title:"Match the line type to its use",cats:["Continuous thick","Thin dashed","Thin chain","Continuous thin"],items:[["Visible outline of a part",0],["Visible edges",0],["Hidden internal hole",1],["Hidden edges behind a face",1],["Centre line of a hole",2],["Axis of symmetry",2],["Dimension line",3],["Section hatching",3],["Projection line",3]]},
+{type:"calc",title:"Tolerance calculations",qs:[{q:"A shaft is dimensioned 40 ±0.05 mm. What is the upper limit (mm)?",ans:40.05,tol:0.001,unit:"mm",w:"40 + 0.05 = 40.05 mm"},{q:"For the same shaft, what is the total tolerance (mm)?",ans:0.1,tol:0.001,unit:"mm",w:"Upper − lower = 40.05 − 39.95 = 0.10 mm"},{q:"A hole is 20.00–20.03 mm and a shaft is 19.95–19.98 mm. What is the maximum clearance (mm)?",ans:0.08,tol:0.001,unit:"mm",w:"Largest hole − smallest shaft = 20.03 − 19.95 = 0.08 mm"},{q:"A part drawn at scale 1:5 measures 36 mm on the drawing. What is the real length (mm)?",ans:180,tol:0.01,unit:"mm",w:"36 × 5 = 180 mm"}]},
+{type:"scenario",title:"Interpret a title block",prompt:"You are handed a drawing with the first-angle symbol, scale 2:1, 'ALL DIMENSIONS IN mm', 'UNLESS STATED TOL ±0.2' and 'MATL: 6082-T6'. Explain what each item tells the machinist.",marks:5,model:["First angle: plan view is below the front view and end views are on the opposite side","Scale 2:1: the drawing is twice actual size, so do not measure off the print","Units are millimetres","Any dimension without its own tolerance may vary by ±0.2 mm","Material is 6082 aluminium alloy in the T6 (solution treated and artificially aged) condition"]}
+],
+quiz:[
+{q:"Which British Standard covers engineering drawing practice?",o:["BS 8888","BS 7671","ISO 9001","BS EN 60617"],e:"BS 8888 is the standard for technical product documentation. BS 7671 is the wiring regulations."},
+{q:"Hidden detail is shown using:",o:["Thin dashed lines","Thin chain lines","Continuous thick lines","Thick chain lines"],e:"Thin dashed lines represent edges that cannot be seen."},
+{q:"In isometric drawing, receding lines are drawn at:",o:["30°","45°","60°","90°"],e:"Isometric uses 30° to the horizontal."},
+{q:"In third angle projection, the plan view is placed:",o:["Above the front view","Below the front view","To the left of the end view","Inside the front view"],e:"Third angle: view placed on the same side it is seen from, so plan goes above."},
+{q:"What does PCD stand for?",o:["Pitch circle diameter","Part centre distance","Primary cut depth","Projected circle dimension"],e:"PCD is the circle on which a ring of hole centres sits."},
+{q:"A dimension of 50 ±0.2 mm means an acceptable part measures:",o:["49.8 to 50.2 mm","49.6 to 50.4 mm","50.0 to 50.2 mm","49.8 to 50.0 mm"],e:"50 − 0.2 = 49.8 and 50 + 0.2 = 50.2."},
+{q:"A bearing pressed into a housing that is slightly smaller is an example of:",o:["An interference fit","A clearance fit","A sliding fit","A running fit"],e:"The part is larger than the hole, so it must be forced in."},
+{q:"Section hatching is normally drawn:",o:["With thin lines at 45°","With thick lines at 30°","With dashed lines","Vertically"],e:"Hatching uses thin continuous lines, usually at 45°."},
+{q:"Which diagram shows the function of a system as connected boxes, not individual components?",o:["Block diagram","Circuit diagram","PCB layout","Exploded view"],e:"Block diagrams show subsystems and signal flow."},
+{q:"The abbreviation CSK on a drawing means:",o:["Countersunk","Counter-sink key","Case-skinned","Cross-section key"],e:"CSK = countersunk, a conical recess for a flat-head screw."}
+]});
+
+UNITS.push({
+n:4, title:"Essential mathematics for engineering and manufacturing",
+sections:["4.1 Applied mathematical theory","4.2 Number systems"],
+overview:"The maths engineers use every day: algebra, trigonometry, geometry, statistics, standard form and binary/hex number systems.",
+points:[
+"Transposing formulas: do the same operation to both sides to make the required quantity the subject (e.g. V = IR → R = V/I).",
+"Right-angled triangles: SOH CAH TOA and Pythagoras (a² + b² = c²). Non-right-angled triangles use the sine rule and cosine rule.",
+"Area: rectangle = l × w, triangle = ½ × b × h, circle = πr². Volume: prism = cross-section area × length, cylinder = πr²h. Circumference = πd.",
+"Statistics: mean (average), median (middle value), mode (most common), range (largest − smallest). Standard deviation measures spread around the mean.",
+"Standard form writes numbers as a × 10ⁿ where 1 ≤ a < 10, e.g. 0.00045 = 4.5 × 10⁻⁴. SI prefixes: k = 10³, M = 10⁶, G = 10⁹, m = 10⁻³, µ = 10⁻⁶, n = 10⁻⁹.",
+"Binary (base 2) uses 0 and 1; each column doubles: 128, 64, 32, 16, 8, 4, 2, 1. Hexadecimal (base 16) uses 0–9 and A–F; one hex digit = 4 bits.",
+"Rounding to significant figures or decimal places must suit the precision of the measuring equipment.",
+"Graphs: gradient of a straight line = change in y ÷ change in x; equation y = mx + c."
+],
+terms:[["Subject of a formula","The variable on its own on one side of the equals sign"],["Hypotenuse","The longest side of a right-angled triangle, opposite the right angle"],["Mean","Sum of the values divided by the number of values"],["Median","The middle value when data is placed in order"],["Standard deviation","A measure of how spread out data is around the mean"],["Binary","Base-2 number system using only 0 and 1"],["Hexadecimal","Base-16 number system using 0–9 and A–F"],["Standard form","A number written as a × 10ⁿ, where 1 ≤ a < 10"]],
+activities:[
+{type:"calc",title:"Number systems",qs:[{q:"Convert binary 1011 0110 to decimal.",ans:182,tol:0,unit:"",w:"128 + 32 + 16 + 4 + 2 = 182"},{q:"Convert decimal 45 to binary (type the 0s and 1s, e.g. 101101).",ans:101101,tol:0,unit:"",w:"45 = 32 + 8 + 4 + 1 → 101101"},{q:"Convert hexadecimal 3F to decimal.",ans:63,tol:0,unit:"",w:"3 × 16 + 15 = 63"},{q:"Write 0.0072 in standard form as a × 10ⁿ. What is n?",ans:-3,tol:0,unit:"",w:"0.0072 = 7.2 × 10⁻³, so n = −3"}]},
+{type:"calc",title:"Geometry and trigonometry",qs:[{q:"A right-angled triangle has sides 6 mm and 8 mm. Find the hypotenuse (mm).",ans:10,tol:0.01,unit:"mm",w:"√(6² + 8²) = √100 = 10 mm"},{q:"A ramp rises 1.5 m over a sloping length of 3 m. Find the angle to the horizontal (degrees).",ans:30,tol:0.1,unit:"°",w:"sin θ = 1.5/3 = 0.5 → θ = 30°"},{q:"Find the volume of a cylinder with radius 5 cm and height 10 cm (cm³, 1 d.p.).",ans:785.4,tol:0.2,unit:"cm³",w:"π × 5² × 10 = 785.4 cm³"},{q:"Find the mean of these measurements: 12.1, 12.3, 12.0, 12.2, 12.4 mm.",ans:12.2,tol:0.001,unit:"mm",w:"Sum = 61.0; 61.0 ÷ 5 = 12.2 mm"}]},
+{type:"calc",title:"Transposition",qs:[{q:"P = VI. If P = 2400 W and V = 230 V, find I (A, 2 d.p.).",ans:10.43,tol:0.01,unit:"A",w:"I = P/V = 2400/230 = 10.43 A"},{q:"v = u + at. If v = 20 m/s, u = 5 m/s and t = 3 s, find a (m/s²).",ans:5,tol:0.01,unit:"m/s²",w:"a = (v − u)/t = 15/3 = 5 m/s²"}]}
+],
+quiz:[
+{q:"What is 1101 in binary as a decimal number?",o:["13","11","15","9"],e:"8 + 4 + 0 + 1 = 13."},
+{q:"How many bits are represented by one hexadecimal digit?",o:["4","2","8","16"],e:"16 = 2⁴, so one hex digit = 4 bits."},
+{q:"Hex 'A' is equal to which decimal value?",o:["10","11","1","16"],e:"A = 10, B = 11 … F = 15."},
+{q:"Rearrange V = IR to make R the subject.",o:["R = V/I","R = VI","R = I/V","R = V − I"],e:"Divide both sides by I."},
+{q:"In a right-angled triangle, tan θ equals:",o:["Opposite ÷ adjacent","Adjacent ÷ hypotenuse","Opposite ÷ hypotenuse","Hypotenuse ÷ opposite"],e:"TOA: tan = opposite/adjacent."},
+{q:"4 700 000 Ω written in standard form is:",o:["4.7 × 10⁶ Ω","47 × 10⁵ Ω","4.7 × 10⁵ Ω","0.47 × 10⁷ Ω"],e:"Move the decimal point 6 places: 4.7 × 10⁶ (4.7 MΩ)."},
+{q:"The median of 3, 9, 4, 7, 5 is:",o:["5","4","5.6","7"],e:"In order: 3, 4, 5, 7, 9 → the middle value is 5."},
+{q:"Which statistic best shows how consistent a machine's output is?",o:["Standard deviation","Mode","Median","Mean"],e:"Standard deviation measures spread; smaller = more consistent."},
+{q:"The prefix 'µ' (micro) represents:",o:["10⁻⁶","10⁻³","10⁻⁹","10⁶"],e:"micro = one millionth."},
+{q:"The area of a circle with diameter 10 mm is approximately:",o:["78.5 mm²","31.4 mm²","314 mm²","15.7 mm²"],e:"r = 5; π × 5² = 78.5 mm²."}
+]});
+
+UNITS.push({
+n:5, title:"Essential science for engineering and manufacturing",
+sections:["5.1 Units of measurement","5.2 Vectors and coordinates","5.3 Scientific method","5.4 Measurement equipment","5.5 Chemical composition","5.6 Forces and motion","5.7 Fluid dynamics","5.8 Thermodynamics"],
+overview:"SI units, measurement and measuring tools, the scientific method, and the core physics and chemistry behind engineering systems.",
+points:[
+"Seven SI base units: metre (m), kilogram (kg), second (s), ampere (A), kelvin (K), mole (mol), candela (cd). Derived units are built from them, e.g. newton (N = kg·m/s²), joule (J), watt (W), pascal (Pa = N/m²).",
+"Scalars have size only (mass, speed, temperature); vectors have size and direction (force, velocity, displacement). Positions can use Cartesian (x, y, z) or polar (r, θ) coordinates.",
+"Scientific method: question → hypothesis → fair test with controlled variables → collect data → analyse → conclude → repeat to check reliability.",
+"Measuring tools: steel rule, vernier caliper (~0.02 mm), micrometer (~0.01 mm or better), dial test indicator, coordinate measuring machine (CMM), multimeter. Accuracy = closeness to the true value; precision = repeatability; resolution = smallest change shown.",
+"Corrosion is oxidation of a metal (rust on iron needs oxygen and water). Electroplating uses electrolysis to deposit a metal coating; galvanising coats steel with zinc.",
+"Newton's laws: 1) an object stays at rest or constant velocity unless acted on by a resultant force; 2) F = ma; 3) every action has an equal and opposite reaction.",
+"Motion equations: v = u + at; s = ut + ½at²; v² = u² + 2as. Momentum = mass × velocity. Weight = mg (g ≈ 9.81 m/s²).",
+"Pressure = force ÷ area. Pascal's principle: pressure in a confined fluid is transmitted equally in all directions. Flow can be laminar (smooth) or turbulent (chaotic).",
+"Heat moves by conduction (through solids), convection (fluid movement) and radiation (infrared waves). Heat energy Q = mcΔT, where c is specific heat capacity."
+],
+terms:[["SI base unit","One of seven fundamental units from which all others are derived"],["Vector","A quantity with both magnitude and direction"],["Accuracy","How close a measurement is to the true value"],["Precision","How close repeated measurements are to each other"],["Calibration","Checking an instrument against a known traceable standard"],["Specific heat capacity","Energy needed to raise 1 kg of a material by 1 K"],["Laminar flow","Smooth fluid flow in parallel layers"],["Conduction","Heat transfer through a material by particle vibration, without the material moving"]],
+activities:[
+{type:"sort",title:"Scalar or vector?",cats:["Scalar","Vector"],items:[["Mass",0],["Temperature",0],["Speed",0],["Energy",0],["Force",1],["Velocity",1],["Acceleration",1],["Displacement",1],["Weight",1]]},
+{type:"calc",title:"Science calculations",qs:[{q:"A 1200 kg car accelerates at 2.5 m/s². Find the resultant force (N).",ans:3000,tol:0.5,unit:"N",w:"F = ma = 1200 × 2.5 = 3000 N"},{q:"A 500 N force acts on 0.02 m². Find the pressure (Pa).",ans:25000,tol:1,unit:"Pa",w:"p = F/A = 500/0.02 = 25 000 Pa"},{q:"How much energy heats 2 kg of water by 30 K? c = 4200 J/kg·K (answer in J).",ans:252000,tol:1,unit:"J",w:"Q = mcΔT = 2 × 4200 × 30 = 252 000 J"},{q:"A body starts at rest and accelerates at 3 m/s² for 4 s. Final velocity (m/s)?",ans:12,tol:0.01,unit:"m/s",w:"v = u + at = 0 + 3 × 4 = 12 m/s"},{q:"Convert 25 °C to kelvin.",ans:298,tol:0.2,unit:"K",w:"K = °C + 273 (273.15) ≈ 298 K"}]},
+{type:"order",title:"Order the steps of the scientific method",items:["Ask a question / observe a problem","Form a hypothesis","Plan a fair test, controlling variables","Carry out the test and record data","Analyse the results","Draw a conclusion and evaluate","Repeat to confirm reliability"]}
+],
+quiz:[
+{q:"Which is an SI base unit?",o:["Ampere","Newton","Watt","Pascal"],e:"Ampere is a base unit; the others are derived."},
+{q:"One pascal is equal to:",o:["1 N/m²","1 J/s","1 kg·m/s","1 N·m"],e:"Pressure = force per unit area."},
+{q:"Which quantity is a vector?",o:["Velocity","Mass","Temperature","Energy"],e:"Velocity has direction as well as magnitude."},
+{q:"A set of readings that are very close together but all far from the true value is:",o:["Precise but not accurate","Accurate but not precise","Accurate and precise","Neither"],e:"Repeatable = precise; far from true = inaccurate."},
+{q:"Which instrument typically gives the finest resolution for measuring a shaft diameter?",o:["Micrometer","Steel rule","Tape measure","Try square"],e:"A micrometer reads to 0.01 mm or better."},
+{q:"Newton's second law is written as:",o:["F = ma","p = F/A","V = IR","W = Fd"],e:"Resultant force = mass × acceleration."},
+{q:"Galvanising protects steel by coating it with:",o:["Zinc","Tin","Chromium","Copper"],e:"Zinc corrodes preferentially (sacrificial protection)."},
+{q:"Heat transfer through a metal bar from the hot end to the cold end is:",o:["Conduction","Convection","Radiation","Evaporation"],e:"Heat passes through the solid by particle vibration and free electrons."},
+{q:"In a hydraulic jack, pressure applied to the fluid is transmitted equally in all directions. This is:",o:["Pascal's principle","Bernoulli's principle","Boyle's law","Hooke's law"],e:"Pascal's principle underpins hydraulic systems."},
+{q:"The weight of a 50 kg mass (g = 9.81 m/s²) is about:",o:["490.5 N","50 N","5.1 N","4905 N"],e:"W = mg = 50 × 9.81 = 490.5 N."}
+]});
+
+UNITS.push({
+n:6, title:"Materials and their properties",
+sections:["6.1 Physical and mechanical properties","6.2 Types of material and structures","6.3 Effects of processing","6.4 Heat and surface treatments","6.5 Material failure","6.6 Materials testing"],
+overview:"Material properties and groups, how processing and treatments change them, why materials fail, and how they are tested.",
+points:[
+"Mechanical properties: tensile strength, hardness, toughness (resists impact), ductility (can be drawn into wire), malleability (can be hammered/pressed), elasticity, plasticity, brittleness. Physical: density, melting point, thermal and electrical conductivity.",
+"Ferrous metals contain iron (mild steel, cast iron, stainless steel). Non-ferrous metals do not (aluminium, copper, brass, titanium). Alloys mix metals to improve properties.",
+"Polymers: thermoplastics soften on heating and can be re-formed (e.g. ABS, nylon, PVC); thermosets set permanently (e.g. epoxy, phenolic); elastomers are rubbery.",
+"Ceramics are hard and heat-resistant but brittle. Composites combine materials, e.g. carbon-fibre reinforced polymer (CFRP), glass-reinforced plastic (GRP), concrete. Metals are crystalline; many polymers and glass are amorphous.",
+"Cold working (e.g. bending, rolling at room temp) causes work hardening — harder but less ductile. Welding creates a heat-affected zone (HAZ) and can cause distortion and residual stress.",
+"Heat treatments: annealing (soften, relieve stress), normalising (refine grain), hardening (heat and quench), tempering (reduce brittleness after hardening), case hardening (hard surface, tough core).",
+"Surface treatments: galvanising, electroplating, anodising (aluminium), powder coating, painting — protect against corrosion and wear or improve appearance.",
+"Failure modes: fatigue (repeated cyclic loading), creep (slow deformation under constant load, often at high temperature: primary, secondary, tertiary), corrosion, wear, brittle fracture, overload.",
+"Destructive tests: tensile test (stress–strain graph, yield strength, UTS, Young's modulus), hardness (Brinell, Vickers, Rockwell), impact (Charpy, Izod). Non-destructive tests (NDT): visual, dye penetrant, magnetic particle, ultrasonic, radiography (X-ray)."
+],
+terms:[["Ductility","Ability to be stretched or drawn out without breaking"],["Toughness","Ability to absorb energy and resist impact without fracturing"],["Thermoplastic","A polymer that softens when heated and can be reshaped repeatedly"],["Annealing","Heating then slowly cooling to soften metal and relieve stress"],["Tempering","Reheating hardened steel to a lower temperature to reduce brittleness"],["Fatigue","Failure caused by repeated cycles of stress below the static strength"],["Creep","Slow, permanent deformation under constant load over time"],["Non-destructive testing","Testing for flaws without damaging the part"]],
+activities:[
+{type:"sort",title:"Classify the materials",cats:["Ferrous","Non-ferrous","Polymer","Composite / ceramic"],items:[["Mild steel",0],["Cast iron",0],["Stainless steel",0],["Aluminium",1],["Brass",1],["Titanium",1],["Nylon",2],["Epoxy resin",2],["ABS",2],["CFRP",3],["Concrete",3],["Alumina",3]]},
+{type:"sort",title:"Destructive or non-destructive test?",cats:["Destructive","Non-destructive"],items:[["Tensile test",0],["Charpy impact test",0],["Izod impact test",0],["Ultrasonic testing",1],["Dye penetrant",1],["Magnetic particle inspection",1],["Radiography (X-ray)",1]]},
+{type:"scenario",title:"Select and treat a material",prompt:"A gear for an agricultural machine needs a very hard, wear-resistant tooth surface but must not crack under shock loads. Suggest a material and treatment, and explain why.",marks:5,model:["Use a low-carbon or case-hardening steel (e.g. 080M15 / EN32 type) or alloy steel","Case harden (e.g. carburise then quench) to give a hard, wear-resistant surface","The core stays softer and tough, so it absorbs shock without cracking","Temper after hardening to reduce brittleness","Consider a protective surface finish/lubrication to prevent corrosion and wear"]}
+],
+quiz:[
+{q:"Which property describes a material's ability to resist impact?",o:["Toughness","Hardness","Ductility","Elasticity"],e:"Toughness = absorbs energy without fracturing."},
+{q:"Which metal is non-ferrous?",o:["Copper","Mild steel","Cast iron","High-carbon steel"],e:"Non-ferrous metals contain no iron."},
+{q:"Which polymer type cannot be re-melted once set?",o:["Thermoset","Thermoplastic","Elastomer only","All polymers can be re-melted"],e:"Thermosets form permanent cross-links."},
+{q:"Which heat treatment reduces brittleness after hardening?",o:["Tempering","Quenching","Case hardening","Work hardening"],e:"Tempering trades a little hardness for toughness."},
+{q:"Failure caused by repeated loading and unloading is called:",o:["Fatigue","Creep","Corrosion","Overload"],e:"Cyclic stress grows cracks over time: fatigue."},
+{q:"Creep is most significant in components that are:",o:["Under constant load at high temperature","Hit by sudden impacts","Exposed to salt water","Cut by abrasive wear"],e:"E.g. turbine blades and boiler tubes."},
+{q:"Which test measures hardness using a diamond pyramid indenter?",o:["Vickers","Charpy","Tensile","Izod"],e:"Vickers uses a square-based diamond pyramid."},
+{q:"Which NDT method uses sound waves to find internal flaws?",o:["Ultrasonic testing","Dye penetrant","Magnetic particle","Visual inspection"],e:"Reflected high-frequency sound reveals internal defects."},
+{q:"Why is galvanising more effective than painting steel?",o:["Zinc corrodes sacrificially, protecting steel even if scratched","Zinc is cheaper than paint","Galvanising makes steel harder","Paint conducts electricity"],e:"Exposed steel at a scratch is still protected by the nearby zinc."},
+{q:"The area of metal altered by welding heat, but not melted, is the:",o:["Heat-affected zone","Fusion zone","Root","Weld toe"],e:"The HAZ can have changed grain structure and properties."}
+]});
+
+UNITS.push({
+n:7, title:"Mechanical principles",
+sections:["7.1 Motion and mechanics","7.2 Forces and energy"],
+overview:"Types of motion, mechanisms that change it, and how to calculate moments, stress, work, power, energy and efficiency.",
+points:[
+"Four types of motion: linear (straight line), rotary (round in a circle), reciprocating (back and forth in a line) and oscillating (swinging back and forth in an arc).",
+"Mechanisms convert or transmit motion: levers, gears, pulleys and belts, chains and sprockets, cams and followers, crank and slider, rack and pinion, screw threads, linkages.",
+"Levers: class 1 (fulcrum in the middle, e.g. crowbar), class 2 (load in the middle, e.g. wheelbarrow), class 3 (effort in the middle, e.g. tweezers).",
+"Mechanical advantage (MA) = load ÷ effort. Velocity ratio (VR) = distance moved by effort ÷ distance moved by load. Efficiency = MA ÷ VR × 100%.",
+"Gear ratio = teeth on driven gear ÷ teeth on driver gear. Output speed = input speed ÷ gear ratio. An idler gear changes direction but not the ratio.",
+"Moment = force × perpendicular distance from the pivot (N·m). In equilibrium, clockwise moments = anticlockwise moments, and the resultant force is zero.",
+"Stress = force ÷ area (N/m² or Pa); strain = change in length ÷ original length (no units); Young's modulus E = stress ÷ strain.",
+"Work done = force × distance (J). Power = work ÷ time (W). Kinetic energy = ½mv². Gravitational potential energy = mgh. Energy cannot be created or destroyed, only converted (some is lost as heat through friction)."
+],
+terms:[["Reciprocating motion","Back-and-forth motion in a straight line, like a piston"],["Oscillating motion","Swinging back and forth along an arc, like a pendulum"],["Mechanical advantage","Load divided by effort; how much a mechanism multiplies force"],["Moment","The turning effect of a force: force × perpendicular distance"],["Gear ratio","Driven teeth ÷ driver teeth"],["Stress","Force per unit cross-sectional area"],["Strain","Change in length divided by original length"],["Efficiency","Useful output energy ÷ input energy, as a percentage"]],
+activities:[
+{type:"sort",title:"Which type of motion?",cats:["Linear","Rotary","Reciprocating","Oscillating"],items:[["Conveyor belt carrying a box",0],["Lift going up",0],["Drill chuck",1],["Car wheel",1],["Piston in an engine",2],["Sewing machine needle",2],["Pendulum",3],["Windscreen wiper",3]]},
+{type:"calc",title:"Mechanics calculations",qs:[{q:"A driver gear has 20 teeth and the driven gear has 60. What is the gear ratio (x:1)?",ans:3,tol:0.01,unit:":1",w:"60 ÷ 20 = 3 : 1"},{q:"If the driver above turns at 900 rpm, what is the output speed (rpm)?",ans:300,tol:0.1,unit:"rpm",w:"900 ÷ 3 = 300 rpm"},{q:"A 50 N force acts 0.4 m from a pivot. Find the moment (N·m).",ans:20,tol:0.01,unit:"N·m",w:"M = F × d = 50 × 0.4 = 20 N·m"},{q:"A 10 kN load acts on a bar of area 200 mm². Find the stress (N/mm²).",ans:50,tol:0.01,unit:"N/mm²",w:"10 000 ÷ 200 = 50 N/mm² (50 MPa)"},{q:"A motor lifts 200 kg through 3 m in 6 s (g = 9.81). Find the power (W).",ans:981,tol:1,unit:"W",w:"Work = mgh = 200 × 9.81 × 3 = 5886 J; P = 5886 ÷ 6 = 981 W"},{q:"A machine has MA = 4 and VR = 5. Find the efficiency (%).",ans:80,tol:0.1,unit:"%",w:"4 ÷ 5 × 100 = 80%"}]},
+{type:"sort",title:"Classify the levers",cats:["Class 1","Class 2","Class 3"],items:[["Crowbar",0],["Scissors",0],["Seesaw",0],["Wheelbarrow",1],["Bottle opener",1],["Nutcracker",1],["Tweezers",2],["Fishing rod",2],["Human forearm",2]]}
+],
+quiz:[
+{q:"A piston moving in a cylinder is an example of:",o:["Reciprocating motion","Rotary motion","Oscillating motion","Linear only"],e:"Back and forth in a straight line = reciprocating."},
+{q:"Which mechanism converts rotary motion into linear motion?",o:["Rack and pinion","Spur gear pair","Belt and pulley","Idler gear"],e:"The pinion rotates and the rack moves in a line."},
+{q:"A wheelbarrow is which class of lever?",o:["Class 2","Class 1","Class 3","It is not a lever"],e:"Load is between the fulcrum (wheel) and the effort."},
+{q:"The unit of moment is:",o:["N·m","N/m","J/s","N/m²"],e:"Force (N) × distance (m)."},
+{q:"A 15-tooth gear drives a 45-tooth gear. The output turns:",o:["3 times slower than the input","3 times faster than the input","At the same speed","In the same direction with no change"],e:"Ratio 45/15 = 3:1 reduction."},
+{q:"Strain has which unit?",o:["None — it is a ratio","N/m²","m","Pa"],e:"Strain = length ÷ length."},
+{q:"Kinetic energy is calculated using:",o:["½mv²","mgh","Fd","mv"],e:"KE = ½ × mass × velocity²."},
+{q:"An idler gear is used to:",o:["Change the direction of the output without changing the ratio","Double the output speed","Increase torque","Reduce friction"],e:"The idler's teeth don't affect the overall ratio."},
+{q:"A beam is in equilibrium when:",o:["Clockwise moments equal anticlockwise moments","Only upward forces act","The beam is horizontal","Friction is zero"],e:"Principle of moments."},
+{q:"Why is a machine's efficiency always less than 100%?",o:["Some energy is lost, mainly as heat through friction","Energy is destroyed in the machine","Mechanical advantage is always 1","Velocity ratio is always 0"],e:"Energy is conserved but some becomes unwanted heat and sound."}
+]});
+
+UNITS.push({
+n:8, title:"Electrical and electronic principles",
+sections:["8.1 Principles of electrical and electronic systems"],
+overview:"Current, voltage, resistance and power; series and parallel circuits; AC and DC; common components; analogue and digital signals and logic gates.",
+points:[
+"Ohm's law: V = I × R. Power: P = V × I = I²R = V²/R. Energy = power × time.",
+"Series circuits: same current everywhere; total resistance R = R₁ + R₂ + …; supply voltage is shared.",
+"Parallel circuits: same voltage across each branch; currents add; 1/R = 1/R₁ + 1/R₂ + … (total is less than the smallest resistor).",
+"Kirchhoff's current law: current into a junction = current out. Kirchhoff's voltage law: the sum of voltage drops round a loop = supply voltage.",
+"DC flows one way (batteries, electronics). AC reverses direction; UK mains is 230 V rms at 50 Hz. Transformers change AC voltage; rectifiers (diodes) convert AC to DC.",
+"Components: resistor (limits current), capacitor (stores charge), inductor (stores energy in a magnetic field), diode (one-way current), LED, transistor (switch/amplifier), relay (low-power circuit switches a high-power circuit), fuse/MCB (protection).",
+"Analogue signals vary continuously (e.g. temperature sensor voltage); digital signals have discrete levels (0 or 1). ADCs convert analogue to digital.",
+"Logic gates: AND (output 1 only if all inputs are 1), OR (1 if any input is 1), NOT (inverts), NAND (NOT-AND), NOR (NOT-OR), XOR (1 if inputs differ).",
+"Electromagnetism underpins motors (current + magnetic field → force), generators (motion + magnetic field → voltage), solenoids and relays."
+],
+terms:[["Current","Rate of flow of electric charge, measured in amperes (A)"],["Potential difference","Energy per unit charge between two points, in volts (V)"],["Resistance","Opposition to current flow, in ohms (Ω)"],["Alternating current","Current that repeatedly reverses direction"],["Capacitor","Component that stores electrical charge"],["Diode","Component that lets current flow in one direction only"],["Relay","An electrically operated switch using an electromagnet"],["Truth table","A table showing a logic gate's output for every input combination"]],
+activities:[
+{type:"calc",title:"Circuit calculations",qs:[{q:"A 12 V supply drives 0.5 A through a resistor. Find R (Ω).",ans:24,tol:0.01,unit:"Ω",w:"R = V/I = 12/0.5 = 24 Ω"},{q:"Resistors of 100 Ω, 220 Ω and 330 Ω are in series. Total resistance (Ω)?",ans:650,tol:0.1,unit:"Ω",w:"100 + 220 + 330 = 650 Ω"},{q:"Two 100 Ω resistors are in parallel. Total resistance (Ω)?",ans:50,tol:0.1,unit:"Ω",w:"1/R = 1/100 + 1/100 → R = 50 Ω"},{q:"A 230 V heater draws 8 A. Find its power (W).",ans:1840,tol:0.5,unit:"W",w:"P = VI = 230 × 8 = 1840 W"},{q:"A 2 kW heater runs for 3 hours. Energy used (kWh)?",ans:6,tol:0.01,unit:"kWh",w:"E = P × t = 2 × 3 = 6 kWh"},{q:"6 Ω and 3 Ω in parallel. Total resistance (Ω)?",ans:2,tol:0.01,unit:"Ω",w:"(6 × 3)/(6 + 3) = 18/9 = 2 Ω"}]},
+{type:"sort",title:"Name the gate from its behaviour",cats:["AND","OR","NOT","XOR"],items:[["Output is 1 only when both inputs are 1",0],["Machine runs only when guard is closed AND start is pressed",0],["Output is 1 when either input is 1",1],["Alarm sounds if door A OR door B opens",1],["Output is always the opposite of the input",2],["Output is 1 only when the inputs are different",3],["Landing light with a switch at top and bottom of the stairs",3]]},
+{type:"sort",title:"Analogue or digital?",cats:["Analogue","Digital"],items:[["Thermistor voltage",0],["Microphone output",0],["Strain gauge signal",0],["Limit switch on/off",1],["Push button state",1],["Encoder pulses",1],["Binary data from a PLC",1]]}
+],
+quiz:[
+{q:"A 6 V battery drives 2 A through a lamp. The lamp's resistance is:",o:["3 Ω","12 Ω","8 Ω","0.33 Ω"],e:"R = V/I = 6/2 = 3 Ω."},
+{q:"In a series circuit, the current is:",o:["The same at every point","Shared between components","Highest at the largest resistor","Zero across the battery"],e:"There is only one path, so current is the same everywhere."},
+{q:"Adding more resistors in parallel makes the total resistance:",o:["Decrease","Increase","Stay the same","Become infinite"],e:"More paths for current → lower total resistance."},
+{q:"UK mains supply frequency is:",o:["50 Hz","60 Hz","230 Hz","100 Hz"],e:"230 V rms at 50 Hz."},
+{q:"Which component lets current flow in only one direction?",o:["Diode","Capacitor","Resistor","Inductor"],e:"Diodes conduct in the forward direction only."},
+{q:"A relay allows:",o:["A low-power circuit to switch a high-power circuit","AC to be converted to DC","Voltage to be stepped up","Charge to be stored"],e:"A small coil current operates contacts on a separate circuit."},
+{q:"The output of a NAND gate is 0 only when:",o:["All inputs are 1","All inputs are 0","Inputs are different","Any input is 1"],e:"NAND = NOT(AND); AND gives 1 only when all are 1, so NAND gives 0."},
+{q:"Which device converts a continuously varying signal into binary numbers?",o:["Analogue-to-digital converter","Transformer","Rectifier","Relay"],e:"An ADC samples analogue voltage and outputs digital values."},
+{q:"P = I²R. A 4 A current through a 5 Ω resistor dissipates:",o:["80 W","20 W","100 W","9 W"],e:"4² × 5 = 16 × 5 = 80 W."},
+{q:"Kirchhoff's current law states that:",o:["Current into a junction equals current out","Voltage is the same in all parts of a series circuit","Resistance always increases with temperature","Power equals voltage times resistance"],e:"Charge is conserved at a junction."}
+]});
+
+UNITS.push({
+n:9, title:"Mechatronics",
+sections:["9.1 Key components of a mechatronic system","9.2 Programmable logic controllers (PLCs)","9.3 Hydraulics and pneumatics"],
+overview:"How mechanical, electrical, electronic and computer control combine; how PLCs work and are programmed; and the basics of fluid power.",
+points:[
+"A mechatronic system combines mechanical parts, electronics, sensors, actuators and a controller (microcontroller or PLC) with software. Examples: robots, CNC machines, automatic doors, car ABS.",
+"PLC hardware: power supply, CPU (processor and memory), input modules (from switches/sensors), output modules (to motors, valves, lamps), communication ports. Outputs may be relay, transistor or triac type.",
+"PLC scan cycle repeats continuously: read inputs → execute the program → update outputs (plus housekeeping/diagnostics). Scan time is usually a few milliseconds.",
+"IEC 61131-3 PLC languages: Ladder Diagram (LD), Function Block Diagram (FBD), Structured Text (ST), Instruction List (IL, now deprecated) and Sequential Function Chart (SFC).",
+"Ladder logic: rungs run between two power rails; normally open (NO) and normally closed (NC) contacts are inputs; coils are outputs. A latch (seal-in) uses an output's own contact in parallel with the start button. Timers (TON, TOF) and counters (CTU, CTD) add timing and counting.",
+"Safety: emergency stops should be hard-wired NC circuits, not relying only on software. Stop buttons are wired NC so a broken wire stops the machine (fail-safe).",
+"Pneumatics uses compressed air (typically around 6 bar): clean, fast, cheap, safe in explosive areas, but air is compressible so positioning is less precise and forces are lower.",
+"Hydraulics uses oil (often 100+ bar): incompressible, very high force and precise control, but more expensive, risk of leaks, fire and injection injury.",
+"Fluid power components: compressor/pump, FRL unit (filter, regulator, lubricator), directional control valves (e.g. 3/2, 5/2), flow control valves, single- and double-acting cylinders, motors. Circuit symbols follow ISO 1219."
+],
+terms:[["PLC","Programmable logic controller: an industrial computer that controls machines"],["Scan cycle","PLC repeating loop: read inputs, run program, update outputs"],["Ladder logic","Graphical PLC language based on relay circuit diagrams"],["Normally closed (NC)","Contact that conducts until it is operated"],["Latching","Keeping an output on after the start signal is released"],["5/2 valve","Directional valve with 5 ports and 2 positions"],["FRL unit","Filter, regulator and lubricator conditioning compressed air"],["Double-acting cylinder","Cylinder powered by fluid in both directions"]],
+activities:[
+{type:"order",title:"Put the PLC scan cycle in order",items:["Read the state of all inputs into the input image table","Execute the program rung by rung","Write results to the output image table and update physical outputs","Carry out housekeeping and diagnostics, then repeat"]},
+{type:"sort",title:"Pneumatics or hydraulics?",cats:["Pneumatics","Hydraulics"],items:[["Uses compressed air",0],["Clean — suitable for food packaging",0],["Fast, light pick-and-place",0],["Fluid is compressible",0],["Excavator arm",1],["Very high forces in a press",1],["Fluid is essentially incompressible",1],["Leaks can cause slips and fire risk",1]]},
+{type:"sort",title:"PLC input or output device?",cats:["Input","Output"],items:[["Start push button",0],["Inductive proximity sensor",0],["Limit switch",0],["Photoelectric sensor",0],["Solenoid valve",1],["Motor contactor",1],["Indicator lamp",1],["Beacon / sounder",1]]},
+{type:"scenario",title:"Design a start/stop circuit",prompt:"Describe a ladder logic rung that starts a conveyor motor with a START button and stops it with a STOP button, keeping the motor running after START is released. Include how the STOP button should be wired for safety.",marks:6,model:["START is a normally open push button, examined as XIC (normally open contact) in the rung","A contact from the motor output is placed in parallel with START to latch (seal in) the output","STOP is in series and must break the rung when pressed","Physically wire STOP as NC so a broken wire or lost signal stops the motor (fail-safe); in the program examine it as normally open (XIC) because the input is ON when healthy","The output coil (motor contactor) is at the right of the rung","Emergency stop should also be hard-wired to remove power, not just a PLC input"]}
+],
+quiz:[
+{q:"What is the correct order of a PLC scan cycle?",o:["Read inputs, execute program, update outputs","Update outputs, read inputs, execute program","Execute program, read inputs, update outputs","Read inputs, update outputs, execute program"],e:"Inputs are read, the logic is solved, then outputs are written."},
+{q:"Which is a graphical PLC language based on relay circuits?",o:["Ladder Diagram","Structured Text","Instruction List","C++"],e:"Ladder looks like relay wiring diagrams."},
+{q:"Why is a stop button usually wired normally closed?",o:["A broken wire will stop the machine (fail-safe)","It uses less power","It makes the program shorter","NC buttons are cheaper"],e:"Loss of signal is treated as a stop command."},
+{q:"A 5/2 directional control valve has:",o:["5 ports and 2 positions","5 positions and 2 ports","2 inputs and 5 outputs","5 bar and 2 litres/s"],e:"Ports first, positions second."},
+{q:"Which is an advantage of pneumatics over hydraulics?",o:["Clean and safe if it leaks","Higher force","Fluid is incompressible","More precise positioning"],e:"Leaking air is harmless; oil is not."},
+{q:"Which is most suitable for the main ram of a 200-tonne press?",o:["Hydraulics","Pneumatics","A solenoid","A stepper motor"],e:"Hydraulics gives very high force."},
+{q:"The 'F' in an FRL unit stands for:",o:["Filter","Flow","Feedback","Fuse"],e:"Filter, Regulator, Lubricator."},
+{q:"A PLC timer that turns its output on after a set delay is a:",o:["TON (on-delay timer)","TOF (off-delay timer)","CTU (count-up counter)","RTO reset"],e:"TON delays switching on."},
+{q:"Which IEC 61131-3 language is text-based and similar to Pascal?",o:["Structured Text","Ladder Diagram","Function Block Diagram","Sequential Function Chart"],e:"ST is a high-level textual language."},
+{q:"Which device is a PLC output?",o:["Solenoid valve","Proximity sensor","Push button","Thermocouple"],e:"Outputs are actuators the PLC drives."}
+]});
+
+UNITS.push({
+n:10, title:"Engineering and manufacturing control systems",
+sections:["10.1 Control system theory","10.2 Sensors and actuators in automation"],
+overview:"Open- and closed-loop control, feedback and PID, and the sensors and actuators that connect controllers to the real world.",
+points:[
+"A system can be shown as input → process → output. Block diagrams show how subsystems connect.",
+"Open-loop control has no feedback; the output is not measured (e.g. a basic toaster timer). It is simple and cheap but cannot correct for disturbances.",
+"Closed-loop control measures the output with a sensor and feeds it back; the controller compares it to the setpoint and acts on the error (error = setpoint − measured value).",
+"On/off (bang-bang) control switches fully on or off, often with hysteresis to stop rapid switching (e.g. a thermostat).",
+"PID control: Proportional (output proportional to error), Integral (removes steady-state error over time), Derivative (reacts to rate of change, reduces overshoot).",
+"Sensors: thermocouple, thermistor and RTD/PT100 (temperature); LDR and photoelectric (light); strain gauge and load cell (force); inductive (metal) and capacitive proximity; ultrasonic (distance/level); rotary encoder (position/speed); LVDT (linear displacement); pressure transducers.",
+"Actuators: AC/DC motors, stepper motors (precise steps, open loop), servo motors (closed-loop position), solenoids, pneumatic/hydraulic cylinders, heaters, valves.",
+"Signal conditioning (amplifying, filtering) and conversion (ADC/DAC) connect sensors and actuators to digital controllers. Industrial analogue signals are often 4–20 mA or 0–10 V."
+],
+terms:[["Open-loop","Control without measuring the output"],["Closed-loop","Control that uses feedback to compare output with the setpoint"],["Setpoint","The desired value the system aims for"],["Error signal","Difference between setpoint and measured value"],["Hysteresis","A deliberate gap between switch-on and switch-off points"],["PID","Proportional–Integral–Derivative control"],["Servo motor","Motor with built-in position feedback for precise control"],["Transducer","Device that converts one form of energy into another"]],
+activities:[
+{type:"sort",title:"Open-loop or closed-loop?",cats:["Open-loop","Closed-loop"],items:[["Basic washing machine timer",0],["Traffic lights on a fixed cycle",0],["Electric fan on/off switch",0],["Stepper motor driven with no encoder",0],["Room heating with a thermostat",1],["Car cruise control",1],["CNC axis with encoder feedback",1],["Tank level kept constant by a float sensor",1]]},
+{type:"sort",title:"Match the sensor to what it measures",cats:["Temperature","Position / distance","Force / load","Presence of metal"],items:[["Thermocouple",0],["PT100 RTD",0],["Thermistor",0],["Rotary encoder",1],["LVDT",1],["Ultrasonic sensor",1],["Strain gauge",2],["Load cell",2],["Inductive proximity sensor",3]]},
+{type:"scenario",title:"Explain a closed-loop system",prompt:"An oven must hold 180 °C. Draw (or describe) the closed-loop block diagram and explain how PID control improves on simple on/off control.",marks:6,model:["Setpoint 180 °C → comparator → controller → actuator (heater) → process (oven) → output temperature","Sensor (thermocouple/PT100) measures temperature and feeds back to the comparator","Error = setpoint − measured temperature drives the controller","On/off control causes the temperature to swing above and below 180 °C","Proportional reduces power as the error shrinks; integral removes the remaining offset","Derivative responds to rate of change, reducing overshoot when the door is opened or at start-up"]}
+],
+quiz:[
+{q:"What feature makes a control system closed-loop?",o:["Feedback from the output","A timer","A manual switch","A higher power supply"],e:"Closed-loop measures the output and feeds it back."},
+{q:"The error signal in a control system is:",o:["Setpoint minus measured value","Measured value plus setpoint","Output power","Sensor supply voltage"],e:"Error = SP − PV."},
+{q:"Which term in PID control removes steady-state error?",o:["Integral","Proportional","Derivative","Hysteresis"],e:"Integral action accumulates error over time."},
+{q:"Why is hysteresis added to a thermostat?",o:["To stop the heater switching on and off rapidly","To make the room hotter","To remove the need for a sensor","To increase the setpoint"],e:"A gap between on and off points prevents 'chattering'."},
+{q:"Which sensor detects metal objects without contact?",o:["Inductive proximity sensor","LDR","Thermistor","Strain gauge"],e:"Inductive sensors respond to metal in their magnetic field."},
+{q:"A standard industrial analogue current signal is:",o:["4–20 mA","0–230 V","50–60 Hz","1–5 A"],e:"4–20 mA: a live zero lets broken wires be detected."},
+{q:"A stepper motor is often used without feedback because:",o:["It moves in fixed, countable steps","It is always closed-loop","It cannot reverse","It runs only on AC mains"],e:"Counting steps gives position, unless steps are missed."},
+{q:"Which actuator converts electrical energy into short linear motion using a coil?",o:["Solenoid","Thermocouple","Encoder","Potentiometer"],e:"Energising the coil pulls a plunger."},
+{q:"A toaster that heats for a fixed time regardless of bread colour is:",o:["Open-loop","Closed-loop","PID controlled","Feedback controlled"],e:"Nothing measures the output."},
+{q:"Which sensor would best measure the weight of material in a hopper?",o:["Load cell","Photoelectric sensor","Inductive sensor","LDR"],e:"Load cells (strain gauges) measure force/weight."}
+]});
+
+UNITS.push({
+n:11, title:"Quality management",
+sections:["11.1 Quality standards, assurance, control and improvement","11.2 Standard operating procedures"],
+overview:"Quality systems and standards, the difference between assurance and control, tools for improvement, and how SOPs keep work consistent.",
+points:[
+"Quality means meeting the customer's requirements consistently. Poor quality costs money through scrap, rework, warranty claims and lost reputation.",
+"ISO 9001 is the international standard for quality management systems. Related standards: ISO 14001 (environmental), ISO 45001 (health and safety), AS9100 (aerospace), IATF 16949 (automotive).",
+"Quality assurance (QA) is planned and preventive — procedures, training, audits. Quality control (QC) is inspection and testing of products to find defects.",
+"Total Quality Management (TQM) makes quality everyone's responsibility, focused on the customer and continuous improvement.",
+"Statistical process control (SPC) plots samples on control charts with upper and lower control limits to spot a process drifting before it makes defects. Process capability (Cp, Cpk) compares process spread with the tolerance.",
+"Problem-solving tools: 5 Whys, fishbone (Ishikawa) diagram, Pareto analysis (80/20), PDCA (Plan–Do–Check–Act), FMEA (failure mode and effects analysis).",
+"Audits check that procedures are followed: internal (first-party), customer (second-party) and certification body (third-party). Non-conformances lead to corrective and preventive action (CAPA).",
+"Standard operating procedures (SOPs) are written step-by-step instructions so tasks are done the same safe, correct way every time. Formats include simple step lists, hierarchical steps and flowcharts. They must be controlled, version-numbered and reviewed."
+],
+terms:[["Quality assurance","Preventive activities that make sure the process produces good output"],["Quality control","Inspecting and testing products to detect defects"],["ISO 9001","International standard for quality management systems"],["SPC","Statistical process control: monitoring a process using control charts"],["Fishbone diagram","Cause-and-effect diagram for finding root causes"],["Non-conformance","A product or process that does not meet the requirement"],["SOP","Standard operating procedure: documented steps for a task"],["Audit","A systematic, independent check that procedures are being followed"]],
+activities:[
+{type:"sort",title:"QA or QC?",cats:["Quality assurance","Quality control"],items:[["Training operators on a new procedure",0],["Writing an SOP",0],["Internal audit of the welding process",0],["Calibrating gauges on schedule",0],["Measuring every 10th part with a micrometer",1],["Visual inspection of paint finish",1],["Pressure-testing finished valves",1],["Rejecting a batch that fails a hardness test",1]]},
+{type:"order",title:"Order the PDCA cycle",items:["Plan — identify the problem and plan a change","Do — try the change on a small scale","Check — measure and study the results","Act — standardise if it worked, or start again"]},
+{type:"scenario",title:"Investigate a quality problem",prompt:"Customers report that 4% of a batch of machined shafts are oversize. Explain how you would investigate and prevent a repeat.",marks:6,model:["Quarantine the affected batch and inspect 100% to contain the problem","Use 5 Whys or a fishbone diagram to find root cause (machine, method, material, man, measurement, environment)","Check measuring equipment calibration and tool wear/offsets","Review SPC data to see when the process started drifting","Implement corrective action, e.g. tool change frequency, updated SOP, operator training","Verify the fix, record it as CAPA and add SPC monitoring to prevent recurrence"]}
+],
+quiz:[
+{q:"ISO 9001 is the standard for:",o:["Quality management systems","Environmental management","Health and safety management","Electrical wiring"],e:"ISO 14001 = environment; ISO 45001 = H&S."},
+{q:"Which is a quality control activity?",o:["Inspecting finished parts","Writing procedures","Staff training","Supplier approval"],e:"QC detects defects through inspection/testing."},
+{q:"A control chart point outside the upper control limit means:",o:["The process may be out of control and needs investigating","The part is definitely scrap","The process is perfect","The limits must be widened"],e:"It signals a special cause of variation."},
+{q:"Which tool is also called an Ishikawa diagram?",o:["Fishbone diagram","Pareto chart","Gantt chart","Histogram"],e:"Named after Kaoru Ishikawa."},
+{q:"Pareto analysis is based on the idea that:",o:["About 80% of problems come from 20% of causes","All causes are equal","Every defect must be inspected","Quality costs nothing"],e:"Focus on the vital few causes."},
+{q:"Who carries out a third-party audit?",o:["An independent certification body","The company's own staff","A customer","A supplier"],e:"Third-party = independent auditor, e.g. for ISO certification."},
+{q:"Why must SOPs be version-controlled?",o:["So everyone uses the current, approved method","To make them longer","So they never change","To avoid training"],e:"Out-of-date instructions cause errors."},
+{q:"TQM means:",o:["Quality is everyone's responsibility across the organisation","Only inspectors are responsible for quality","Quality checks happen only at the end","A type of measuring tool"],e:"Total Quality Management involves all staff."},
+{q:"FMEA is used to:",o:["Identify potential failures and their effects before they happen","Calculate break-even","Plan a project timeline","Measure surface roughness"],e:"Failure Mode and Effects Analysis is preventive."},
+{q:"The '5 Whys' technique helps to:",o:["Find the root cause of a problem","Reduce stock levels","Set tolerances","Choose a supplier"],e:"Asking 'why?' repeatedly drills down to the cause."}
+]});
+
+UNITS.push({
+n:12, title:"Health and safety principles and coverage",
+sections:["12.1 Key legislation","12.2 Workplace practices","12.3 Responsibilities","12.4 Risk assessment","12.5 Specific engineering contexts","12.6 Environmental legislation"],
+overview:"The main UK health, safety and environmental laws, who is responsible for what, how to carry out a risk assessment and apply the hierarchy of control.",
+points:[
+"Health and Safety at Work etc. Act 1974 (HASAWA): the main act. Employers must protect employees and others so far as is reasonably practicable; employees must take care of themselves and others and cooperate.",
+"Key regulations: Management of Health and Safety at Work Regs 1999 (risk assessment), PUWER 1998 (work equipment), LOLER 1998 (lifting), COSHH 2002 (hazardous substances), RIDDOR 2013 (reporting injuries, diseases, dangerous occurrences), Manual Handling 1992, PPE at Work 1992 (amended 2022), Electricity at Work 1989, Control of Noise at Work 2005, Work at Height 2005, Confined Spaces 1997, DSE 1992.",
+"The HSE enforces the law. Inspectors can issue improvement notices (fix within a time limit) and prohibition notices (stop the activity immediately), and can prosecute.",
+"A hazard is something with the potential to cause harm; risk is the likelihood that harm will occur combined with how severe it would be. Risk rating = likelihood × severity.",
+"HSE five steps to risk assessment: 1 identify hazards, 2 decide who might be harmed and how, 3 evaluate risks and decide on precautions, 4 record findings and implement them, 5 review and update.",
+"Hierarchy of control (most to least effective): eliminate, substitute, engineering controls (guards, extraction), administrative controls (SOPs, permits, training, signs), PPE as a last resort.",
+"Safety signs: red = prohibition/fire equipment, blue = mandatory, yellow = warning, green = safe condition/first aid.",
+"Specific controls in engineering: machine guarding, lock-out/tag-out (LOTO) isolation, permit-to-work for high-risk tasks, hot-work permits, confined-space entry, noise action values (80 dB(A) lower, 85 dB(A) upper, 87 dB(A) limit).",
+"Environmental laws: Environmental Protection Act 1990 (duty of care for waste), WEEE Regulations, Climate Change Act 2008 (net zero by 2050). Waste hierarchy: prevent, reuse, recycle, recover, dispose. ISO 14001 helps manage environmental impact."
+],
+terms:[["Hazard","Something with the potential to cause harm"],["Risk","The likelihood of harm combined with its severity"],["COSHH","Control of Substances Hazardous to Health Regulations 2002"],["RIDDOR","Regulations for reporting serious injuries, diseases and dangerous occurrences"],["PUWER","Regulations requiring work equipment to be suitable, maintained and safe"],["Prohibition notice","HSE order to stop an activity immediately due to serious risk"],["LOTO","Lock-out/tag-out: isolating and locking energy sources before work"],["Reasonably practicable","Balancing the level of risk against the cost and effort to control it"]],
+activities:[
+{type:"order",title:"HSE five steps to risk assessment",items:["Identify the hazards","Decide who might be harmed and how","Evaluate the risks and decide on precautions","Record your significant findings and implement them","Review the assessment and update if necessary"]},
+{type:"order",title:"Hierarchy of control — most to least effective",items:["Elimination","Substitution","Engineering controls","Administrative controls","Personal protective equipment (PPE)"]},
+{type:"sort",title:"Which regulation applies?",cats:["COSHH","LOLER","PUWER","RIDDOR"],items:[["Using cutting fluid and degreasing solvents",0],["Welding fume exposure",0],["Thorough examination of an overhead crane",1],["Using slings and chains to lift a gearbox",1],["Fitting a guard to a pillar drill",2],["Training staff to use a lathe",2],["Reporting a broken arm from a fall",3],["Reporting a dangerous occurrence when a crane collapses",3]]},
+{type:"calc",title:"Risk rating (likelihood × severity, both 1–5)",qs:[{q:"Likelihood 4, severity 3. Risk rating?",ans:12,tol:0,unit:"",w:"4 × 3 = 12 (medium–high)"},{q:"After fitting a fixed guard, likelihood drops to 1 with severity still 3. New rating?",ans:3,tol:0,unit:"",w:"1 × 3 = 3 (low)"}]}
+],
+quiz:[
+{q:"Which act places general duties on employers and employees in the UK?",o:["Health and Safety at Work etc. Act 1974","Environmental Protection Act 1990","Equality Act 2010","Climate Change Act 2008"],e:"HASAWA 1974 is the main enabling act."},
+{q:"Which regulations cover the safe use of hazardous chemicals?",o:["COSHH","LOLER","RIDDOR","DSE"],e:"Control of Substances Hazardous to Health."},
+{q:"What is the FIRST step of the HSE risk assessment process?",o:["Identify the hazards","Record findings","Choose PPE","Review the assessment"],e:"You can't assess risks until hazards are identified."},
+{q:"In the hierarchy of control, PPE is:",o:["The last resort","The most effective control","Always the first choice","Not part of the hierarchy"],e:"PPE only protects the wearer and depends on correct use."},
+{q:"A blue circular safety sign means:",o:["Mandatory — you must do this","Prohibited","Warning of a hazard","Safe condition"],e:"Blue = mandatory, e.g. 'Wear eye protection'."},
+{q:"An HSE inspector who orders an activity to stop immediately issues:",o:["A prohibition notice","An improvement notice","A RIDDOR report","A permit to work"],e:"Prohibition notices stop serious-risk activities at once."},
+{q:"LOLER applies to:",o:["Lifting operations and lifting equipment","Noise at work","Display screen equipment","Waste disposal"],e:"Lifting Operations and Lifting Equipment Regulations 1998."},
+{q:"Which is the difference between a hazard and a risk?",o:["A hazard can cause harm; risk is how likely and how severe that harm is","They mean the same","Risk is the object; hazard is the chance","Hazards only apply to chemicals"],e:"Hazard = potential; risk = likelihood × severity."},
+{q:"The upper exposure action value for daily noise is:",o:["85 dB(A)","80 dB(A)","87 dB(A)","90 dB(A)"],e:"80 lower, 85 upper action value, 87 limit (with hearing protection)."},
+{q:"In the waste hierarchy, which option is preferred most?",o:["Prevention","Recycling","Recovery","Disposal to landfill"],e:"Not creating waste is best; landfill is the last option."}
+]});
+
+UNITS.push({
+n:13, title:"Business, commercial and financial awareness",
+sections:["13.1 Commercial operations and markets","13.2 Business and commercial practices","13.3 Financial and economic concepts"],
+overview:"How engineering businesses are structured, compete and make money, including costs, break-even, profit and wider economic factors.",
+points:[
+"Business ownership: sole trader, partnership, private limited company (Ltd), public limited company (plc), plus charities and public-sector organisations. Limited companies give owners limited liability.",
+"Sectors of the economy: primary (extracting raw materials), secondary (manufacturing and construction), tertiary (services) and quaternary (knowledge/R&D).",
+"Markets: supply and demand set prices. Market structures range from monopoly (one supplier) and oligopoly (a few) to many competing firms. Businesses compete on price, quality, innovation, service and lead time.",
+"Analysis tools: SWOT (strengths, weaknesses, opportunities, threats) and PESTLE (political, economic, social, technological, legal, environmental). Marketing mix: product, price, place, promotion.",
+"Costs: fixed costs don't change with output (rent, salaries, insurance); variable costs rise with output (materials, energy per unit). Total cost = fixed + variable.",
+"Break-even point (units) = fixed costs ÷ (selling price − variable cost per unit). The bracketed figure is the contribution per unit.",
+"Profit = revenue − total costs. Gross profit = revenue − cost of sales; net profit = gross profit − overheads. Cash flow tracks money in and out over time — a profitable firm can still fail if cash runs out.",
+"Economic factors: inflation, interest rates, exchange rates, taxation (VAT, corporation tax), government grants and GDP. Capital expenditure buys long-term assets, which depreciate in value over time."
+],
+terms:[["Fixed cost","A cost that stays the same whatever the output"],["Variable cost","A cost that changes in proportion to output"],["Break-even point","Output at which total revenue equals total costs"],["Contribution","Selling price minus variable cost per unit"],["Cash flow","Movement of money into and out of a business"],["Limited liability","Owners can lose only what they invested, not personal assets"],["SWOT analysis","Review of internal strengths/weaknesses and external opportunities/threats"],["Depreciation","Fall in value of an asset over time"]],
+activities:[
+{type:"sort",title:"Fixed or variable cost?",cats:["Fixed","Variable"],items:[["Factory rent",0],["Business insurance",0],["Manager salaries",0],["Loan repayments",0],["Raw steel for each part",1],["Packaging per unit",1],["Electricity used by machines per part",1],["Piece-rate pay",1]]},
+{type:"calc",title:"Break-even and profit",qs:[{q:"Fixed costs £24 000. Price £50 per unit. Variable cost £20 per unit. Break-even point (units)?",ans:800,tol:0,unit:"units",w:"Contribution = 50 − 20 = £30; 24 000 ÷ 30 = 800 units"},{q:"Same company sells 1 200 units. Profit (£)?",ans:12000,tol:0.5,unit:"£",w:"Revenue 60 000 − (24 000 + 24 000) = £12 000"},{q:"Revenue £150 000, cost of sales £90 000. Gross profit (£)?",ans:60000,tol:0.5,unit:"£",w:"150 000 − 90 000 = £60 000"},{q:"Gross profit £60 000, overheads £35 000. Net profit (£)?",ans:25000,tol:0.5,unit:"£",w:"60 000 − 35 000 = £25 000"},{q:"A £40 000 machine depreciates straight-line to £0 over 8 years. Annual depreciation (£)?",ans:5000,tol:0.5,unit:"£",w:"40 000 ÷ 8 = £5 000 per year"}]},
+{type:"sort",title:"SWOT: sort the factors for a small CNC subcontractor",cats:["Strength","Weakness","Opportunity","Threat"],items:[["Highly skilled machinists",0],["Fast quote turnaround",0],["Ageing machines",1],["Relies on one big customer",1],["Growing demand for EV components",2],["Government skills grants",2],["Rising energy prices",3],["Cheaper overseas competitors",3]]}
+],
+quiz:[
+{q:"Which is a fixed cost?",o:["Factory rent","Raw materials","Packaging per unit","Energy per part"],e:"Rent doesn't change with output."},
+{q:"Break-even point is where:",o:["Total revenue equals total costs","Profit is highest","Variable costs are zero","Sales stop"],e:"No profit, no loss."},
+{q:"Fixed costs £10 000, price £25, variable cost £15. Break-even quantity is:",o:["1 000 units","400 units","667 units","250 units"],e:"10 000 ÷ (25 − 15) = 1 000."},
+{q:"Manufacturing belongs to which sector?",o:["Secondary","Primary","Tertiary","Quaternary"],e:"Secondary = making and building."},
+{q:"The 'E' at the end of PESTLE stands for:",o:["Environmental","Economic","Ethical","Engineering"],e:"Political, Economic, Social, Technological, Legal, Environmental."},
+{q:"Why can a profitable business still fail?",o:["It runs out of cash to pay bills","It has too many customers","Its products are too good","It has no fixed costs"],e:"Poor cash flow — e.g. customers paying late."},
+{q:"Which ownership type has shares traded on the stock market?",o:["Public limited company (plc)","Sole trader","Partnership","Private limited company (Ltd)"],e:"Only plcs can sell shares to the public."},
+{q:"Net profit is:",o:["Gross profit minus overheads","Revenue minus cost of sales","Revenue minus VAT","Fixed costs plus variable costs"],e:"Overheads are deducted after gross profit."},
+{q:"A market dominated by a few large suppliers is a:",o:["Oligopoly","Monopoly","Perfect competition","Sole trader market"],e:"'Oligo' = few."},
+{q:"Rising interest rates generally make it:",o:["More expensive for businesses to borrow to invest","Cheaper to take out loans","Easier to export","Irrelevant to businesses"],e:"Higher rates raise the cost of borrowing."}
+]});
+
+UNITS.push({
+n:14, title:"Professional responsibilities, attitudes and behaviours",
+sections:["14.1 Professional conduct and responsibilities","14.2 CPD and professional recognition","14.3 Human factors"],
+overview:"How engineers are expected to behave, how they develop and gain professional registration, and how human factors cause errors.",
+points:[
+"Professional conduct: honesty and integrity, working within your competence, following procedures, respecting confidentiality and data protection (UK GDPR / Data Protection Act 2018), protecting health, safety and the environment, and reporting concerns.",
+"The Engineering Council and professional engineering institutions (e.g. IET, IMechE, IChemE, RAeS) set codes of conduct, such as the Statement of Ethical Principles: honesty and integrity, respect for life, law, the environment and public good, accuracy and rigour, leadership and communication.",
+"The Equality Act 2010 protects nine characteristics: age, disability, gender reassignment, marriage and civil partnership, pregnancy and maternity, race, religion or belief, sex, and sexual orientation.",
+"Good behaviours: punctuality, reliability, clear communication, teamwork, respect, taking responsibility, accepting feedback, problem solving and a positive attitude to safety.",
+"Continuous professional development (CPD) keeps skills current: courses, on-the-job learning, mentoring, reading, conferences. Engineers record and reflect on CPD.",
+"Professional registration (UK-SPEC, via the Engineering Council): Engineering Technician (EngTech), Incorporated Engineer (IEng), Chartered Engineer (CEng); ICT Technician (ICTTech). Registration shows competence and commitment.",
+"Human factors are the things about people, tasks and organisations that affect performance and safety. The 'Dirty Dozen': lack of communication, complacency, lack of knowledge, distraction, lack of teamwork, fatigue, lack of resources, pressure, lack of assertiveness, stress, lack of awareness, norms.",
+"Types of human failure: slips (wrong action), lapses (forgotten step), mistakes (wrong decision or rule) and violations (deliberately breaking a rule)."
+],
+terms:[["CPD","Continuous professional development: ongoing learning to maintain competence"],["EngTech","Engineering Technician — professional registration title"],["CEng","Chartered Engineer — highest Engineering Council registration"],["Code of conduct","Rules of behaviour set by a professional body"],["Human factors","Characteristics of people, tasks and organisations that affect performance"],["Complacency","Over-confidence from routine that leads to missed checks"],["Violation","A deliberate departure from a rule or procedure"],["Lapse","An error caused by forgetting to do something"]],
+activities:[
+{type:"sort",title:"Classify the human failure",cats:["Slip","Lapse","Mistake","Violation"],items:[["Pressing the wrong button on a familiar panel",0],["Picking up the wrong spanner by accident",0],["Forgetting to refit a guard after maintenance",1],["Missing a step on a checklist after an interruption",1],["Using the wrong torque value because of a misread chart",2],["Choosing the wrong material from poor training",2],["Bypassing an interlock to save time",3],["Skipping LOTO 'because it's a quick job'",3]]},
+{type:"order",title:"Engineering Council titles — entry to highest",items:["Engineering Technician (EngTech)","Incorporated Engineer (IEng)","Chartered Engineer (CEng)"]},
+{type:"scenario",title:"Professional dilemma",prompt:"Your supervisor asks you to sign off a pressure test you did not witness because the customer is waiting. What should you do and why?",marks:5,model:["Do not sign — it would be dishonest and breaches the code of conduct","Explain politely why you can't sign (lack of evidence, safety risk)","Offer a solution: witness a re-test or get the person who did witness it to sign","Escalate to quality/management if pressure continues","Recognise customer pressure as a human factor that causes errors and violations","Public safety and legal liability outweigh delivery deadlines"]}
+],
+quiz:[
+{q:"How many protected characteristics are there under the Equality Act 2010?",o:["Nine","Five","Seven","Twelve"],e:"Age, disability, gender reassignment, marriage/civil partnership, pregnancy/maternity, race, religion/belief, sex, sexual orientation."},
+{q:"Which body sets UK standards for professional engineering registration?",o:["Engineering Council","HSE","Ofqual","BSI"],e:"The Engineering Council holds the register and UK-SPEC."},
+{q:"Which is the highest of the three Engineering Council titles?",o:["CEng","IEng","EngTech","ICTTech"],e:"Chartered Engineer."},
+{q:"Deliberately bypassing a safety interlock is a:",o:["Violation","Slip","Lapse","Mistake"],e:"Violations are intentional rule breaches."},
+{q:"Forgetting to tighten a bolt after being interrupted is a:",o:["Lapse","Violation","Slip","Norm"],e:"A lapse is a memory failure."},
+{q:"CPD stands for:",o:["Continuous professional development","Certified professional designer","Core practical demonstration","Company policy document"],e:"Ongoing learning to stay competent."},
+{q:"Which is one of the 'Dirty Dozen' human factors?",o:["Complacency","Calibration","Tolerance","Depreciation"],e:"Complacency is classic: routine breeds over-confidence."},
+{q:"Which law covers how personal data must be handled?",o:["Data Protection Act 2018 / UK GDPR","PUWER 1998","Equality Act 2010","HASAWA 1974"],e:"UK GDPR and the DPA 2018 govern personal data."},
+{q:"Working within your competence means:",o:["Only doing tasks you are trained and qualified to do safely","Doing any task you're asked","Refusing all new work","Working only alone"],e:"Know your limits; seek help or training."},
+{q:"'Norms' as a human factor refers to:",o:["Unwritten workplace habits that drift from the correct procedure","Normal working hours","British Standards","Average measurements"],e:"'That's how we've always done it' can be unsafe."}
+]});
+
+UNITS.push({
+n:15, title:"Stock and asset management",
+sections:["15.1 Stock and inventory management","15.2 Asset management and control"],
+overview:"Managing materials and stock so production never stops but money isn't tied up, and managing physical assets across their whole life.",
+points:[
+"Types of stock: raw materials, components, work in progress (WIP), finished goods, and consumables/MRO (maintenance, repair and operations) items.",
+"Holding too much stock ties up cash and space and risks damage or obsolescence; too little risks stoppages and late deliveries.",
+"Just-in-time (JIT) delivers materials only when needed — low stock, but relies on reliable suppliers. Just-in-case (JIC) holds buffer stock to protect against disruption.",
+"Stock control terms: lead time (order to delivery), buffer/safety stock (minimum held for emergencies), re-order level (when to order), re-order quantity, maximum stock level. Re-order level = (usage per day × lead time in days) + buffer stock.",
+"Stock rotation: FIFO (first in, first out) prevents items going out of date. ABC analysis focuses control on high-value 'A' items.",
+"Kanban uses cards or empty bins as a visual signal to replenish stock. Barcodes, RFID tags and ERP/MRP software track inventory in real time.",
+"Asset management covers the whole life of physical assets (machines, tools, vehicles, buildings): acquire, operate, maintain, upgrade, dispose. ISO 55001 is the asset management standard.",
+"An asset register records each asset: ID/tag, location, cost, date bought, depreciation, maintenance and calibration history, and disposal. Good records support maintenance, insurance and audits."
+],
+terms:[["Work in progress (WIP)","Partly finished products still in production"],["Lead time","Time between placing an order and receiving it"],["Buffer stock","Minimum safety stock kept to cover unexpected demand or delays"],["Re-order level","Stock level that triggers a new order"],["FIFO","First in, first out — oldest stock is used first"],["Just-in-time","Receiving materials only as they are needed"],["Kanban","Visual signal (card or bin) to trigger replenishment"],["Asset register","Record of all assets, their value, location and history"]],
+activities:[
+{type:"calc",title:"Stock control calculations",qs:[{q:"Daily usage 40 units, lead time 5 days, buffer stock 100. Re-order level?",ans:300,tol:0,unit:"units",w:"(40 × 5) + 100 = 300 units"},{q:"Daily usage 25, lead time 8 days, no buffer. Re-order level?",ans:200,tol:0,unit:"units",w:"25 × 8 = 200 units"},{q:"A delivery of 700 units arrives. Usage is 35 units per day. How many days will the delivery last?",ans:20,tol:0.05,unit:"days",w:"700 ÷ 35 = 20 days"}]},
+{type:"sort",title:"Type of stock",cats:["Raw material","Work in progress","Finished goods","Consumables / MRO"],items:[["Steel bar in the stores",0],["Plastic granules for moulding",0],["Castings waiting for machining",1],["Half-assembled gearboxes",1],["Boxed pumps ready to ship",2],["Cutting fluid",3],["Grinding discs",3],["Gloves and wipes",3]]},
+{type:"sort",title:"JIT or JIC?",cats:["Just-in-time","Just-in-case"],items:[["Low storage costs",0],["Needs very reliable suppliers",0],["Common in car assembly plants",0],["Protects against supply chain disruption",1],["Ties up more cash in stock",1],["Allows bulk-buy discounts",1]]}
+],
+quiz:[
+{q:"Partly assembled products on the shop floor are classed as:",o:["Work in progress","Raw materials","Finished goods","Consumables"],e:"WIP is stock that has started but not finished production."},
+{q:"Usage 50/day, lead time 4 days, buffer 80. Re-order level is:",o:["280","200","130","254"],e:"(50 × 4) + 80 = 280."},
+{q:"FIFO stands for:",o:["First in, first out","Fast in, fast out","Final inspection, final output","Fixed inventory, flexible order"],e:"Oldest stock is used first."},
+{q:"A key risk of just-in-time is:",o:["A late delivery can stop production","Too much money tied up in stock","Large storage costs","Stock going out of date"],e:"No buffer means disruptions hit immediately."},
+{q:"Lead time is:",o:["The time from placing an order to receiving it","The time to make one part","The shelf life of stock","The time to count stock"],e:"Supplier lead time drives re-order level."},
+{q:"A Kanban system triggers replenishment using:",o:["A visual signal such as a card or empty bin","Annual stock counts","Price changes","Customer complaints"],e:"Pull system using visual signals."},
+{q:"In ABC analysis, 'A' items are:",o:["High-value items needing the tightest control","The cheapest items","Items starting with A","Obsolete stock"],e:"A small number of items accounts for most of the value."},
+{q:"Which technology identifies stock without line-of-sight scanning?",o:["RFID","Barcode","Paper label","Kanban card"],e:"RFID tags are read by radio."},
+{q:"An asset register would NOT normally record:",o:["Employees' home addresses","Purchase date and cost","Location","Maintenance history"],e:"It records information about assets, not personal data."},
+{q:"Which standard relates to asset management systems?",o:["ISO 55001","ISO 9001","ISO 14001","BS 8888"],e:"ISO 55000 series covers asset management."}
+]});
+
+UNITS.push({
+n:16, title:"Continuous improvement",
+sections:["16.1 Continuous improvement principles and practices"],
+overview:"Lean thinking and the tools engineers use to remove waste, improve quality and keep getting better.",
+points:[
+"Continuous improvement (Kaizen) means many small, ongoing improvements involving everyone, rather than occasional big changes.",
+"Lean manufacturing focuses on value for the customer and removing waste. The 8 wastes (TIMWOODS): Transport, Inventory, Motion, Waiting, Overproduction, Over-processing, Defects, Skills (unused talent).",
+"5S workplace organisation: Sort, Set in order, Shine, Standardise, Sustain. (Some add Safety as a 6th S.)",
+"PDCA (Plan–Do–Check–Act) is the basic improvement cycle. Six Sigma uses DMAIC (Define, Measure, Analyse, Improve, Control) and aims for 3.4 defects per million opportunities.",
+"Poka-yoke (mistake-proofing) designs processes so errors can't happen or are caught immediately, e.g. a connector that only fits one way.",
+"Total Productive Maintenance (TPM) involves operators in routine maintenance. OEE = availability × performance × quality (world-class is around 85%).",
+"SMED (single-minute exchange of die) reduces changeover time. Value stream mapping shows every step and highlights non-value-adding activity.",
+"Other tools: Gemba (go to where the work is done), Andon (signal to stop the line for a problem), Jidoka (automation with a human touch — stop on abnormality), Kanban, benchmarking."
+],
+terms:[["Kaizen","Japanese for 'change for the better': continuous small improvements"],["Lean","Philosophy of maximising customer value by eliminating waste"],["5S","Sort, Set in order, Shine, Standardise, Sustain"],["Poka-yoke","Mistake-proofing a process"],["OEE","Overall equipment effectiveness: availability × performance × quality"],["SMED","Techniques to cut changeover time to under ten minutes"],["Gemba","The real place where work is done"],["DMAIC","Define, Measure, Analyse, Improve, Control"]],
+activities:[
+{type:"sort",title:"Identify the waste (TIMWOODS)",cats:["Transport","Inventory","Motion","Waiting"],items:[["Forklift moving parts between buildings",0],["Shipping parts to another site for painting and back",0],["Six months of brackets in stock",1],["WIP piling up between machines",1],["Operator walking to fetch tools",2],["Bending to reach parts in a low bin",2],["Machine idle waiting for a setter",3],["Assembler waiting for parts",3]]},
+{type:"sort",title:"More wastes",cats:["Overproduction","Over-processing","Defects","Skills"],items:[["Making 500 when the order is 300",0],["Producing ahead of demand 'to keep busy'",0],["Polishing a hidden surface",1],["Tighter tolerance than the customer needs",1],["Reworking weld spatter",2],["Scrapping mis-drilled plates",2],["Operators' ideas never asked for",3],["Skilled technician doing data entry",3]]},
+{type:"order",title:"Put 5S in order",items:["Sort","Set in order","Shine","Standardise","Sustain"]},
+{type:"calc",title:"OEE",qs:[{q:"Availability 90%, performance 95%, quality 98%. OEE (%, 1 d.p.)?",ans:83.8,tol:0.1,unit:"%",w:"0.90 × 0.95 × 0.98 = 0.8379 → 83.8%"},{q:"Availability 80%, performance 90%, quality 95%. OEE (%, 1 d.p.)?",ans:68.4,tol:0.1,unit:"%",w:"0.80 × 0.90 × 0.95 = 0.684 → 68.4%"}]}
+],
+quiz:[
+{q:"Kaizen means:",o:["Continuous small improvements involving everyone","A single large investment","A stock control method","A type of inspection"],e:"Change for the better, done constantly."},
+{q:"In TIMWOODS, the 'M' stands for:",o:["Motion","Materials","Maintenance","Machining"],e:"Unnecessary movement of people."},
+{q:"The first step of 5S is:",o:["Sort","Shine","Standardise","Sustain"],e:"Remove what isn't needed first."},
+{q:"A USB plug that only fits one way is an example of:",o:["Poka-yoke","Kanban","Andon","SMED"],e:"Mistake-proofing."},
+{q:"OEE is calculated as:",o:["Availability × performance × quality","Output ÷ input","Uptime + downtime","Defects ÷ total parts"],e:"All three factors multiplied together."},
+{q:"Six Sigma's improvement process is:",o:["DMAIC","PDCA","5S","TIMWOODS"],e:"Define, Measure, Analyse, Improve, Control."},
+{q:"SMED aims to reduce:",o:["Changeover (set-up) time","Stock levels","Defects","Energy use"],e:"Single-minute exchange of die."},
+{q:"Making more products than the customer needs is the waste of:",o:["Overproduction","Inventory","Over-processing","Transport"],e:"Overproduction often causes other wastes."},
+{q:"'Gemba' means:",o:["The actual place where work happens","A visual alarm","A production plan","A type of gauge"],e:"Managers 'go to Gemba' to see real problems."},
+{q:"An Andon is:",o:["A visual or audible signal that a problem has occurred","A stock card","A defect type","A maintenance schedule"],e:"Lets operators flag issues and stop the line."}
+]});
+
+UNITS.push({
+n:17, title:"Project and programme management",
+sections:["17.1 Principles of project management","17.2 Roles and responsibilities","17.3 Project planning and control"],
+overview:"How projects are defined, planned, controlled and closed, who does what, and the tools used to keep time, cost and quality on track.",
+points:[
+"A project is a temporary piece of work with a defined start, end and objectives. A programme is a group of related projects managed together for a bigger benefit. A portfolio is all the projects and programmes in an organisation.",
+"Project life cycle: initiation (business case, feasibility), planning, execution, monitoring and control, closure (handover, lessons learned).",
+"The triple constraint (iron triangle): time, cost and scope/quality. Changing one affects the others.",
+"Objectives should be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.",
+"Roles: sponsor (owns the business case, provides funding), project manager (plans and controls day to day), project team, stakeholders (anyone affected or interested), project board/steering group. A RACI chart shows who is Responsible, Accountable, Consulted and Informed.",
+"Planning tools: work breakdown structure (WBS), Gantt chart (bars against time), network diagram and critical path analysis (CPA). The critical path is the longest sequence of dependent tasks; any delay on it delays the project. Float is how long a non-critical task can slip.",
+"Control: milestones, progress reports, budget tracking, change control, risk register (likelihood, impact, owner, mitigation), issue log, contingency.",
+"Methodologies: waterfall (sequential stages), agile (short iterative sprints, flexible scope), PRINCE2 (structured, stage-based UK method). Closure includes evaluating success and recording lessons learned."
+],
+terms:[["Project","Temporary work with a defined start, end and objectives"],["Programme","A group of related projects managed together"],["Critical path","Longest chain of dependent tasks; sets the minimum project duration"],["Float","How long a task can be delayed without delaying the project"],["Gantt chart","Bar chart showing tasks against a timeline"],["Milestone","A significant point or event in a project, with zero duration"],["Stakeholder","Anyone with an interest in or affected by the project"],["Risk register","Log of risks with likelihood, impact, owner and response"]],
+activities:[
+{type:"order",title:"Order the project life cycle",items:["Initiation","Planning","Execution","Monitoring and control","Closure"]},
+{type:"calc",title:"Critical path",qs:[{q:"Tasks: A (3 days) then B (5 days) then D (2 days). In parallel with B, task C (4 days) runs after A and before D. What is the project duration (days)?",ans:10,tol:0,unit:"days",w:"Paths: A-B-D = 3+5+2 = 10; A-C-D = 3+4+2 = 9. Critical path A-B-D = 10 days"},{q:"In the same project, how much float does task C have (days)?",ans:1,tol:0,unit:"days",w:"10 − 9 = 1 day"},{q:"Paths through a network are 12, 15 and 14 days long. Minimum project duration (days)?",ans:15,tol:0,unit:"days",w:"The longest path is the critical path: 15 days"}]},
+{type:"sort",title:"Who is responsible?",cats:["Sponsor","Project manager","Team member","Stakeholder"],items:[["Approves the business case and funding",0],["Champions the project at board level",0],["Creates the Gantt chart and schedule",1],["Manages day-to-day progress and reports",1],["Completes assigned tasks",2],["Reports progress on their work package",2],["Local residents near a new factory",3],["Customers who will use the product",3]]},
+{type:"scenario",title:"Manage a project risk",prompt:"A key supplier of a custom gearbox warns that delivery may be 3 weeks late. The gearbox task is on the critical path. Explain the impact and how you would respond.",marks:6,model:["Because it is on the critical path, the whole project end date slips by up to 3 weeks","Record it in the risk/issue log with owner, likelihood and impact","Inform the sponsor and key stakeholders early","Options: expedite (pay for faster delivery), find an alternative supplier, re-sequence other tasks","Use any float on non-critical tasks and crash tasks (add resources) to recover time","Use change control if the timeline or budget must change; review lessons learned at closure"]}
+],
+quiz:[
+{q:"What makes a project different from routine operations?",o:["It is temporary with a defined start and end","It never ends","It has no budget","It has no objectives"],e:"Projects are temporary and unique."},
+{q:"A programme is:",o:["A group of related projects managed together","A single task","A Gantt chart","A project's budget"],e:"Programmes coordinate several projects for a shared benefit."},
+{q:"The critical path is:",o:["The longest sequence of dependent tasks","The shortest route through the project","The most expensive task","Tasks with the most float"],e:"It sets the shortest possible project duration."},
+{q:"A task with zero float is:",o:["On the critical path","Optional","Already complete","Not dependent on anything"],e:"Any delay to it delays the project."},
+{q:"Which chart shows tasks as bars against a timeline?",o:["Gantt chart","Pie chart","Fishbone diagram","Control chart"],e:"Named after Henry Gantt."},
+{q:"The 'T' in SMART objectives stands for:",o:["Time-bound","Technical","Tested","Targeted"],e:"Objectives need a deadline."},
+{q:"Who usually provides funding and owns the business case?",o:["Project sponsor","Team member","Supplier","End user"],e:"The sponsor is accountable for the business benefit."},
+{q:"In a RACI chart, 'A' means:",o:["Accountable","Assigned","Approved","Assisted"],e:"Responsible, Accountable, Consulted, Informed."},
+{q:"Agile project management is best described as:",o:["Short, iterative cycles with flexible scope","A strict sequence where each stage finishes before the next","No planning at all","Only used for construction"],e:"Agile works in sprints and adapts to change."},
+{q:"Recording 'lessons learned' takes place mainly at:",o:["Project closure","Initiation only","The first team meeting","Never"],e:"Closure reviews what worked and what didn't for future projects."}
+]});
+
+const EXTRA = {
+1:[
+{q:"Which process family does injection moulding belong to?",o:["Shaping","Wasting","Joining","Forming"],e:"Molten material is shaped in a mould — no material is removed."},
+{q:"Which is an advantage of one-off production?",o:["The product can be made exactly to the customer's needs","Very low cost per unit","Uses mainly unskilled labour","Highly automated lines"],e:"Bespoke work suits individual requirements but costs more per item."},
+{q:"Sustainable design aims to:",o:["Reduce environmental impact across the whole product life cycle","Make products as cheap as possible","Use only metal parts","Shorten product life so people buy more"],e:"It considers materials, energy, use and end of life."},
+{q:"Repairing a pump only after it stops working is:",o:["Reactive maintenance","Planned preventive maintenance","Predictive maintenance","Total productive maintenance"],e:"Reactive (corrective) maintenance follows a breakdown."},
+{q:"Which joining method is permanent?",o:["Welding","Bolting","Using a machine screw","Using a quick-release clip"],e:"Welds can only be undone by cutting or grinding."},
+{q:"A design brief is:",o:["A short statement of the problem and what the solution must do","A final working drawing","A bill of materials","An inspection report"],e:"It sets out the need, user and key constraints."},
+{q:"A design specification should contain:",o:["Measurable requirements the product must meet","Only sketches","The selling price of competitors","Staff rotas"],e:"Specifications list criteria such as size, weight, cost and performance."},
+{q:"Which is a typical installation task for an engineering technician?",o:["Levelling, fixing and commissioning a new machine","Writing the company marketing plan","Setting staff pay rates","Auditing the accounts"],e:"Installation includes positioning, connecting services, testing and commissioning."},
+{q:"Commissioning a new system means:",o:["Testing it to prove it works as specified before handover","Ordering the parts","Designing the layout","Scrapping old equipment"],e:"Commissioning checks safe, correct operation."},
+{q:"Which manufacturing approach groups machines so a family of parts flows through one area?",o:["Cellular manufacturing","Job shop layout","Continuous flow line","One-off production"],e:"Cells reduce transport and waiting between machines."}
+],
+2:[
+{q:"Which sector generates and distributes electricity, including wind and nuclear?",o:["Energy","Chemical","Marine","Aerospace"],e:"Energy covers generation, transmission and distribution."},
+{q:"Which material development made strong, cheap steel widely available in the 1850s?",o:["The Bessemer process","Carbon fibre","Injection moulding","Galvanising"],e:"The Bessemer converter mass-produced steel."},
+{q:"Graphene is an example of a:",o:["Nanomaterial","Thermosetting polymer","Ferrous metal","Ceramic glaze"],e:"It is a single layer of carbon atoms — extremely strong and conductive."},
+{q:"Which development allowed machines to be controlled by stored programs instead of manual handwheels?",o:["CNC","The steam hammer","The spinning jenny","The water wheel"],e:"Computer numerical control came with the third revolution."},
+{q:"Which technology lets a factory analyse very large amounts of machine data?",o:["Big data analytics","Hand-written logbooks","Mechanical counters","Gauge blocks"],e:"Big data is a key part of Industry 4.0."},
+{q:"An environmental reason for the growth of electric vehicles is:",o:["No tailpipe emissions during use","They use no materials","They need no electricity","They are always cheaper to build"],e:"EVs reduce local emissions, though battery production has impacts."},
+{q:"Biomedical engineering includes:",o:["Prosthetic limbs and medical devices","Ship hull design","Railway signalling","Oil refining"],e:"It applies engineering to healthcare."},
+{q:"Which is a disadvantage of rapid technological change for businesses?",o:["Equipment and skills can quickly become out of date","Products always cost more","Customers never want new products","It removes the need for training"],e:"Firms must keep investing and retraining."},
+{q:"Smart materials are those that:",o:["Change a property in response to a stimulus such as heat or light","Are always very hard","Are made only from metals","Cannot be recycled"],e:"E.g. shape memory alloys and thermochromic pigments."},
+{q:"Which early development standardised the way screw threads were made in Britain?",o:["The Whitworth thread","The metric ISO thread","The assembly line","The PLC"],e:"Joseph Whitworth proposed a standard thread in 1841."}
+],
+3:[
+{q:"An exploded view is used to show:",o:["How parts fit together in an assembly","The hidden detail of one part","Electrical connections","The material's grain"],e:"Parts are drawn spaced apart along assembly lines."},
+{q:"Which drawing shows the front face true shape with depth lines at 45°?",o:["Oblique","Isometric","Perspective","Orthographic"],e:"Oblique projection keeps the front face true."},
+{q:"A cutting plane line is drawn as:",o:["Thin chain with thick ends and arrows","Thin dashed","Continuous thick","Freehand wavy line"],e:"It shows where a section is taken and the viewing direction."},
+{q:"The symbol Ø before a dimension means:",o:["Diameter","Radius","Square","Countersink"],e:"Ø = diameter."},
+{q:"A scale of 1:2 means the drawing is:",o:["Half full size","Twice full size","Full size","Not to scale"],e:"1 unit on the drawing = 2 units in reality."},
+{q:"Which diagram uses standard symbols to show valves, cylinders and pipes?",o:["A fluid power circuit diagram","A Gantt chart","An isometric drawing","A block diagram"],e:"Pneumatic/hydraulic symbols follow ISO 1219."},
+{q:"A transition fit means:",o:["Depending on the actual sizes, there may be a small clearance or interference","There is always a large clearance","There is always heavy interference","No tolerances apply"],e:"Used for accurate location, e.g. dowels."},
+{q:"GD&T stands for:",o:["Geometric dimensioning and tolerancing","General design and testing","Gear drive and transmission","Graphical drawing and templates"],e:"It controls form, orientation and position, not just size."},
+{q:"Why should dimensions not be measured directly from a scaled print?",o:["Printing and scaling can distort sizes; use the stated dimensions","Measuring is illegal","Prints are always full size","Rulers are not accurate"],e:"Always work to the written dimensions."},
+{q:"Which drawing shows how a printed circuit board's tracks and pads are arranged?",o:["PCB layout","Circuit schematic","Block diagram","Flowchart"],e:"A schematic shows connections; a PCB layout shows physical placement."}
+],
+4:[
+{q:"Binary 1111 1111 equals which decimal number?",o:["255","256","127","128"],e:"128+64+32+16+8+4+2+1 = 255."},
+{q:"Decimal 26 in hexadecimal is:",o:["1A","26","1B","A1"],e:"26 = 1 × 16 + 10 → 1A."},
+{q:"Using Pythagoras, a triangle with sides 5 and 12 has a hypotenuse of:",o:["13","17","7","60"],e:"√(25 + 144) = √169 = 13."},
+{q:"The mode of 4, 7, 7, 2, 9, 7, 4 is:",o:["7","4","5.7","9"],e:"7 appears most often."},
+{q:"The range of 18, 23, 11, 30, 25 is:",o:["19","30","21.4","12"],e:"30 − 11 = 19."},
+{q:"0.000 035 m expressed in micrometres (µm) is:",o:["35 µm","3.5 µm","350 µm","0.35 µm"],e:"1 µm = 10⁻⁶ m; 35 × 10⁻⁶ m = 35 µm."},
+{q:"12.3456 rounded to 3 significant figures is:",o:["12.3","12.35","12.346","12"],e:"First three significant digits: 1, 2, 3."},
+{q:"The gradient of a line through (0, 2) and (4, 10) is:",o:["2","8","4","0.5"],e:"(10 − 2) ÷ (4 − 0) = 2."},
+{q:"Which rule would you use to find a side in a non-right-angled triangle, given two sides and the included angle?",o:["Cosine rule","Sine rule","Pythagoras","SOH CAH TOA"],e:"a² = b² + c² − 2bc cos A."},
+{q:"The volume of a rectangular block 20 mm × 10 mm × 5 mm is:",o:["1000 mm³","35 mm³","200 mm³","100 mm³"],e:"20 × 10 × 5 = 1000 mm³."}
+],
+5:[
+{q:"Which SI base unit measures temperature?",o:["Kelvin","Celsius","Joule","Fahrenheit"],e:"The kelvin is the SI base unit; °C is derived."},
+{q:"One joule is equal to:",o:["1 N·m","1 W·s²","1 kg/m","1 N/m²"],e:"Work = force × distance."},
+{q:"A polar coordinate gives a position as:",o:["A distance and an angle","Three distances x, y, z","Only an angle","A grid letter"],e:"Polar = (r, θ)."},
+{q:"In a fair test, the variable you change on purpose is the:",o:["Independent variable","Dependent variable","Control variable","Constant"],e:"The dependent variable is what you measure."},
+{q:"Calibration of a micrometer is checked using:",o:["Gauge blocks (slip gauges)","A tape measure","A protractor","A multimeter"],e:"Gauge blocks are traceable length standards."},
+{q:"Rusting of iron requires:",o:["Oxygen and water","Only heat","Only oil","Nitrogen"],e:"Rust forms when iron reacts with oxygen in the presence of water."},
+{q:"Momentum is calculated as:",o:["Mass × velocity","Mass × acceleration","Force × distance","½ × mass × velocity²"],e:"p = mv, in kg·m/s."},
+{q:"Fluid flowing smoothly in parallel layers is:",o:["Laminar flow","Turbulent flow","Compressible flow","Cavitation"],e:"Turbulent flow is chaotic with eddies."},
+{q:"Heat transfer by infrared waves that can travel through a vacuum is:",o:["Radiation","Conduction","Convection","Insulation"],e:"No medium is needed for radiation."},
+{q:"Which statement is Newton's third law?",o:["Every action has an equal and opposite reaction","F = ma","An object stays at rest unless a force acts","Energy is conserved"],e:"Forces come in equal and opposite pairs."}
+],
+6:[
+{q:"Which property allows a metal to be hammered into thin sheets?",o:["Malleability","Ductility","Hardness","Elasticity"],e:"Ductility is drawing into wire; malleability is shaping by compression."},
+{q:"Stainless steel resists corrosion mainly due to added:",o:["Chromium","Lead","Carbon","Sulphur"],e:"Chromium forms a protective oxide layer."},
+{q:"Brass is an alloy of:",o:["Copper and zinc","Copper and tin","Iron and carbon","Aluminium and magnesium"],e:"Bronze is copper and tin."},
+{q:"A material with a regular, repeating arrangement of atoms is:",o:["Crystalline","Amorphous","Elastomeric","Composite"],e:"Metals are crystalline; glass is amorphous."},
+{q:"Anodising is a surface treatment used mainly on:",o:["Aluminium","Mild steel","Cast iron","Polyethylene"],e:"It thickens aluminium's natural oxide layer."},
+{q:"Cold working a metal generally makes it:",o:["Harder and less ductile","Softer and more ductile","Lighter","More corrosion-resistant"],e:"This is work hardening."},
+{q:"On a stress–strain graph, the highest stress a material reaches is its:",o:["Ultimate tensile strength","Yield point","Young's modulus","Elastic limit"],e:"UTS is the peak of the curve."},
+{q:"A Charpy test measures:",o:["Impact toughness","Hardness","Tensile strength","Fatigue life"],e:"Energy absorbed when a notched sample is struck."},
+{q:"Which NDT method can only find surface-breaking cracks?",o:["Dye penetrant","Ultrasonic","Radiography","Eddy current on thick sections"],e:"The dye must enter an open crack."},
+{q:"Which composite consists of fibres in a resin matrix used in aircraft and racing cars?",o:["CFRP","Concrete","Plywood","Cermet"],e:"Carbon-fibre reinforced polymer is light and stiff."}
+],
+7:[
+{q:"Velocity ratio is:",o:["Distance moved by effort ÷ distance moved by load","Load ÷ effort","Output power ÷ input power","Effort × distance"],e:"VR depends only on the mechanism's geometry."},
+{q:"A cam and follower converts:",o:["Rotary motion into reciprocating or oscillating motion","Linear motion into rotary motion only","Electrical energy to heat","Low speed to high torque"],e:"The cam profile sets the follower's movement."},
+{q:"Tweezers are a class 3 lever because:",o:["The effort is between the fulcrum and the load","The load is in the middle","The fulcrum is in the middle","There is no fulcrum"],e:"Class 3: effort in the middle."},
+{q:"Power is measured in:",o:["Watts","Joules","Newtons","Pascals"],e:"1 W = 1 J/s."},
+{q:"A 2 kg mass is raised 5 m (g = 9.81). Its gain in potential energy is about:",o:["98.1 J","10 J","49 J","981 J"],e:"mgh = 2 × 9.81 × 5 = 98.1 J."},
+{q:"Young's modulus is a measure of a material's:",o:["Stiffness","Hardness","Toughness","Density"],e:"E = stress ÷ strain in the elastic region."},
+{q:"A crank and slider is used in a car engine to convert:",o:["Reciprocating motion of the piston into rotary motion","Rotary motion into oscillating motion","Linear motion into heat","Electricity into motion"],e:"The connecting rod links piston to crankshaft."},
+{q:"Which reduces friction between a rotating shaft and its housing?",o:["A bearing","A key","A cam","A clutch"],e:"Ball, roller or plain bearings support the shaft."},
+{q:"Torque is:",o:["A turning force (moment) about an axis","A linear force","Rotational speed","Power lost to friction"],e:"Measured in N·m."},
+{q:"A moving 1000 kg vehicle at 10 m/s has kinetic energy of:",o:["50 000 J","10 000 J","100 000 J","5000 J"],e:"½ × 1000 × 10² = 50 000 J."}
+],
+8:[
+{q:"Which instrument measures current and must be connected in series?",o:["Ammeter","Voltmeter","Ohmmeter","Oscilloscope probe across the supply"],e:"Voltmeters are connected in parallel."},
+{q:"In a parallel circuit, the voltage across each branch is:",o:["The same as the supply voltage","Shared between branches","Zero","Proportional to current"],e:"Each branch connects directly across the supply."},
+{q:"A capacitor's value is measured in:",o:["Farads","Henrys","Ohms","Teslas"],e:"Inductance is in henrys."},
+{q:"A transformer only works with:",o:["Alternating current","Direct current","Static charge","Batteries"],e:"A changing magnetic field is needed to induce voltage."},
+{q:"An OR gate gives an output of 0 when:",o:["All inputs are 0","All inputs are 1","Any input is 1","Inputs are different"],e:"OR outputs 1 if any input is 1."},
+{q:"The truth table output for XOR with inputs 1 and 1 is:",o:["0","1","Undefined","Same as AND"],e:"XOR is 1 only when inputs differ."},
+{q:"A transistor can be used as:",o:["An electronic switch or amplifier","A battery","A fuse","A transformer"],e:"A small base current controls a larger collector current."},
+{q:"A fuse protects a circuit by:",o:["Melting and breaking the circuit when current is too high","Storing extra charge","Increasing the voltage","Smoothing DC"],e:"MCBs do the same job and can be reset."},
+{q:"An electric motor works because:",o:["A current-carrying conductor in a magnetic field experiences a force","Heat makes the shaft expand","Light hits the coil","Resistance creates motion"],e:"This is the motor effect."},
+{q:"Three 30 Ω resistors in parallel have a total resistance of:",o:["10 Ω","90 Ω","30 Ω","3 Ω"],e:"Equal resistors in parallel: R ÷ n = 30 ÷ 3 = 10 Ω."}
+],
+9:[
+{q:"In ladder logic, a normally closed contact (XIO) is true when:",o:["Its input bit is OFF","Its input bit is ON","The output is ON","The PLC is in program mode"],e:"Examine If Open passes power when the bit is 0."},
+{q:"A latch (seal-in) circuit works by:",o:["Placing an output contact in parallel with the start button","Putting two stop buttons in parallel","Using a timer only","Removing the stop button"],e:"Once on, the output's own contact keeps the rung true."},
+{q:"A PLC counter that increases by one on each pulse is a:",o:["CTU","CTD","TON","TOF"],e:"Count up; CTD counts down."},
+{q:"Which type of PLC output is best for switching high-frequency DC signals, such as pulses to a stepper drive?",o:["Transistor output","Relay output","Mechanical contactor","Fuse"],e:"Transistors switch fast with no contact wear."},
+{q:"Sequential Function Chart (SFC) is best for programming:",o:["Step-by-step sequences such as a machine cycle","Complex maths only","Network setup","Data logging only"],e:"SFC shows steps and transitions."},
+{q:"A single-acting cylinder returns by:",o:["A spring","Air pressure on both sides","Hydraulic oil only","Gravity always"],e:"Air drives one stroke; a spring returns it."},
+{q:"A pneumatic regulator is used to:",o:["Set and maintain the working air pressure","Remove water from air","Add oil to air","Count cylinder strokes"],e:"Part of the FRL unit."},
+{q:"Which component produces the pressurised oil in a hydraulic system?",o:["Pump","Compressor","Regulator","Silencer"],e:"Compressors supply air for pneumatics."},
+{q:"A flow control valve on a cylinder mainly controls:",o:["Cylinder speed","Cylinder force","Direction of travel","Air quality"],e:"Restricting flow slows the piston."},
+{q:"A mechatronic system differs from a purely mechanical one because it includes:",o:["Sensors, electronics and a programmable controller","Only gears and levers","Only hydraulic pipes","No moving parts"],e:"Mechatronics integrates mechanics, electronics and software."}
+],
+10:[
+{q:"The 'process' block in a system diagram:",o:["Changes the input into the output","Measures the output","Supplies power","Sets the target"],e:"Input → process → output."},
+{q:"Which term describes the actual measured value fed back in a control loop?",o:["Process variable","Setpoint","Gain","Bandwidth"],e:"PV is compared with SP."},
+{q:"Overshoot in a control system means:",o:["The output goes past the setpoint before settling","The output never reaches the setpoint","The system is open-loop","The sensor has failed"],e:"Derivative action helps reduce it."},
+{q:"A thermocouple produces a voltage because of:",o:["The junction of two different metals at different temperatures","Light falling on it","Changing resistance only","Magnetism"],e:"This is the Seebeck effect."},
+{q:"A thermistor's resistance:",o:["Changes significantly with temperature","Changes with light level","Is always fixed","Changes with strain"],e:"NTC thermistors' resistance falls as temperature rises."},
+{q:"Which sensor can detect non-metal objects such as plastic or liquid through a tank wall?",o:["Capacitive proximity sensor","Inductive proximity sensor","Reed switch","Hall effect sensor"],e:"Capacitive sensors respond to changes in dielectric."},
+{q:"A rotary encoder is used to measure:",o:["Shaft position or speed","Temperature","Pressure","Humidity"],e:"It outputs pulses as the shaft turns."},
+{q:"A DAC (digital-to-analogue converter) is used to:",o:["Turn a controller's digital value into a variable voltage for an actuator","Read a sensor into a PLC","Store data","Measure frequency"],e:"E.g. setting a drive speed with 0–10 V."},
+{q:"Why is a 4 mA signal used to represent zero instead of 0 mA?",o:["So a broken wire (0 mA) can be detected","Because 0 mA is unsafe","To save energy","Because sensors can't output less"],e:"A 'live zero' distinguishes zero from a fault."},
+{q:"A servo motor is described as closed-loop because:",o:["It uses position feedback to correct its movement","It needs no power","It always runs at full speed","It has no gears"],e:"An encoder or potentiometer reports position back."}
+],
+11:[
+{q:"Which standard covers environmental management systems?",o:["ISO 14001","ISO 9001","ISO 45001","BS 8888"],e:"ISO 45001 is occupational health and safety."},
+{q:"The cost of rework, scrap and warranty claims is part of the:",o:["Cost of poor quality","Marketing budget","Fixed costs only","Depreciation"],e:"Prevention is usually cheaper than failure."},
+{q:"A first-party audit is carried out by:",o:["The organisation itself (internal audit)","A customer","An independent certification body","The government"],e:"Second-party = customer; third-party = independent."},
+{q:"Process capability (Cpk) compares:",o:["Process spread with the specified tolerance","Sales with costs","Stock with demand","Staff with machines"],e:"Cpk ≥ 1.33 is often required."},
+{q:"A non-conformance report (NCR) records:",o:["Details of a product or process that does not meet requirements","A staff holiday","A completed sale","A new design idea"],e:"It triggers investigation and corrective action."},
+{q:"Corrective action aims to:",o:["Remove the cause of a problem so it does not happen again","Hide the defect","Speed up delivery","Change the customer"],e:"Preventive action stops potential problems before they occur."},
+{q:"A flowchart-style SOP is most useful when:",o:["The task includes decisions with different routes","There are only two steps","No decisions are needed","The task is never repeated"],e:"Decision diamonds show branching paths."},
+{q:"Why should measuring equipment be calibrated against traceable standards?",o:["So measurements can be trusted and linked to national standards","To make it look new","To increase its resolution","It is never necessary"],e:"Traceability chains back to national/international standards."},
+{q:"Which chart ranks problem causes from most to least frequent?",o:["Pareto chart","Gantt chart","Fishbone diagram","Pie chart only"],e:"It highlights the vital few causes."},
+{q:"Inspecting a sample from each batch rather than every part is called:",o:["Sampling inspection","100% inspection","Destructive testing only","Auditing"],e:"Saves time but some defects may slip through."}
+],
+12:[
+{q:"Under HASAWA, an employee's duty includes:",o:["Taking reasonable care of themselves and others affected by their work","Writing the company safety policy","Buying all PPE","Enforcing the law on others"],e:"Section 7 duties of employees."},
+{q:"A firm with five or more employees must:",o:["Record significant findings of its risk assessments","Hire a full-time HSE inspector","Close every Friday","Avoid all risks"],e:"Required by the Management Regulations 1999."},
+{q:"A yellow triangle safety sign means:",o:["Warning — caution, hazard","Mandatory action","Prohibited","Safe condition"],e:"E.g. 'Danger: high voltage'."},
+{q:"Which regulations apply to workers using computer screens for long periods?",o:["Display Screen Equipment Regulations 1992","LOLER 1998","COSHH 2002","Noise at Work 2005"],e:"Covers workstation assessments and eye tests."},
+{q:"Replacing a solvent-based paint with a water-based one is an example of:",o:["Substitution","Elimination","PPE","Administrative control"],e:"A less hazardous alternative is used."},
+{q:"Fitting local exhaust ventilation to a welding bay is an example of:",o:["An engineering control","PPE","Elimination","An administrative control"],e:"It removes fume at source."},
+{q:"A permit-to-work system is used for:",o:["High-risk tasks such as confined-space entry or hot work","Every routine task","Booking holidays","Ordering stock"],e:"It controls who does what, when, and with what precautions."},
+{q:"An improvement notice requires an employer to:",o:["Fix a breach of the law within a set time","Stop work immediately","Pay compensation to staff","Close the company"],e:"Work can usually continue while it is put right."},
+{q:"The Electricity at Work Regulations 1989 require:",o:["Electrical systems to be constructed and maintained to prevent danger","All electrical work to be done by the HSE","Only battery tools to be used","No electrical inspection"],e:"Also requires competence for electrical work."},
+{q:"Which act sets the UK's net zero target for 2050?",o:["Climate Change Act 2008","HASAWA 1974","Equality Act 2010","Factories Act 1961"],e:"Amended in 2019 to set net zero by 2050."}
+],
+13:[
+{q:"A sole trader has:",o:["Unlimited liability for the business's debts","Limited liability","Shares on the stock exchange","At least two owners"],e:"Personal assets can be at risk."},
+{q:"Contribution per unit is:",o:["Selling price − variable cost per unit","Fixed costs ÷ units","Revenue − total costs","Selling price + variable cost"],e:"It contributes towards fixed costs, then profit."},
+{q:"Revenue is calculated as:",o:["Selling price × quantity sold","Costs − profit","Fixed + variable costs","Profit × quantity"],e:"Also called turnover or sales."},
+{q:"If demand for a product rises while supply stays the same, price will usually:",o:["Rise","Fall","Stay the same","Become zero"],e:"Basic supply and demand."},
+{q:"Inflation means:",o:["A general rise in prices over time","A fall in prices","Higher interest on savings only","Rising unemployment"],e:"It raises material and wage costs."},
+{q:"Which is an example of capital expenditure?",o:["Buying a new CNC machine","Paying monthly electricity","Buying office paper","Paying wages"],e:"Capital spending buys long-term assets."},
+{q:"In the marketing mix, 'place' refers to:",o:["How and where the product reaches the customer","The factory location only","Price discounts","Advertising"],e:"Distribution channels."},
+{q:"A cash flow forecast helps a business to:",o:["Predict when it may run short of cash","Calculate depreciation","Design products","Set tolerances"],e:"So it can arrange finance in advance."},
+{q:"The tertiary sector provides:",o:["Services","Raw materials","Manufactured goods","Crops"],e:"E.g. banking, transport, retail."},
+{q:"A weakness in a SWOT analysis is:",o:["An internal factor that puts the business at a disadvantage","An external market trend","A competitor's new product","A change in the law"],e:"Strengths/weaknesses are internal; opportunities/threats are external."}
+],
+14:[
+{q:"Which document sets out the competence standards for Engineering Council registration?",o:["UK-SPEC","ISO 9001","BS 8888","HASAWA"],e:"UK Standard for Professional Engineering Competence and Commitment."},
+{q:"Which body is a professional engineering institution?",o:["The IET","Ofsted","The DVLA","The HSE"],e:"Institution of Engineering and Technology."},
+{q:"Recording and reflecting on learning activities is part of:",o:["CPD","Stock control","Risk assessment","Break-even analysis"],e:"Reflection shows what was learned and what to do next."},
+{q:"Fatigue as a human factor most directly increases the chance of:",o:["Errors and slower reactions","Better concentration","Fewer mistakes","Higher pay"],e:"Long shifts and poor sleep reduce performance."},
+{q:"Lack of assertiveness can cause problems because:",o:["People don't speak up about safety concerns","They talk too much","They ignore managers","They work too fast"],e:"Speaking up stops errors becoming accidents."},
+{q:"Pressing the wrong button on a familiar control panel is a:",o:["Slip","Violation","Mistake","Norm"],e:"An unintended action during a familiar task."},
+{q:"Which is good practice for confidentiality?",o:["Only sharing customer drawings with people who need them","Posting design data on social media","Emailing files to friends","Leaving drawings on public desks"],e:"Protect intellectual property and personal data."},
+{q:"Treating a colleague less favourably because of their religion is:",o:["Discrimination under the Equality Act 2010","Acceptable if they agree","A health and safety issue only","Allowed in engineering"],e:"Religion or belief is a protected characteristic."},
+{q:"An apprenticeship combines:",o:["Paid work with structured training and qualifications","Only classroom study","Only unpaid work experience","Professional registration with no assessment"],e:"Many engineers start as apprentices."},
+{q:"A good way to reduce distraction errors during critical tasks is:",o:["Using checklists and avoiding interruptions","Playing loud music","Doing several tasks at once","Skipping briefings"],e:"Checklists help you resume correctly after an interruption."}
+],
+15:[
+{q:"Which is an MRO (consumable) item?",o:["Lubricating oil for machines","Steel coil for products","Finished pumps","Castings awaiting machining"],e:"Maintenance, repair and operations items support production."},
+{q:"Holding too much stock can lead to:",o:["Cash tied up and risk of obsolescence","Production stoppages","Missing customer orders","Lower storage costs"],e:"Excess stock costs money to store and may go out of date."},
+{q:"Buffer stock is held to:",o:["Cover unexpected demand or supplier delays","Increase waste","Replace the asset register","Reduce sales"],e:"Also called safety stock."},
+{q:"A perpetual inventory system:",o:["Updates stock records continuously as items move","Counts stock once a year only","Never records stock","Uses only guesswork"],e:"Usually done with barcodes or ERP software."},
+{q:"MRP software is used to:",o:["Plan material requirements from the production schedule","Design CAD models","Run payroll only","Test materials"],e:"Material requirements planning."},
+{q:"An asset's life cycle typically includes:",o:["Acquire, operate, maintain, dispose","Design, sell, forget","Order, pay, ignore","Buy and never replace"],e:"Managing every stage maximises value."},
+{q:"Asset tagging helps an organisation to:",o:["Identify and track each asset","Increase an asset's value","Avoid maintenance","Hide assets from audits"],e:"Tags link a physical item to its register entry."},
+{q:"Why might a company use LIFO rather than FIFO for loose bulk materials, such as sand in a heap?",o:["Only the newest stock on top is easily reached","LIFO prevents items going out of date","LIFO is required by law","FIFO is impossible with barcodes"],e:"FIFO is preferred for perishable or date-sensitive items."},
+{q:"Daily usage 60, lead time 3 days, buffer 120. Re-order level?",o:["300","180","240","360"],e:"(60 × 3) + 120 = 300."},
+{q:"Stock-taking means:",o:["Physically counting stock to check records are correct","Ordering new stock","Selling finished goods","Scrapping old machines"],e:"Differences reveal loss, theft or recording errors."}
+],
+16:[
+{q:"In TIMWOODS, the 'S' stands for:",o:["Skills (unused talent)","Safety","Scrap","Storage"],e:"Not using people's knowledge and ideas is a waste."},
+{q:"'Set in order' in 5S means:",o:["A place for everything and everything in its place","Throwing away unused items","Cleaning the area","Auditing the workplace"],e:"E.g. shadow boards for tools."},
+{q:"Six Sigma quality targets:",o:["3.4 defects per million opportunities","Zero inspections","6% defects","One defect per batch"],e:"A very low defect rate."},
+{q:"Value stream mapping helps to:",o:["Show every step in a process and identify waste","Calculate break-even","Design a logo","Set staff wages"],e:"Highlights value-adding and non-value-adding steps."},
+{q:"Jidoka means:",o:["Machines stop automatically when an abnormality is detected","Producing as fast as possible","Holding extra stock","Outsourcing work"],e:"'Automation with a human touch'."},
+{q:"TPM involves operators in:",o:["Routine maintenance such as cleaning, lubricating and inspecting","Setting prices","Writing the business plan","Hiring staff"],e:"Total productive maintenance shares ownership of equipment."},
+{q:"Benchmarking means:",o:["Comparing performance against the best in the industry","Building a workbench","Setting tolerances","Testing materials"],e:"Learn from best practice."},
+{q:"Which waste is caused by doing more work than the customer requires?",o:["Over-processing","Waiting","Transport","Inventory"],e:"E.g. polishing hidden surfaces."},
+{q:"In lean thinking, 'value' is defined by:",o:["The customer","The machine operator","The accountant","The supplier"],e:"Anything the customer won't pay for is waste."},
+{q:"A pull system means production is triggered by:",o:["Actual customer demand","A forecast only","Machine availability","Keeping operators busy"],e:"Kanban is a common pull system."}
+],
+17:[
+{q:"In the project life cycle, the feasibility study and business case are produced during:",o:["Initiation","Execution","Closure","Monitoring"],e:"Initiation decides whether the project should go ahead."},
+{q:"A work breakdown structure (WBS) is used to:",o:["Break the project into smaller, manageable tasks","Show the critical path","Record risks","Pay suppliers"],e:"It is the basis for scheduling and costing."},
+{q:"A milestone on a Gantt chart has:",o:["Zero duration","The longest duration","No date","Only cost information"],e:"It marks a key event, such as design sign-off."},
+{q:"Change control ensures that:",o:["Changes to scope, time or cost are assessed and approved before they happen","Nothing can ever change","The team changes every week","Only the client can work on the project"],e:"Uncontrolled change causes 'scope creep'."},
+{q:"Scope creep is:",o:["Uncontrolled growth in project requirements","A type of risk register","Finishing early","A project methodology"],e:"It pushes up time and cost."},
+{q:"Which methodology completes each stage fully before the next begins?",o:["Waterfall","Agile","Scrum","Kanban"],e:"Sequential and well suited to fixed requirements."},
+{q:"In a RACI chart, the person who must be kept up to date but does no work is:",o:["Informed","Responsible","Accountable","Consulted"],e:"Consulted people give input; informed people just receive updates."},
+{q:"A risk register usually records:",o:["Risk, likelihood, impact, owner and mitigation","Staff salaries","Supplier invoices","Customer addresses"],e:"It is reviewed regularly during the project."},
+{q:"Adding extra resources to shorten a critical task is called:",o:["Crashing","Floating","Closing","Baselining"],e:"It usually increases cost."},
+{q:"PRINCE2 is:",o:["A structured, stage-based project management method","A quality standard","A type of Gantt chart","An agile sprint"],e:"PRojects IN Controlled Environments."}
+]
+};
+UNITS.forEach(u => { if (EXTRA[u.n]) u.quiz = u.quiz.concat(EXTRA[u.n]); });
+
+
+</script>
+<script>
+const $ = (s, r=document) => r.querySelector(s);
+const app = $('#app');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const L = 'ABCD';
+const USE_CLOUD = false;
+const actCount = u => u.activities.length + 1; // +1 for auto match
+const TOTALQ = UNITS.reduce((s,u)=>s+u.quiz.length,0);
+const GROUPS = ["Electrical & Electronic – Group 1","Mechanical – Group 2","Fabrication & Welding – Group A"];
+const fmtDate = iso => { try { return new Date(iso).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){ return iso; } };
+
+// ================= account + results store =================
+// cloud mode: one record per student at results/<their id> (they read/write only their own; tutor reads all)
+// local mode: same record kept in this browser only
+const LS_KEY = 'tlevel-core-v2';
+let S = null, mode = 'local', db = null, user = null, uid = null, isTeacher = false, docRef = null, saveProblem = '';
+const blank = () => ({name:'', group:'', created:new Date().toISOString(), attempts:[], best:{}, acts:{}});
+const loadLocal = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch(e) { return null; } };
+const saveLocal = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e) {} };
+
+let busy = false, dirty = false;
+async function persist(){
+  saveLocal();                       // always keep a copy on this device
+  if (mode !== 'cloud' || !docRef) return;
+  dirty = true; if (busy) return; busy = true;
+  while (dirty) {
+    dirty = false;
+    const body = JSON.parse(JSON.stringify(S)); body.updated = new Date().toISOString();
+    try { await docRef.set(body); setProblem(''); }
+    catch(e) {
+      if (e && e.code === 'unavailable') { await new Promise(r=>setTimeout(r, 700+Math.random()*900)); try { await docRef.set(body); setProblem(''); continue; } catch(e2){ e = e2; } }
+      if (e && e.code === 'invalid_argument') setProblem('Your access to this app is view-only, so results can only be kept on this device. Ask your tutor to give you Contributor access.');
+      else if (e && e.code === 'quota_exceeded') setProblem('The results store is full. Please tell your tutor. Your results are kept on this device for now.');
+      else setProblem('Results could not be saved to your account just now. They are kept on this device and will save next time you finish an activity or test.');
+    }
+  }
+  busy = false;
+}
+function setProblem(msg){ if (msg === saveProblem) return; saveProblem = msg; const b = $('#savebanner'); if (b) { b.hidden = !msg; b.textContent = msg; } }
+const bestOf = n => (S && S.best && S.best[n] != null) ? S.best[n] : null;
+const actsOf = n => (S && S.acts && S.acts[n]) || [];
+const unitPct = u => { const a = actsOf(u.n).length / actCount(u); const b = bestOf(u.n); return Math.round((a*0.5 + (b==null?0:b/100)*0.5)*100); };
+function recordAttempt(kind, unit, score, total, scope){
+  const pct = Math.round(score/total*100);
+  S.attempts = (S.attempts || []).concat([{k:kind, u:unit, s:score, t:total, scope:scope||null, at:new Date().toISOString()}]).slice(-300);
+  if (kind === 'u') { S.best = S.best || {}; if (S.best[unit] == null || pct > S.best[unit]) S.best[unit] = pct; }
+  persist();
+}
+function markDone(n, key){ S.acts = S.acts || {}; const a = S.acts[n] || []; if (!a.includes(key)) { S.acts[n] = a.concat([key]); persist(); } }
+
+async function init(){
+  app.innerHTML = '<div class="panel">Loading…</div>';
+  const timed = (p, ms) => Promise.race([p, new Promise(r => setTimeout(() => r(null), ms))]);
+  try {
+    if (USE_CLOUD && window.claude && typeof window.claude.use === 'function') {
+      [db, user] = await Promise.all([timed(claude.use('db'), 10000), timed(claude.use('user'), 10000)]);
+    }
+  } catch(e) { db = null; user = null; }
+  try { if (user) { uid = await user.id(); isTeacher = !!(await user.canEdit()); } } catch(e) { uid = null; }
+  if (db && uid) {
+    docRef = db.doc('results/' + uid);
+    try {
+      const snap = await timed(docRef.get(), 10000);
+      if (snap) { mode = 'cloud'; S = snap.exists ? JSON.parse(JSON.stringify(snap.data())) : null; }
+    } catch(e) { mode = 'local'; }
+  }
+  if (mode !== 'cloud') { S = loadLocal() || blank(); docRef = null; }
+  $('#nav-teacher').hidden = !isTeacher;
+  window.addEventListener('hashchange', route);
+  route();
+}
+const needsRegister = () => !S || !S.name;
+
+// ================= routing =================
+function go(h){ if (location.hash.slice(1) === h) route(); else location.hash = h; }
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+$('#home-link').onclick = () => go('home');
+let timerId = null, unsub = null;
+function route(){
+  clearInterval(timerId); if (unsub) { unsub(); unsub = null; }
+  let h = location.hash.slice(1) || 'home';
+  $('#who').textContent = S && S.name ? `${S.name}${S.group ? ' · ' + S.group : ''}` : '';
+  if (needsRegister() && h !== 'teacher') return renderRegister(false);
+  document.querySelectorAll('[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === h || (h.startsWith('unit') && b.dataset.go==='home')));
+  const m = h.match(/^unit-(\d+)(?:-(learn|activities|test))?$/);
+  if (m) renderUnit(+m[1], m[2] || 'learn');
+  else if (h === 'mock') renderMockSetup();
+  else if (h === 'glossary') renderGlossary();
+  else if (h === 'my-results') renderMyResults();
+  else if (h === 'profile') renderRegister(true);
+  else if (h === 'teacher' && isTeacher) renderTeacher();
+  else renderHome();
+  window.scrollTo(0,0);
+}
+const banners = () => `<div id="savebanner" class="banner" ${saveProblem?'':'hidden'}>${esc(saveProblem)}</div>` +
+'';
+
+// ================= register / profile =================
+async function renderRegister(editing){
+  let suggested = '';
+  if (!editing && user) { try { const me = await user.me(); suggested = (me && me.name) || ''; } catch(e) {} }
+  const local = mode === 'cloud' && !S ? loadLocal() : null;
+  const cur = S || {};
+  app.innerHTML = `<div class="panel reg">
+    <h1 style="margin-top:0">${editing ? 'Edit my details' : 'Welcome! Tell us who you are'}</h1>
+    <p style="color:var(--muted)">${editing ? 'Update the name and group your tutor sees.' : (mode==='cloud' ? 'Every activity and test you finish is saved, and only you and your tutor can see your results.' : 'No sign-in needed. Enter your name and group once. Your results are kept on this device, and you can see them any time in My results.')}</p>
+    <form id="rf">
+      <label for="rn"><b>Full name</b></label><input id="rn" required maxlength="60" autocomplete="name" value="${esc(cur.name || suggested)}">
+      <label for="rg"><b>Group / class</b></label><input id="rg" list="gl" maxlength="60" placeholder="Choose or type your group" value="${esc(cur.group || '')}">
+      <datalist id="gl">${GROUPS.map(g=>`<option value="${esc(g)}">`).join('')}</datalist>
+      ${local && (local.attempts||[]).length ? `<label style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><input type="checkbox" id="imp" checked style="width:auto;margin:0"> Bring in ${local.attempts.length} earlier result(s) saved on this device</label>` : ''}
+      <div class="row"><button class="btn orange" type="submit">${editing ? 'Save details' : 'Start learning'}</button>${editing?'<button class="btn alt" type="button" id="cancel">Cancel</button>':''}<span class="fb bad" id="rerr"></span></div>
+    </form></div>`;
+  if (editing) $('#cancel').onclick = () => go('my-results');
+  $('#rf').onsubmit = async e => {
+    e.preventDefault();
+    const name = $('#rn').value.trim(), group = $('#rg').value.trim();
+    if (name.length < 2) { $('#rerr').textContent = 'Please enter your full name.'; return; }
+    if (!S) { S = blank(); const imp = $('#imp'); if (imp && imp.checked && local) { S.attempts = local.attempts||[]; S.best = local.best||{}; S.acts = local.acts||{}; } }
+    S.name = name; S.group = group;
+    await persist();
+    go('home'); route();
+  };
+}
+
+// ================= home =================
+function renderHome(){
+  const tested = UNITS.filter(u => bestOf(u.n) != null);
+  const avg = tested.length ? Math.round(tested.reduce((s,u)=>s+bestOf(u.n),0)/tested.length) : 0;
+  const acts = UNITS.reduce((s,u)=> s + actsOf(u.n).length, 0);
+  const totalActs = UNITS.reduce((s,u)=> s + actCount(u), 0);
+  app.innerHTML = banners() + `
+  <section class="hero">
+    <div class="panel"><h1>Hello ${esc((S.name||'').split(' ')[0])} 👋</h1>
+      <p>17 units, each with key learning, flip-card key terms, interactive activities and a 20-question test bank (${TOTALQ} questions in total). When you're ready, try the full mixed mock exam.</p></div>
+    <div class="panel stat">
+      <div><b>${tested.length}/17</b><span>units tested</span></div>
+      <div><b>${avg}%</b><span>average best score</span></div>
+      <div><b>${acts}/${totalActs}</b><span>activities completed</span></div>
+    </div>
+  </section>
+  <div class="grid">
+    ${UNITS.map(u => { const pct = unitPct(u), b = bestOf(u.n); return `
+      <button class="ucard" data-u="${u.n}">
+        <span class="num">UNIT ${u.n}</span>
+        <h3>${esc(u.title)}</h3>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        <div class="meta"><span>${actsOf(u.n).length}/${actCount(u)} activities</span><span>Best test: ${b==null?'—':b+'%'}</span></div>
+      </button>`; }).join('')}
+    <button class="ucard special" data-go2="mock"><span class="num">MOCK</span><h3>Full mock exam</h3><div class="meta"><span>Mixed questions from all 17 units, timed</span></div></button>
+    <button class="ucard special" data-go2="my-results"><span class="num">ME</span><h3>My results</h3><div class="meta"><span>Every test you've taken, with dates and scores</span></div></button>
+    <button class="ucard special" data-go2="glossary"><span class="num">A–Z</span><h3>Glossary of key terms</h3><div class="meta"><span>${UNITS.reduce((s,u)=>s+u.terms.length,0)} terms, searchable</span></div></button>
+  </div>`;
+  app.querySelectorAll('[data-u]').forEach(b => b.onclick = () => go('unit-'+b.dataset.u));
+  app.querySelectorAll('[data-go2]').forEach(b => b.onclick = () => go(b.dataset.go2));
+}
+
+// ================= unit =================
+function renderUnit(n, tab){
+  const u = UNITS.find(x => x.n === n); if (!u) return renderHome();
+  const prev = UNITS.find(x=>x.n===n-1), next = UNITS.find(x=>x.n===n+1);
+  app.innerHTML = banners() + `
+  <button class="back" id="bk">← All units</button>
+  <div class="uhead"><span class="tag">UNIT ${u.n}</span><h1>${esc(u.title)}</h1><p>${esc(u.overview)}</p></div>
+  <div class="tabs">
+    <button data-t="learn">Learn</button>
+    <button data-t="activities">Activities (${actCount(u)})</button>
+    <button data-t="test">Mock test</button>
+  </div>
+  <div id="pane"></div>
+  <div class="row" style="justify-content:space-between;margin-top:26px">
+    ${prev?`<button class="btn alt" data-nav="${prev.n}">← Unit ${prev.n}</button>`:'<span></span>'}
+    ${next?`<button class="btn alt" data-nav="${next.n}">Unit ${next.n} →</button>`:'<span></span>'}
+  </div>`;
+  $('#bk').onclick = () => go('home');
+  app.querySelectorAll('[data-nav]').forEach(b => b.onclick = () => go('unit-'+b.dataset.nav+'-'+tab));
+  app.querySelectorAll('[data-t]').forEach(b => { b.classList.toggle('on', b.dataset.t===tab); b.onclick = () => go('unit-'+n+'-'+b.dataset.t); });
+  const pane = $('#pane');
+  if (tab === 'learn') renderLearn(u, pane);
+  else if (tab === 'activities') renderActivities(u, pane);
+  else renderUnitTest(u, pane);
+}
+
+function renderLearn(u, pane){
+  pane.innerHTML = `
+  <ul class="sections">${u.sections.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>
+  <div class="panel" style="margin-bottom:18px"><h2 style="margin-top:0">Key learning</h2>
+    <ol class="points">${u.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ol></div>
+  <div class="panel"><h2 style="margin-top:0">Key terms <span style="font-size:14px;color:var(--muted);font-weight:400">— tap a card to flip it</span></h2>
+    <div class="terms">${u.terms.map(t=>`<button class="flip"><div class="in"><div class="f">${esc(t[0])}</div><div class="b">${esc(t[1])}</div></div></button>`).join('')}</div></div>
+  <div class="row"><button class="btn orange" id="toacts">Go to activities →</button></div>`;
+  pane.querySelectorAll('.flip').forEach(f => f.onclick = () => f.classList.toggle('on'));
+  $('#toacts').onclick = () => go('unit-'+u.n+'-activities');
+}
+
+function renderActivities(u, pane){
+  const acts = [{type:'match', title:'Match the key terms to their meanings', pairs:u.terms}, ...u.activities];
+  pane.innerHTML = acts.map((a,i)=>`<div class="panel act" id="act${i}"></div>`).join('');
+  acts.forEach((a,i) => {
+    const el = $('#act'+i, pane), key = 'a'+i, done = actsOf(u.n).includes(key);
+    const typeName = {match:'Matching',sort:'Sorting',order:'Sequencing',calc:'Calculations',scenario:'Extended response'}[a.type];
+    el.innerHTML = `<h3>Activity ${i+1}: ${esc(a.title)} <span class="tag">${typeName}</span>${done?'<span class="done-tag">✓ Completed</span>':''}</h3><div class="body"></div>`;
+    const body = $('.body', el), finish = () => { markDone(u.n, key); if (!$('.done-tag', el)) $('h3', el).insertAdjacentHTML('beforeend','<span class="done-tag">✓ Completed</span>'); };
+    ({match:actMatch, sort:actSort, order:actOrder, calc:actCalc, scenario:actScenario})[a.type](a, body, finish);
+  });
+}
+function actMatch(a, body, finish){
+  let pick = null, got = 0;
+  const draw = () => {
+    body.innerHTML = `<p class="hint">Select a term, then select its meaning.</p>
+    <div class="match"><div class="col" id="mt">${shuffle(a.pairs.map((p,i)=>[p[0],i])).map(([t,i])=>`<button class="chip" data-i="${i}">${esc(t)}</button>`).join('')}</div>
+    <div class="col" id="md">${shuffle(a.pairs.map((p,i)=>[p[1],i])).map(([d,i])=>`<button class="chip" data-i="${i}">${esc(d)}</button>`).join('')}</div></div>
+    <div class="row"><span class="fb" id="mfb"></span><button class="btn alt" id="mre">Restart</button></div>`;
+    got = 0; pick = null;
+    body.querySelectorAll('#mt .chip').forEach(c => c.onclick = () => { body.querySelectorAll('#mt .chip').forEach(x=>x.classList.remove('sel')); c.classList.add('sel'); pick = c; });
+    body.querySelectorAll('#md .chip').forEach(c => c.onclick = () => {
+      if (!pick) { $('#mfb',body).textContent = 'Pick a term first.'; return; }
+      if (pick.dataset.i === c.dataset.i) {
+        [pick,c].forEach(x=>{x.classList.remove('sel');x.classList.add('ok','gone');}); pick = null; got++;
+        $('#mfb',body).className='fb ok'; $('#mfb',body).textContent = got===a.pairs.length ? `All ${got} matched — well done!` : `Correct (${got}/${a.pairs.length})`;
+        if (got===a.pairs.length) finish();
+      } else { c.classList.add('bad'); setTimeout(()=>c.classList.remove('bad'),600); $('#mfb',body).className='fb bad'; $('#mfb',body).textContent='Not that one — try again.'; }
+    });
+    $('#mre',body).onclick = draw;
+  };
+  draw();
+}
+
+function actSort(a, body, finish){
+  let sel = null; const place = {}; // item index -> cat index
+  const items = shuffle(a.items.map((it,i)=>({t:it[0], c:it[1], i})));
+  const draw = (checked) => {
+    const chip = it => `<button class="chip ${sel===it.i?'sel':''} ${checked? (place[it.i]===it.c?'ok':'bad'):''}" data-i="${it.i}">${esc(it.t)}</button>`;
+    body.innerHTML = `<p class="hint">Select an item, then select the box it belongs in. Select a placed item to move it again.</p>
+    <div class="pool">${items.filter(it=>place[it.i]==null).map(chip).join('') || '<span style="color:var(--muted)">All placed — press Check.</span>'}</div>
+    <div class="buckets">${a.cats.map((c,ci)=>`<div class="bucket ${sel!=null?'ready':''}" data-c="${ci}" role="button" tabindex="0"><h4>${esc(c)}</h4>${items.filter(it=>place[it.i]===ci).map(chip).join('')}</div>`).join('')}</div>
+    <div class="row"><button class="btn" id="sck">Check</button><button class="btn alt" id="sre">Reset</button><span class="fb" id="sfb"></span></div>`;
+    body.querySelectorAll('.chip').forEach(c => c.onclick = e => { e.stopPropagation(); const i=+c.dataset.i; sel = sel===i?null:i; draw(); });
+    body.querySelectorAll('.bucket').forEach(b => b.onclick = () => { if (sel==null) return; place[sel] = +b.dataset.c; sel = null; draw(); });
+    $('#sre',body).onclick = () => { for (const k in place) delete place[k]; sel=null; draw(); };
+    $('#sck',body).onclick = () => {
+      const placed = Object.keys(place).length;
+      if (placed < items.length) { $('#sfb',body).className='fb bad'; $('#sfb',body).textContent=`Place all ${items.length} items first (${placed} placed).`; return; }
+      draw(true);
+      const right = items.filter(it=>place[it.i]===it.c).length;
+      const fb = $('#sfb',body);
+      if (right===items.length){ fb.className='fb ok'; fb.textContent=`${right}/${items.length} — perfect!`; finish(); }
+      else { fb.className='fb bad'; fb.textContent=`${right}/${items.length} correct. Move the red ones and check again.`; }
+    };
+  };
+  draw();
+}
+
+function actOrder(a, body, finish){
+  let list = shuffle(a.items.map((t,i)=>({t,i})));
+  while (list.length>1 && list.every((x,k)=>x.i===k)) list = shuffle(list);
+  const draw = (checked) => {
+    body.innerHTML = `<p class="hint">Use the arrows to put the steps in the correct order.</p>
+    <ol class="orderlist">${list.map((x,k)=>`<li class="${checked?(x.i===k?'ok':'bad'):''}"><b>${k+1}.</b><span>${esc(x.t)}</span><button class="mini" data-k="${k}" data-d="-1" aria-label="Move up">▲</button><button class="mini" data-k="${k}" data-d="1" aria-label="Move down">▼</button></li>`).join('')}</ol>
+    <div class="row"><button class="btn" id="ock">Check order</button><span class="fb" id="ofb"></span></div>`;
+    body.querySelectorAll('.mini').forEach(b => b.onclick = () => { const k=+b.dataset.k, j=k+ +b.dataset.d; if (j<0||j>=list.length) return; [list[k],list[j]]=[list[j],list[k]]; draw(); });
+    $('#ock',body).onclick = () => { draw(true); const r = list.filter((x,k)=>x.i===k).length; const fb=$('#ofb',body);
+      if (r===list.length){fb.className='fb ok';fb.textContent='Correct order!';finish();} else {fb.className='fb bad';fb.textContent=`${r}/${list.length} in the right place.`;} };
+  };
+  draw();
+}
+
+function actCalc(a, body, finish){
+  const ok = new Set();
+  body.innerHTML = `<p class="hint">Type a number (no units) and press Check. Use "Show working" if you're stuck.</p><div class="calc">${a.qs.map((q,i)=>`
+    <div class="q"><div><b>${i+1}.</b> ${esc(q.q)}</div>
+    <div class="row" style="margin-top:8px"><input inputmode="decimal" data-i="${i}" aria-label="Answer ${i+1}"> <span>${esc(q.unit||'')}</span>
+    <button class="btn" data-ck="${i}">Check</button><button class="btn alt" data-w="${i}">Show working</button><span class="fb" id="cf${i}"></span></div>
+    <div class="work" id="cw${i}" hidden>${esc(q.w)}</div></div>`).join('')}</div>`;
+  const check = i => {
+    const inp = body.querySelector(`input[data-i="${i}"]`), q = a.qs[i];
+    const v = parseFloat(inp.value.replace(/[,\s£]/g,'').replace('−','-'));
+    const fb = $('#cf'+i, body);
+    if (isNaN(v)) { fb.className='fb bad'; fb.textContent='Enter a number.'; return; }
+    const good = Math.abs(v - q.ans) <= (q.tol||0) + 1e-9;
+    inp.className = good?'ok':'bad'; fb.className = 'fb '+(good?'ok':'bad'); fb.textContent = good?'Correct':'Try again';
+    if (good) { ok.add(i); if (ok.size===a.qs.length) finish(); }
+  };
+  body.querySelectorAll('[data-ck]').forEach(b => b.onclick = () => check(+b.dataset.ck));
+  body.querySelectorAll('input').forEach(inp => inp.onkeydown = e => { if (e.key==='Enter') check(+inp.dataset.i); });
+  body.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const w=$('#cw'+b.dataset.w, body); w.hidden=!w.hidden; });
+}
+
+function actScenario(a, body, finish){
+  body.innerHTML = `<div class="panel" style="background:#f4f7f8;border:none;margin-bottom:10px"><b>Task (${a.marks} marks):</b> ${esc(a.prompt)}</div>
+    <textarea placeholder="Write your answer here…" aria-label="Your answer"></textarea>
+    <div class="row"><button class="btn" id="rev">Show model answer points</button><span class="fb" id="scf"></span></div>
+    <div id="mod" hidden><p class="hint" style="margin:10px 0 0">Tick each point your answer covers (1 mark each, up to ${a.marks}).</p>
+    <ul class="model">${a.model.map((m,i)=>`<li><label><input type="checkbox" data-m="${i}"> <span>${esc(m)}</span></label></li>`).join('')}</ul></div>`;
+  $('#rev',body).onclick = () => { $('#mod',body).hidden = false; finish(); };
+  body.querySelectorAll('[data-m]').forEach(c => c.onchange = () => {
+    const n = body.querySelectorAll('[data-m]:checked').length; const s = Math.min(n, a.marks);
+    $('#scf',body).className='fb ok'; $('#scf',body).textContent = `Self-marked: ${s}/${a.marks}`;
+  });
+}
+
+
+
+function renderUnitTest(u, pane){
+  pane.innerHTML = `<div class="lenpick"><b>Choose a test:</b>
+    <button class="btn" data-len="10">Quick test — 10 random questions</button>
+    <button class="btn alt" data-len="${u.quiz.length}">Full test — all ${u.quiz.length} questions</button>
+    <span style="color:var(--muted);font-size:14px">Best score: ${bestOf(u.n)==null?'—':bestOf(u.n)+'%'}</span></div><div id="qz"></div>`;
+  const start = len => {
+    pane.querySelectorAll('[data-len]').forEach(b => b.className = 'btn' + (+b.dataset.len===len ? '' : ' alt'));
+    renderQuiz($('#qz',pane), shuffle(u.quiz).slice(0,len).map(q=>({...q, unit:u.n})), {unit:u, again:() => start(len)});
+  };
+  pane.querySelectorAll('[data-len]').forEach(b => b.onclick = () => start(+b.dataset.len));
+  start(10);
+}
+
+// ================= quiz =================
+function renderQuiz(pane, qset0, opts){
+  const qset = qset0.map(q => ({...q, order: shuffle([0,1,2,3])}));
+  const ans = {};
+  pane.innerHTML = `
+    <div class="sticky"><span class="fb" id="qprog">0/${qset.length} answered</span>${opts.minutes?`<span class="timer" id="tm"></span>`:''}<span style="flex:1"></span><button class="btn orange" id="qsub">Submit answers</button></div>
+    <div id="qres"></div>
+    <div class="quiz">${qset.map((q,qi)=>`
+      <div class="qq" id="q${qi}"><h4>${opts.mixed?`<span class="src">Unit ${q.unit}</span>`:''}${qi+1}. ${esc(q.q)}</h4>
+      <div class="opts">${q.order.map((oi,k)=>`<button class="opt" data-q="${qi}" data-o="${oi}"><span class="l">${L[k]}</span><span>${esc(q.o[oi])}</span></button>`).join('')}</div>
+      <div class="explain" hidden></div></div>`).join('')}</div>
+    <div class="row"><button class="btn orange" id="qsub2">Submit answers</button></div>`;
+  let submitted = false;
+  pane.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (submitted) return;
+    const qi = +b.dataset.q; ans[qi] = +b.dataset.o;
+    pane.querySelectorAll(`.opt[data-q="${qi}"]`).forEach(x => x.classList.toggle('picked', x===b));
+    $('#qprog',pane).textContent = `${Object.keys(ans).length}/${qset.length} answered`;
+  });
+  const submit = (force) => {
+    if (submitted) return;
+    const left = qset.length - Object.keys(ans).length;
+    const btn = $('#qsub',pane);
+    if (left && !force && !btn.dataset.sure) { btn.dataset.sure=1; btn.textContent=`${left} unanswered — submit anyway?`; $('#qsub2',pane).textContent = btn.textContent; return; }
+    submitted = true; clearInterval(timerId);
+    let right = 0; const byUnit = {};
+    qset.forEach((q,qi) => {
+      const ok = ans[qi] === 0; if (ok) right++;
+      byUnit[q.unit] = byUnit[q.unit] || [0,0]; byUnit[q.unit][1]++; if (ok) byUnit[q.unit][0]++;
+      pane.querySelectorAll(`.opt[data-q="${qi}"]`).forEach(x => { const o=+x.dataset.o; if (o===0) x.classList.add('ok'); else if (o===ans[qi]) x.classList.add('bad'); });
+      const ex = $(`#q${qi} .explain`, pane); ex.hidden=false; ex.innerHTML = `<b class="fb ${ok?'ok':'bad'}">${ok?'Correct.':(ans[qi]==null?'Not answered.':'Incorrect.')}</b> ${esc(q.e)}`;
+    });
+    const pct = Math.round(right/qset.length*100);
+    if (opts.unit) recordAttempt('u', opts.unit.n, right, qset.length);
+    else recordAttempt('m', null, right, qset.length, opts.scope);
+    const grade = pct>=80?'Distinction-level':pct>=65?'Merit-level':pct>=50?'Pass-level':'Keep practising';
+    const weak = Object.entries(byUnit).filter(([u,[r,t]])=>r/t<0.6).map(([u])=>+u);
+    $('#qres',pane).innerHTML = `<div class="score"><b>${right}/${qset.length}</b><div><div class="disp" style="font-size:22px">${pct}% — ${grade}</div><div>Saved to My results. Review the explanations below.${opts.unit?` Best score for this unit: ${bestOf(opts.unit.n)}%`:''}</div></div><span style="flex:1"></span><button class="btn alt" id="again">Try again (new questions)</button></div>
+      ${opts.mixed?`<h3>Score by unit</h3><div class="breakdown">${Object.entries(byUnit).sort((a,b)=>a[0]-b[0]).map(([u,[r,t]])=>`<div><b>Unit ${u}</b> — ${r}/${t}</div>`).join('')}</div>${weak.length?`<p><b>Revisit:</b> ${weak.map(u=>`<a href="#unit-${u}">Unit ${u}</a>`).join(', ')}</p>`:''}`:''}`;
+    $('#again',pane).onclick = opts.again;
+    ['#qsub','#qsub2'].forEach(id=>{const b=$(id,pane); b.disabled=true; b.textContent='Submitted';});
+    window.scrollTo({top: $('#qres',pane).getBoundingClientRect().top + window.scrollY - 150});
+  };
+  $('#qsub',pane).onclick = () => submit(false);
+  $('#qsub2',pane).onclick = () => submit(false);
+  if (opts.minutes) {
+    let s = opts.minutes*60; const tm = $('#tm',pane);
+    const tick = () => { tm.textContent = `⏱ ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; if (s--<=0) { submit(true); } };
+    tick(); timerId = setInterval(tick, 1000);
+  }
+}
+
+// ================= full mock =================
+function renderMockSetup(){
+  clearInterval(timerId);
+  app.innerHTML = banners() + `<div class="panel setup"><h1 style="margin-top:0">Full mock exam</h1>
+    <p>Random multiple-choice questions drawn from across the units, with explanations and a score breakdown by unit at the end. Your score is saved to My results.</p>
+    <label>Number of questions: <select id="mq"><option>20</option><option selected>40</option><option>60</option><option>100</option><option value="9999">All available</option></select></label>
+    <label>Time limit: <select id="mt"><option value="0">No timer</option><option value="30">30 minutes</option><option value="45" selected>45 minutes</option><option value="60">60 minutes</option><option value="90">90 minutes</option><option value="150">150 minutes</option></select></label>
+    <label>Units included: <select id="mu"><option value="all">All units (1–17)</option><option value="1-6">Units 1–6</option><option value="7-12">Units 7–12</option><option value="13-17">Units 13–17</option></select></label>
+    <div class="row"><button class="btn orange" id="mstart">Start mock exam</button></div></div><div id="mpane" style="margin-top:18px"></div>`;
+  $('#mstart').onclick = () => {
+    const r = $('#mu').value; let pool = UNITS;
+    if (r !== 'all') { const [a,b] = r.split('-').map(Number); pool = UNITS.filter(u=>u.n>=a&&u.n<=b); }
+    const all = pool.flatMap(u => u.quiz.map(q=>({...q, unit:u.n})));
+    const n = Math.min(+$('#mq').value, all.length);
+    const qs = shuffle(all).slice(0, n).sort((a,b)=>a.unit-b.unit);
+    $('.setup').hidden = true;
+    renderQuiz($('#mpane'), qs, {mixed:true, minutes:+$('#mt').value, scope: r==='all' ? 'Units 1–17' : 'Units '+r.replace('-','–'), again: renderMockSetup});
+  };
+}
+
+// ================= my results =================
+function attemptLabel(a){ return a.k === 'u' ? `Unit ${a.u} test` : `Mock exam${a.scope ? ' ('+a.scope+')' : ''}`; }
+function pctClass(p){ return p==null ? '' : p>=70 ? 'c-hi' : p>=50 ? 'c-mid' : 'c-lo'; }
+function resultsDetail(R){
+  const at = (R.attempts||[]).slice().reverse();
+  const mocks = at.filter(a=>a.k==='m');
+  const tested = UNITS.filter(u => R.best && R.best[u.n] != null);
+  const avg = tested.length ? Math.round(tested.reduce((s,u)=>s+R.best[u.n],0)/tested.length) : 0;
+  const bestMock = mocks.length ? Math.max(...mocks.map(a=>Math.round(a.s/a.t*100))) : null;
+  return `<div class="panel stat" style="margin-bottom:16px">
+      <div><b>${tested.length}/17</b><span>units tested</span></div>
+      <div><b>${avg}%</b><span>average best unit score</span></div>
+      <div><b>${mocks.length}</b><span>mock exams taken</span></div>
+      <div><b>${bestMock==null?'—':bestMock+'%'}</b><span>best mock score</span></div></div>
+    <h2>Unit by unit</h2>
+    <div class="tablewrap"><table class="res"><tr><th>Unit</th><th>Best test score</th><th>Tests taken</th><th>Activities done</th></tr>
+    ${UNITS.map(u => { const b = R.best && R.best[u.n]; const n = (R.attempts||[]).filter(a=>a.k==='u'&&a.u===u.n).length; const ac = ((R.acts||{})[u.n]||[]).length;
+      return `<tr><td>${u.n}. ${esc(u.title)}</td><td class="${pctClass(b)}">${b==null?'—':b+'%'}</td><td>${n}</td><td>${ac}/${actCount(u)}</td></tr>`; }).join('')}
+    </table></div>
+    <h2>Test history</h2>
+    ${at.length ? `<div class="tablewrap"><table class="res"><tr><th>Date</th><th>Test</th><th>Score</th><th>%</th></tr>
+      ${at.map(a => { const p = Math.round(a.s/a.t*100); return `<tr><td>${esc(fmtDate(a.at))}</td><td>${esc(attemptLabel(a))}</td><td>${a.s}/${a.t}</td><td class="${pctClass(p)}">${p}%</td></tr>`; }).join('')}
+    </table></div>` : '<p style="color:var(--muted)">No tests taken yet.</p>'}`;
+}
+function renderMyResults(){
+  app.innerHTML = banners() + `<div class="row" style="justify-content:space-between;margin:0 0 10px"><div><h1 style="margin:0">My results</h1>
+    <div style="color:var(--muted)">${esc(S.name)}${S.group?' · '+esc(S.group):''}${mode==='cloud'?' · saved to your account':' · saved on this device (use the same device and browser each time)'}</div></div>
+    <div class="row" style="margin:0"><button class="btn alt" id="edit">Edit my details</button></div></div><span class="fb" id="camsg"></span>` + resultsDetail(S);
+  $('#edit').onclick = () => go('profile');
+}
+
+// ================= teacher dashboard =================
+let teacherRows = [];
+function renderTeacher(){
+  if (!db || mode !== 'cloud') { app.innerHTML = `<div class="panel"><h1 style="margin-top:0">Teacher dashboard</h1><p>Student results appear here once the app is opened from its claude.ai page with saving turned on.</p></div>`; return; }
+  app.innerHTML = `<h1 style="margin-bottom:4px">Teacher dashboard</h1>
+    <p style="color:var(--muted);margin-top:0">Every registered student's best score per unit, mock exams and activity progress. Updates live. Students can only see their own results.</p>
+    <div class="toolbar"><input id="tq" placeholder="Search name…"><select id="tg"><option value="">All groups</option></select>
+      <button class="btn alt" id="csv">Copy as CSV (for Excel)</button><span class="fb" id="tmsg"></span></div>
+    <div id="tbody"><div class="panel">Loading student results…</div></div><div id="tdetail" style="margin-top:20px"></div>`;
+  const slow = setTimeout(() => { const t = $('#tbody'); if (t && !teacherRows.length) t.innerHTML = '<div class="panel">Student results can\'t be reached yet. They will appear here when the connection returns.</div>'; }, 10000);
+  unsub = db.collection('results').onSnapshot(snap => {
+    if (!snap.metadata.fromCache) clearTimeout(slow);
+    teacherRows = snap.docs.map(d => ({id:d.id, ...d.data()})).filter(r => r.name);
+    const groups = [...new Set(teacherRows.map(r=>r.group||'').filter(Boolean))].sort();
+    const sel = $('#tg'); if (sel) { const v = sel.value; sel.innerHTML = '<option value="">All groups</option>' + groups.map(g=>`<option ${g===v?'selected':''}>${esc(g)}</option>`).join(''); }
+    drawTeacher();
+  }, e => { clearTimeout(slow); const t = $('#tbody'); if (t) t.innerHTML = `<div class="panel">Student results could not be loaded (${esc(e.code)}).</div>`; });
+  $('#tq').oninput = drawTeacher; $('#tg').onchange = drawTeacher;
+  $('#csv').onclick = async () => {
+    const rows = filteredRows();
+    const head = ['Name','Group',...UNITS.map(u=>'Unit '+u.n),'Mocks taken','Best mock %','Activities done','Last active'];
+    const lines = [head].concat(rows.map(r => { const m = mockStats(r); return [r.name, r.group||'', ...UNITS.map(u => r.best && r.best[u.n]!=null ? r.best[u.n] : ''), m.n, m.best==null?'':m.best, actTotal(r), r.updated ? fmtDate(r.updated) : '']; }));
+    const csv = lines.map(l => l.map(v => /[",\n]/.test(String(v)) ? '"'+String(v).replace(/"/g,'""')+'"' : v).join(',')).join('\n');
+    try { await navigator.clipboard.writeText(csv); $('#tmsg').className='fb ok'; $('#tmsg').textContent = `Copied ${rows.length} students — paste into Excel.`; }
+    catch(e) { $('#tmsg').className='fb bad'; $('#tmsg').textContent = 'Copy was blocked by the browser.'; }
+  };
+}
+const mockStats = r => { const m = (r.attempts||[]).filter(a=>a.k==='m'); return {n:m.length, best: m.length ? Math.max(...m.map(a=>Math.round(a.s/a.t*100))) : null}; };
+const actTotal = r => Object.values(r.acts||{}).reduce((s,a)=>s+(a||[]).length,0);
+function filteredRows(){
+  const q = ($('#tq')?.value||'').toLowerCase(), g = $('#tg')?.value || '';
+  return teacherRows.filter(r => (!q || (r.name||'').toLowerCase().includes(q)) && (!g || r.group === g)).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+}
+function drawTeacher(){
+  const t = $('#tbody'); if (!t) return;
+  const rows = filteredRows(), totalActs = UNITS.reduce((s,u)=>s+actCount(u),0);
+  if (!teacherRows.length) { t.innerHTML = '<div class="panel">No students have registered yet. Share the app with your learners as <b>Contributors</b> so they can create their accounts and save results.</div>'; return; }
+  t.innerHTML = `<div class="tablewrap"><table class="res"><tr><th>Student</th><th>Group</th>${UNITS.map(u=>`<th title="${esc(u.title)}">U${u.n}</th>`).join('')}<th>Mocks</th><th>Best mock</th><th>Activities</th><th>Last active</th></tr>
+    ${rows.map(r => { const m = mockStats(r); return `<tr class="click" data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b></td><td>${esc(r.group||'')}</td>
+      ${UNITS.map(u => { const b = r.best && r.best[u.n]; return `<td class="${pctClass(b)}">${b==null?'':b}</td>`; }).join('')}
+      <td>${m.n}</td><td class="${pctClass(m.best)}">${m.best==null?'':m.best+'%'}</td><td>${actTotal(r)}/${totalActs}</td><td>${r.updated?esc(fmtDate(r.updated)):''}</td></tr>`; }).join('')}
+  </table></div><p style="color:var(--muted);font-size:14px">${rows.length} student(s). Unit columns show each student's best test score (%). Click a student to see their full history.</p>`;
+  t.querySelectorAll('[data-id]').forEach(tr => tr.onclick = () => showStudent(tr.dataset.id));
+}
+function showStudent(id){
+  const r = teacherRows.find(x=>x.id===id); if (!r) return;
+  const d = $('#tdetail');
+  d.innerHTML = `<div class="panel"><div class="row" style="justify-content:space-between;margin:0"><h2 style="margin:0">${esc(r.name)} <span style="color:var(--muted);font-size:16px">${esc(r.group||'')}</span></h2>
+    <div class="row" style="margin:0"><button class="btn alt" id="del">Delete this record</button><button class="btn alt" id="close">Close</button></div></div>${resultsDetail(r)}</div>`;
+  $('#close').onclick = () => d.innerHTML = '';
+  $('#del').onclick = async e => {
+    if (!e.target.dataset.sure) { e.target.dataset.sure = 1; e.target.textContent = 'Click again to delete permanently'; return; }
+    try { await db.doc('results/' + id).delete(); d.innerHTML = ''; } catch(err) { e.target.textContent = 'Could not delete (' + err.code + ')'; }
+  };
+  d.scrollIntoView({behavior:'smooth'});
+}
+
+// ================= glossary =================
+function renderGlossary(){
+  const all = UNITS.flatMap(u => u.terms.map(t=>({t:t[0], d:t[1], u:u.n}))).sort((a,b)=>a.t.localeCompare(b.t));
+  app.innerHTML = `<h1>Glossary</h1><input class="search" id="gs" placeholder="Search ${all.length} terms…" aria-label="Search terms"><div class="gloss" id="gl"></div>`;
+  const draw = q => { q = q.toLowerCase();
+    $('#gl').innerHTML = all.filter(x => !q || (x.t+' '+x.d).toLowerCase().includes(q)).map(x=>`<div><b>${esc(x.t)}</b> <small>Unit ${x.u}</small>${esc(x.d)}</div>`).join('') || '<p>No matches.</p>'; };
+  $('#gs').oninput = e => draw(e.target.value); draw('');
+}
+
+init();
+</script>
+</body>
+</html>

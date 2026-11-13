@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 108dp canvas; artwork kept inside the central 66dp safe zone -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- open book -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M30,40 Q42,36 53,41 L53,72 Q42,67 30,71 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M78,40 Q66,36 55,41 L55,72 Q66,67 78,71 Z" />
+    <!-- orange T badge -->
+    <path android:fillColor="#E36414"
+        android:pathData="M44,26 L64,26 L64,31 L56.5,31 L56.5,46 L51.5,46 L51.5,31 L44,31 Z" />
+    <!-- lines on pages -->
+    <path android:fillColor="#0F4C5C" android:pathData="M34,50 L49,48.5 L49,51 L34,52.5 Z" />
+    <path android:fillColor="#0F4C5C" android:pathData="M34,56 L49,54.5 L49,57 L34,58.5 Z" />
+    <path android:fillColor="#0F4C5C" android:pathData="M59,48.5 L74,50 L74,52.5 L59,51 Z" />
+    <path android:fillColor="#0F4C5C" android:pathData="M59,54.5 L74,56 L74,58.5 L59,57 Z" />
+</vector>
