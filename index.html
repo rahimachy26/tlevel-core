@@ -1007,19 +1007,26 @@ async function init(){
   }
   if (mode !== 'cloud') { S = loadLocal() || blank(); docRef = null; }
   $('#nav-teacher').hidden = !isTeacher;
-  window.addEventListener('hashchange', route);
+  window.addEventListener('hashchange', syncFromHash);
+  window.addEventListener('popstate', syncFromHash);
   route();
 }
 const needsRegister = () => !S || !S.name;
 
 // ================= routing =================
-function go(h){ if (location.hash.slice(1) === h) route(); else location.hash = h; }
+let cur = (location.hash || '#home').slice(1) || 'home';
+function go(h){
+  cur = h;
+  try { if (location.hash.slice(1) !== h) history.pushState(null, '', '#' + h); } catch(e) {}
+  route();
+}
+const syncFromHash = () => { cur = (location.hash || '#home').slice(1) || 'home'; route(); };
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
 $('#home-link').onclick = () => go('home');
 let timerId = null, unsub = null;
 function route(){
   clearInterval(timerId); if (unsub) { unsub(); unsub = null; }
-  let h = location.hash.slice(1) || 'home';
+  let h = cur || 'home';
   $('#who').textContent = S && S.name ? `${S.name}${S.group ? ' · ' + S.group : ''}` : '';
   if (needsRegister() && h !== 'teacher') return renderRegister(false);
   document.querySelectorAll('[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === h || (h.startsWith('unit') && b.dataset.go==='home')));
@@ -1060,7 +1067,7 @@ async function renderRegister(editing){
     if (!S) { S = blank(); const imp = $('#imp'); if (imp && imp.checked && local) { S.attempts = local.attempts||[]; S.best = local.best||{}; S.acts = local.acts||{}; } }
     S.name = name; S.group = group;
     await persist();
-    go('home'); route();
+    go('home');
   };
 }
 
@@ -1293,7 +1300,7 @@ function renderQuiz(pane, qset0, opts){
     const grade = pct>=80?'Distinction-level':pct>=65?'Merit-level':pct>=50?'Pass-level':'Keep practising';
     const weak = Object.entries(byUnit).filter(([u,[r,t]])=>r/t<0.6).map(([u])=>+u);
     $('#qres',pane).innerHTML = `<div class="score"><b>${right}/${qset.length}</b><div><div class="disp" style="font-size:22px">${pct}% — ${grade}</div><div>Saved to My results. Review the explanations below.${opts.unit?` Best score for this unit: ${bestOf(opts.unit.n)}%`:''}</div></div><span style="flex:1"></span><button class="btn alt" id="again">Try again (new questions)</button></div>
-      ${opts.mixed?`<h3>Score by unit</h3><div class="breakdown">${Object.entries(byUnit).sort((a,b)=>a[0]-b[0]).map(([u,[r,t]])=>`<div><b>Unit ${u}</b> — ${r}/${t}</div>`).join('')}</div>${weak.length?`<p><b>Revisit:</b> ${weak.map(u=>`<a href="#unit-${u}">Unit ${u}</a>`).join(', ')}</p>`:''}`:''}`;
+      ${opts.mixed?`<h3>Score by unit</h3><div class="breakdown">${Object.entries(byUnit).sort((a,b)=>a[0]-b[0]).map(([u,[r,t]])=>`<div><b>Unit ${u}</b> — ${r}/${t}</div>`).join('')}</div>${weak.length?`<p><b>Revisit:</b> ${weak.map(u=>`<a href="#unit-${u}" onclick="event.preventDefault();go('unit-${u}')">Unit ${u}</a>`).join(', ')}</p>`:''}`:''}`;
     $('#again',pane).onclick = opts.again;
     ['#qsub','#qsub2'].forEach(id=>{const b=$(id,pane); b.disabled=true; b.textContent='Submitted';});
     window.scrollTo({top: $('#qres',pane).getBoundingClientRect().top + window.scrollY - 150});
