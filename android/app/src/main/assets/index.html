@@ -119,7 +119,9 @@ textarea{width:100%;min-height:130px;font:inherit;padding:10px;border:1.5px soli
 .gloss div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
 .gloss b{color:var(--brand)} .gloss small{color:var(--muted);display:block}
 .setup label{display:block;margin:8px 0}
-.setup select{font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)}
+.setup select{font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line);max-width:100%;width:auto}
+.setup label{max-width:100%}
+@media (max-width:760px){.setup select{display:block;width:100%;margin-top:4px}}
 .who{font-size:14px;opacity:.9}
 .banner{background:#fff4e5;border:1px solid #f0c38a;border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:15px}
 .reg{max-width:520px;margin:30px auto}
@@ -137,6 +139,19 @@ table.res tr.click{cursor:pointer} table.res tr.click:hover td{background:#fbfaf
 .tips{margin:6px 0 0;padding-left:20px}.tips li{margin:4px 0}
 details summary{cursor:pointer}
 .pp{display:inline-block;font-size:12px;font-weight:400;color:var(--brand);background:#e8f1f3;border-radius:6px;padding:2px 8px;margin-left:4px;font-family:"Atkinson Hyperlegible"}
+.fchead{display:flex;justify-content:space-between;font-weight:700;color:var(--muted);margin:6px 0}
+.bigcard{display:block;width:100%;max-width:640px;margin:0 auto;height:300px;perspective:1200px;background:none;border:none;padding:0}
+.bigcard .in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.bigcard.on .in{transform:rotateY(180deg)}
+.bigcard .f,.bigcard .b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;box-shadow:0 10px 26px rgba(15,76,92,.14)}
+.bigcard .f{background:#fff;border:2px solid var(--line)}
+.bigcard .b{background:var(--brand);color:#fff;transform:rotateY(180deg)}
+.ctag{position:absolute;top:14px;left:16px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.75}
+.ctext{font-family:"Space Grotesk",system-ui,sans-serif;font-size:30px;font-weight:700;line-height:1.2}
+.ctext.small{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:21px;font-weight:400;line-height:1.45}
+.chint{position:absolute;bottom:14px;font-size:13px;opacity:.7}
+.fcbtns .btn{min-width:170px;padding:12px 20px;font-size:17px}
+@media (max-width:760px){header.top{position:static}.sticky{top:0}.kbhint{display:none}.bigcard{height:260px}.ctext{font-size:24px}.ctext.small{font-size:18px}}
 footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
 @media (max-width:760px){.hero{grid-template-columns:1fr}.match{grid-template-columns:1fr}header.top nav{width:100%}header.top nav button{margin:4px 4px 0 0}}
 </style>
@@ -149,6 +164,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
     <button data-go="home">Units</button>
     <button data-go="mock">Full mock exam</button>
     <button data-go="exam">Exam practice</button>
+    <button data-go="flashcards">Flashcards</button>
     <button data-go="glossary">Glossary</button>
     <button data-go="my-results">My results</button>
     <button data-go="teacher" id="nav-teacher" hidden>Teacher</button>
@@ -156,7 +172,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:20px}
   <span id="who" class="who"></span>
 </header>
 <main id="app"></main>
-<footer>Original study material written to follow the Engineering &amp; Manufacturing T Level Core (Units 1–17). · Version 1.5 (13 Nov 2026)</footer>
+<footer>Original study material written to follow the Engineering &amp; Manufacturing T Level Core (Units 1–17). · Version 1.6 (18 Nov 2026)</footer>
 <script>
 const UNITS = [];
 UNITS.push({
@@ -1261,6 +1277,54 @@ const EXTENDED_MORE = [
 "Evaluation of benefits (fewer errors, trust, repeat business) vs costs/time, with a justified conclusion"]}
 ];
 
+// Formula flashcards: [unit, name, formula / meaning]
+const FORMULAS = [
+[4,"Pythagoras' theorem","a² + b² = c²  (c is the hypotenuse)"],
+[4,"SOH CAH TOA","sin θ = opp ÷ hyp · cos θ = adj ÷ hyp · tan θ = opp ÷ adj"],
+[4,"Area of a circle","A = πr²  (or πd² ÷ 4)"],
+[4,"Volume of a cylinder","V = πr²h"],
+[4,"Gradient of a straight line","m = change in y ÷ change in x  ·  y = mx + c"],
+[4,"Mean","Sum of the values ÷ number of values"],
+[5,"Newton's second law","F = ma  (force in N, mass in kg, acceleration in m/s²)"],
+[5,"Weight","W = mg  (g = 9.81 m/s²)"],
+[5,"Pressure","p = F ÷ A  (Pa = N/m²)"],
+[5,"Density","ρ = m ÷ V  (kg/m³)"],
+[5,"Heat energy (temperature change)","Q = mcΔT"],
+[5,"Heat energy (change of state)","Q = mL  (L = specific latent heat)"],
+[5,"Equations of motion","v = u + at · s = ut + ½at² · v² = u² + 2as"],
+[5,"Momentum","p = mv  (conserved in a collision)"],
+[5,"Boyle's law (constant temperature)","p₁V₁ = p₂V₂"],
+[5,"Charles's law (constant pressure)","V₁ ÷ T₁ = V₂ ÷ T₂  (T in kelvin)"],
+[5,"Celsius to kelvin","K = °C + 273"],
+[6,"Stress","σ = F ÷ A  (N/m² or Pa)"],
+[6,"Strain","ε = change in length ÷ original length  (no units)"],
+[6,"Young's modulus","E = stress ÷ strain"],
+[7,"Moment","Moment = force × perpendicular distance from the pivot (N m)"],
+[7,"Principle of moments","Sum of clockwise moments = sum of anticlockwise moments"],
+[7,"Mechanical advantage","MA = load ÷ effort"],
+[7,"Velocity ratio","VR = distance moved by effort ÷ distance moved by load"],
+[7,"Efficiency","Efficiency = MA ÷ VR × 100%  (or useful output ÷ input × 100%)"],
+[7,"Gear ratio","Teeth on driven gear ÷ teeth on driver gear (write as a ratio, e.g. 3:1)"],
+[7,"Output speed of a gear train","Output speed = input speed ÷ gear ratio"],
+[7,"Work done","W = F × d  (J)"],
+[7,"Power","P = work done ÷ time  (W)"],
+[7,"Kinetic energy","KE = ½mv²"],
+[7,"Gravitational potential energy","PE = mgh"],
+[7,"Torsion (shaft torque)","T = τJ ÷ r"],
+[8,"Ohm's law","V = I × R"],
+[8,"Electrical power","P = V × I = I²R = V² ÷ R"],
+[8,"Resistors in series","R_T = R1 + R2 + R3 + …"],
+[8,"Resistors in parallel","1 ÷ R_T = 1 ÷ R1 + 1 ÷ R2 + …"],
+[8,"Two resistors in parallel","R_T = (R1 × R2) ÷ (R1 + R2)"],
+[8,"Potential divider","V_out = V_in × R2 ÷ (R1 + R2)"],
+[8,"Electrical energy","E = P × t  (J, or kWh with kW and hours)"],
+[13,"Break-even point","Fixed costs ÷ (selling price − variable cost per unit)"],
+[13,"Profit","Profit = revenue − total costs"],
+[15,"Re-order level","(Usage per day × lead time in days) + buffer stock"],
+[16,"OEE","Availability × performance × quality"],
+[17,"Float","Critical path length − length of the non-critical path"]
+];
+
 
 </script>
 <script>
@@ -1361,6 +1425,7 @@ function route(){
   if (m) renderUnit(+m[1], m[2] || 'learn');
   else if (h === 'mock') renderMockSetup();
   else if (h === 'glossary') renderGlossary();
+  else if (h === 'flashcards') renderFlashSetup();
   else if (h === 'exam') renderExamHub();
   else if (h === 'past-papers') renderPastPapers();
   else if (h.startsWith('exam-')) renderExamPaper(h.slice(5));
@@ -1428,6 +1493,7 @@ function renderHome(){
       </button>`; }).join('')}
     <button class="ucard special" data-go2="mock"><span class="num">MOCK</span><h3>Full mock exam</h3><div class="meta"><span>Mixed questions from all 17 units, timed</span></div></button>
     <button class="ucard special" data-go2="exam"><span class="num">EXAM</span><h3>Exam practice</h3><div class="meta"><span>Exam-style written questions, 12-mark extended answers and practice papers</span></div></button>
+    <button class="ucard special" data-go2="flashcards"><span class="num">CARDS</span><h3>Flashcards</h3><div class="meta"><span>${CARDS.length} key-term and formula cards · ${CARDS.filter(c=>known(c.id)).length} known</span></div></button>
     <button class="ucard special" data-go2="my-results"><span class="num">ME</span><h3>My results</h3><div class="meta"><span>Every test you've taken, with dates and scores</span></div></button>
     <button class="ucard special" data-go2="glossary"><span class="num">A–Z</span><h3>Glossary of key terms</h3><div class="meta"><span>${UNITS.reduce((s,u)=>s+u.terms.length,0)} terms, searchable</span></div></button>
   </div>`;
@@ -1681,7 +1747,8 @@ function resultsDetail(R){
       <div><b>${tested.length}/17</b><span>units tested</span></div>
       <div><b>${avg}%</b><span>average best unit score</span></div>
       <div><b>${mocks.length}</b><span>mock exams taken</span></div>
-      <div><b>${bestMock==null?'—':bestMock+'%'}</b><span>best mock score</span></div></div>
+      <div><b>${bestMock==null?'—':bestMock+'%'}</b><span>best mock score</span></div>
+      <div><b>${Object.keys(R.flash||{}).length}</b><span>flashcards known</span></div></div>
     <h2>Unit by unit</h2>
     <div class="tablewrap"><table class="res"><tr><th>Unit</th><th>Best test score</th><th>Tests taken</th><th>Best exam questions</th><th>Activities done</th></tr>
     ${UNITS.map(u => { const b = R.best && R.best[u.n]; const n = (R.attempts||[]).filter(a=>a.k==='u'&&a.u===u.n).length; const ac = ((R.acts||{})[u.n]||[]).length;
@@ -1905,6 +1972,75 @@ function renderPastPapers(){
     $('#pfc').textContent = `${rows.length} questions · ${rows.reduce((s,r)=>s+r[2],0)} marks`; $('#pfl').innerHTML = pastListHTML(rows); };
   $('#pfu').onchange = draw; $('#pfp').onchange = draw; draw();
 }
+
+// ================= flashcards =================
+const CARDS = UNITS.flatMap(u => u.terms.map(t => ({id:'t'+u.n+':'+t[0], unit:u.n, kind:'Key term', front:t[0], back:t[1]})))
+  .concat(FORMULAS.map(f => ({id:'f'+f[0]+':'+f[1], unit:f[0], kind:'Formula', front:f[1], back:f[2]})));
+const known = id => !!(S.flash && S.flash[id]);
+let fc = null; // current session
+function renderFlashSetup(){
+  const k = CARDS.filter(c => known(c.id)).length;
+  app.innerHTML = banners() + `<h1 style="margin-bottom:4px">Flashcards</h1>
+  <p style="color:var(--muted);margin-top:0">${CARDS.length} cards: every key term from Units 1–17 plus ${FORMULAS.length} formula cards. Tap a card to flip it, then sort it into <b>I know this</b> or <b>Still learning</b>.</p>
+  <div class="panel stat" style="margin-bottom:16px"><div><b>${k}/${CARDS.length}</b><span>cards you know</span></div><div><b>${CARDS.length-k}</b><span>still learning</span></div></div>
+  <div class="panel setup">
+    <label>Cards from: <select id="fu"><option value="">All units</option>${UNITS.map(u=>`<option value="${u.n}">Unit ${u.n} – ${esc(u.title)} (${CARDS.filter(c=>c.unit===u.n).length})</option>`).join('')}</select></label>
+    <label>Type: <select id="fk"><option value="">Key terms and formulas</option><option>Key term</option><option>Formula</option></select></label>
+    <label>Which cards: <select id="fw"><option value="learning">Still learning only</option><option value="all">All cards</option><option value="known">Ones I know (quick check)</option></select></label>
+    <label>Show first: <select id="ff"><option value="front">The term — I say the meaning</option><option value="back">The meaning — I say the term</option></select></label>
+    <div class="row"><button class="btn orange" id="fstart">Start</button><span class="fb bad" id="fmsg"></span><span style="flex:1"></span><button class="btn alt" id="freset">Reset all to "still learning"</button></div>
+  </div>`;
+  $('#fstart').onclick = () => {
+    const u = $('#fu').value, kd = $('#fk').value, w = $('#fw').value;
+    let deck = CARDS.filter(c => (!u || c.unit === +u) && (!kd || c.kind === kd));
+    if (w === 'learning') deck = deck.filter(c => !known(c.id)); else if (w === 'known') deck = deck.filter(c => known(c.id));
+    if (!deck.length) { $('#fmsg').textContent = w === 'learning' ? 'You know every card in this set — choose "All cards" to go again.' : 'No cards match — try a different choice.'; return; }
+    fc = {deck: shuffle(deck), i: 0, flipped: false, rev: $('#ff').value === 'back', got: 0, learning: []};
+    drawCard();
+  };
+  $('#freset').onclick = e => { if (!e.target.dataset.sure) { e.target.dataset.sure = 1; e.target.textContent = 'Click again to confirm'; return; } S.flash = {}; persist(); renderFlashSetup(); };
+}
+function drawCard(){
+  const c = fc.deck[fc.i], n = fc.deck.length;
+  const front = fc.rev ? c.back : c.front, back = fc.rev ? c.front : c.back;
+  app.innerHTML = banners() + `<button class="back" id="bk">← Flashcard menu</button>
+  <div class="fchead"><span>Card ${fc.i+1} of ${n}</span><span>✓ ${fc.got} know · ↻ ${fc.learning.length} still learning</span></div>
+  <div class="bar" style="margin-bottom:14px"><i style="width:${Math.round(fc.i/n*100)}%"></i></div>
+  <button class="bigcard ${fc.flipped?'on':''}" id="card" aria-label="Flip card"><div class="in">
+    <div class="f"><span class="ctag">Unit ${c.unit} · ${c.kind}</span><div class="ctext">${esc(front)}</div><span class="chint">Tap to flip</span></div>
+    <div class="b"><span class="ctag">Unit ${c.unit} · ${c.kind}</span><div class="ctext small">${esc(back)}</div><span class="chint">${esc(front)}</span></div></div></button>
+  <div class="row fcbtns" style="justify-content:center">${fc.flipped
+    ? `<button class="btn alt" id="fl">↻ Still learning</button><button class="btn" id="fk2" style="background:var(--ok)">✓ I know this</button>`
+    : `<button class="btn orange" id="flip">Flip card</button>`}</div>
+  <p class="hint kbhint" style="text-align:center">Keyboard: Space = flip · ← still learning · → I know this</p>`;
+  $('#bk').onclick = () => renderFlashSetup();
+  const flip = () => { fc.flipped = true; drawCard(); };
+  $('#card').onclick = () => { if (!fc.flipped) flip(); else { fc.flipped = false; drawCard(); } };
+  if (!fc.flipped) $('#flip').onclick = flip;
+  else { $('#fl').onclick = () => answer(false); $('#fk2').onclick = () => answer(true); }
+}
+function answer(k){
+  const c = fc.deck[fc.i];
+  S.flash = S.flash || {};
+  if (k) { S.flash[c.id] = 1; fc.got++; } else { delete S.flash[c.id]; fc.learning.push(c); }
+  persist();
+  fc.i++; fc.flipped = false;
+  if (fc.i < fc.deck.length) drawCard(); else drawFlashDone();
+}
+function drawFlashDone(){
+  const n = fc.deck.length;
+  app.innerHTML = banners() + `<div class="score"><b>${fc.got}/${n}</b><div><div class="disp" style="font-size:22px">Round complete</div><div>${fc.learning.length ? fc.learning.length + ' card' + (fc.learning.length>1?'s':'') + ' to keep practising.' : 'You knew every card — brilliant!'}</div></div></div>
+  ${fc.learning.length ? `<div class="panel" style="margin-bottom:14px"><h3 style="margin-top:0">Still learning</h3><div class="gloss">${fc.learning.map(c=>`<div><b>${esc(c.front)}</b> <small>Unit ${c.unit} · ${c.kind}</small>${esc(c.back)}</div>`).join('')}</div></div>` : ''}
+  <div class="row">${fc.learning.length ? '<button class="btn orange" id="again">Practise these again</button>' : ''}<button class="btn alt" id="menu">Flashcard menu</button></div>`;
+  if (fc.learning.length) $('#again').onclick = () => { fc = {deck: shuffle(fc.learning), i:0, flipped:false, rev:fc.rev, got:0, learning:[]}; drawCard(); };
+  $('#menu').onclick = () => renderFlashSetup();
+}
+document.addEventListener('keydown', e => {
+  if (!fc || !$('#card') || ['INPUT','TEXTAREA','SELECT'].includes((e.target||{}).tagName)) return;
+  if (e.key === ' ') { e.preventDefault(); if (!fc.flipped) { fc.flipped = true; drawCard(); } }
+  else if (e.key === 'ArrowRight' && fc.flipped) answer(true);
+  else if (e.key === 'ArrowLeft' && fc.flipped) answer(false);
+});
 
 // ================= glossary =================
 function renderGlossary(){
